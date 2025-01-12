@@ -18,7 +18,6 @@
 #' @param col_palette Colors to use for each cluster.
 #' @param text_color Color of the text in the table.
 #' @return Combines cluster data into a single data frame. Assigns colors to rows based on cluster memberships using the provided or default color palette.
-#' @seealso [cluster_go_terms()]
 #' @export
 
 generate_cluster_table <- function(cluster_output,
