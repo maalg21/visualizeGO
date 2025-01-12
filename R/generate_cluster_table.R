@@ -37,7 +37,7 @@ generate_cluster_table <- function(cluster_output,
   # Helper function to get GO term names from GO IDs
   get_go_term_name <- function(go_id) {
     go_term_name <- tryCatch({
-      Term(go_id)
+      AnnotationDbi::Term(go_id)
     }, error = function(e) {
       return(go_id)  # If the GO term is not found, return the GO ID itself
     })
