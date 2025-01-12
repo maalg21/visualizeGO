@@ -21,5 +21,5 @@ save_cluster_table_as_png <- function(cluster_df, file_name = "cluster_table.png
     save_kable(temp_html)  # Save the table to an HTML file
 
   # Use webshot to convert HTML to PNG
-  webshot(temp_html, file_name, vwidth = width, vheight = height, zoom = zoom)
+  webshot::webshot(temp_html, file_name, vwidth = width, vheight = height, zoom = zoom)
 }
