@@ -37,7 +37,7 @@ cluster_go_terms <- function(method_type = c("similarity", "network"),
     stop("For similarity-based clustering, a similarity_matrix is required.")
   }
 
-  if (!all(V(graph)$name %in% rownames(similarity_matrix))) {
+  if (method_type == "similarity" && !all(V(graph)$name %in% rownames(similarity_matrix))) {
     stop("Graph vertices do not match similarity matrix names.")
   }
 
