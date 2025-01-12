@@ -23,7 +23,7 @@ build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = 
   if(is.null(go_sim_object)){
     # Get go_sim_object
     file_name <- c("go_term_database_all_ontologies.RData")
-    file <- system.file("exdata", file_name, package = "visualizeGO")
+    file <- system.file("extdata", file_name, package = "visualizeGO")
 
     # Check if the file exists in the specified directory
     if (!file.exists(file)) {
