@@ -12,8 +12,10 @@ Authors@R: c(
 Description: This package creates hierarchical graphs of interesting GO terms. This R package has been developed for the purpose of creating hierarchical graphs of a list of interesting GO-terms. 
   The package utilises a clustering method to group the GO-terms, thereby facilitating the observation of relationships between these terms. 
   This process enhances the comprehension of the intra-cluster relationships of the metabolic pathways highlighted.
+  This package provides access to various data files, including Excel and RData files, that can be used for analysis. These files are stored in the inst/extdata/ directory and can be accessed using package functions.
 Imports: 
     roxygen2 (>= 7.1.0),
+    readxl,
     igraph,
     dplyr,
     ggplot2,
