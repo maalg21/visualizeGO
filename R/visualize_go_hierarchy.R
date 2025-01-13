@@ -48,7 +48,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
                                    clusters, col_palette = NULL,
                                    verbose = c("all", "none", "some"),
                                    save_plot = F,
-                                   file_name = NULL
+                                   PNG = NULL
 ){
 
   # Step 0: Manage the verbose ----
@@ -276,7 +276,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
   # Use preprocessed pch in the legend
   unique_shapes <- unique(V(graph)$shape)
   legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
-  if(is.null(go_list2)){
+  if(nb_lists == "single"){
     legend("topright",
            legend = c("GO List 1", "Other Terms"),
            pch = legend_shapes, # Extract unique pch values for the legend
@@ -300,18 +300,18 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
 
   # Step 11: Save plot (if enabled) ----
   if(isTRUE(save_plot)) {
-    if (verbose != "none") cat("Saving plot as", file_name, "...\n")
+    if (verbose != "none") cat("Saving plot as", PNG, "...\n")
 
     # Ensure the file extension is included in the filename (if not already)
-    if (!grepl("\\.png$", file_name)) {
-      file_name <- paste0(file_name, ".png")  # Default to .png if no extension is provided
+    if (!grepl("\\.png$", PNG)) {
+      file_name <- paste0(PNG, ".png")  # Default to .png if no extension is provided
     }
 
     # Set high resolution for the plot (e.g., 300 DPI)
     dpi <- 300  # High resolution
 
     # Open a PNG device to save the plot with high resolution
-    png(file_name, width = 4000, height = 3000, res = dpi)
+    png(PNG, width = 4000, height = 3000, res = dpi)
 
     # PLOT ----
     plot(
@@ -339,7 +339,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
            cex = 0.8, title = "Clusters",
            inset = c(0.001, 0.05))
 
-    if(is.null(go_list2)){
+    if(nb_lists == "single"){
       legend("topright",
              legend = c("GO List 1", "Other Terms"),
              pch = legend_shapes, # Extract unique pch values for the legend
@@ -361,7 +361,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
            xjust = 1, inset = c(0.00009, 0.8))
 
     dev.off()
-    if (verbose != "none") cat("Plot saved successfully as", file_name, "\n")
+    if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")
   }
   # Step 12: Return the GODescriptions ----
   if(verbose == "all"){
