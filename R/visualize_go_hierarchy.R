@@ -276,12 +276,19 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
   # Use preprocessed pch in the legend
   unique_shapes <- unique(V(graph)$shape)
   legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
-  legend("topright",
-         legend = c("GO List 1", "GO List 2", "Other Terms"),
-         pch = legend_shapes, # Extract unique pch values for the legend
-         bty = "n", title.font = 2, cex = 0.8,
-         title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
-
+  if(is.null(go_list2)){
+    legend("topright",
+           legend = c("GO List 1", "Other Terms"),
+           pch = legend_shapes, # Extract unique pch values for the legend
+           bty = "n", title.font = 2, cex = 0.8,
+           title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+  } else {
+    legend("topright",
+           legend = c("GO List 1", "GO List 2", "Other Terms"),
+           pch = legend_shapes, # Extract unique pch values for the legend
+           bty = "n", title.font = 2, cex = 0.8,
+           title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+  }
 
   # Add a legend for the node sizes (degree of connectivity)
   legend("topright", legend = c("Low Connectivity",
@@ -332,11 +339,19 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
            cex = 0.8, title = "Clusters",
            inset = c(0.001, 0.05))
 
-    legend("topright",
-           legend = c("GO List 1", "GO List 2", "Other Terms"),
-           pch = legend_shapes, # Extract unique pch values for the legend
-           bty = "n", title.font = 2, cex = 0.8,
-           title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+    if(is.null(go_list2)){
+      legend("topright",
+             legend = c("GO List 1", "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+    } else {
+      legend("topright",
+             legend = c("GO List 1", "GO List 2", "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+    }
 
     legend("topright", legend = c("Low Connectivity",
                                   "High Connectivity"),
