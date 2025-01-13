@@ -103,8 +103,6 @@ filter_and_visualize_cluster <- function(clusters,
     Description = go_descriptions
   )
 
-  return(go_id_to_description)
-
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
   plot(subgraph,
@@ -197,5 +195,9 @@ filter_and_visualize_cluster <- function(clusters,
 
     dev.off()
     if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")
+  }
+
+  if(verbose != "none"){
+    return(go_id_to_description)
   }
 }
