@@ -20,7 +20,7 @@
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
 #' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
 #'
-#' @return This function returns the graph of the selected cluster.
+#' @return This function returns the graph of the selected cluster and a data frame of the description of each GO ID that appeared in the plot.
 #' @export
 
 filter_and_visualize_cluster <- function(clusters,
@@ -103,7 +103,7 @@ filter_and_visualize_cluster <- function(clusters,
     Description = go_descriptions
   )
 
-  print(go_id_to_description)
+  return(go_id_to_description)
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")

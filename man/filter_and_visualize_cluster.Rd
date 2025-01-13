@@ -47,7 +47,7 @@ in addition to the messages that indicate how the whole process is going, you al
 \item{shape}{Shape of the nodes in the plot. By default is "circle".}
 }
 \value{
-This function returns the graph of the selected cluster.
+This function returns the graph of the selected cluster and a data frame of the description of each GO ID that appeared in the plot.
 }
 \description{
 This function  computes all the information in a single plot with the hierarchical relationship between the input GO-terms from a single selected cluster.
