@@ -80,24 +80,24 @@ generate_cluster_table <- function(cluster_output,
 
   } else if (method_type == "network") {
     # For network-based clustering, simply list GO IDs for each cluster
-    for (cluster_id in unique(clusters)) {
-      go_ids <- names(which(clusters == cluster_id))
+    membership <- clusters$membership
+    sorted_indices <- paste("Cluster",
+                            order(as.numeric(as.character(unique(membership)))),
+                            sep = " ")
 
-      # Check for NA values before proceeding
-      if (length(go_ids) == 0) {
-        next  # Skip this cluster if there are no GO IDs
-      }
+    membership <- paste("Cluster", membership, sep = " ")
+    go_ids <- clusters$names
+    names(go_ids) <- membership
 
-      # Store information in the list
-      cluster_info[[paste("Cluster", cluster_id)]] <- data.frame(
-        Cluster = paste("Cluster", cluster_id),
-        "GO IDs" = paste(go_ids, collapse = ", "),
-        stringsAsFactors = FALSE
-      )
-    }
+    clustered_go_ids <- split(go_ids, names(go_ids))
 
-    # Combine all cluster info into a single data frame
-    cluster_df <- do.call(rbind, cluster_info)
+    cluster_df <- do.call(rbind, lapply(clustered_go_ids, function(x) {
+      data.frame(Cluster = names(x)[1],
+                 "GO IDs" = paste(x, collapse = ", "), stringsAsFactors = FALSE)
+    }))
+
+    cluster_df <- cluster_df[sorted_indices,]
+
   } else {
     stop("Invalid method_type. Choose either 'similarity' or 'network'.")
   }
