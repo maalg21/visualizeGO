@@ -39,6 +39,3 @@ with both similarity-based clustering and network-based clustering outputs.
 This function is useful for reporting clustering results in a clear, interactive,
 and visually appealing format, ideal for presentations or publications.
 }
-\seealso{
-\code{\link[=cluster_go_terms]{cluster_go_terms()}}
-}

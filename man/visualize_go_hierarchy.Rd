@@ -21,7 +21,7 @@ visualize_go_hierarchy(
   col_palette = NULL,
   verbose = c("all", "none", "some"),
   save_plot = F,
-  file_name = NULL
+  PNG = NULL
 )
 }
 \arguments{
@@ -64,7 +64,7 @@ in addition to the messages that indicate how the whole process is going, you al
 
 \item{save_plot}{Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.}
 
-\item{file_name}{If the "save_plot" option is set to "TRUE", name of the PNG file generated.}
+\item{PNG}{If the "save_plot" option is set to "TRUE", name of the PNG file generated.}
 }
 \value{
 This function returns the final graph, with the colours of the nodes depending

@@ -30,7 +30,7 @@ cluster_go_terms(
 
 \item{nb_clusters}{If it's known, number of clusters set to group the GO-terms.}
 
-\item{k_range}{Specified range to uses silhouette scores to determine the optimal number of clusters from.}
+\item{k_range}{Specified range to uses Silhouette scores to determine the optimal number of clusters from.}
 }
 \value{
 A list containing:
