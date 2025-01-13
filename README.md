@@ -207,7 +207,7 @@ In order to use it, you will have to take into account several aspects:
 1. You have to enter the initial list of GO-terms of interest (```go_list1```). You could add a second list (```go_list2```) as at the beginning of this tutorial, to see how the terms in these two lists relate to each other. Consequently, the argument (```nb_lists = "double"```) would be used.
 2. If you want to use another annotation, you will have to define it in ``go_sim_object``. In this case, we will use the database that comes with the package.
 3. If you use two lists of GO-terms, you have to set the second form of the nodes for this second list. In this case, we only define ```shape1```.
-4. The ```simplification``` parameter refers to whether we want to perform the same filtering as in the #data_input step. It is important to note that if this simplification was performed before the clustering, we are forced to use it again.
+4. The ```simplification``` parameter refers to whether we want to perform the same filtering as in the [Data Input](#data-input) step. It is important to note that if this simplification was performed before the clustering, we are forced to use it again.
 5. We can determine the layout of the graph through several options. If we want a hierarchical view we have to define ```layout = "tree"```.
 6. If we want to add the clustering done in previous steps we must determine it with ```clustering = T``` and ```clusters``` as the output of the [Clustering the GO-terms](#clustering-the-go-terms) step.
 7. The ```verbose``` parameter is a bit special. It could be either *"all"*, *"some"* or *"none"* if you want all the results desplayed, some feedback or anything in your console, respectively.
