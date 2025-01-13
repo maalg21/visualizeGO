@@ -14,7 +14,7 @@
 #' @export
 
 go_similarity_heatmap <- function(go_list1, go_list2,
-                                  ont = c("BP", "MF", "CC"),
+                                  ontology = c("BP", "MF", "CC"),
                                   method = c("Jaccard", "Resnik", "Lin", "Wang"),
                                   orgdb = "org.Hs.eg.db",
                                   xlab = NULL, ylab = NULL,
@@ -34,10 +34,12 @@ go_similarity_heatmap <- function(go_list1, go_list2,
   if(method != "Jaccard"){
     if(method != "Wang"){
       # Create a GO similarity object
-      go_data <- GOSemSim::godata(orgdb, ont = ont,
+      library(GOSemSim)
+      go_data <- GOSemSim::godata(orgdb, ontology = ontology,
                                   computeIC = method %in% c("Resnik", "Lin"))
     } else {
-      go_data <- GOSemSim::godata(ont = ontology, OrgDb = orgdb, computeIC = FALSE)
+      go_data <- GOSemSim::godata(ontology = ontology,
+                                  OrgDb = orgdb, computeIC = FALSE)
     }
 
     # Initialize the similarity matrix
@@ -77,7 +79,7 @@ go_similarity_heatmap <- function(go_list1, go_list2,
                            reshape2::melt(value.name = "SemanticSimilarity") %>%
                            dplyr::rename("GO_ID2" = variable)) +
     geom_tile(mapping = aes(x = GO_ID1, y = GO_ID2, fill = SemanticSimilarity)) +
-    scale_fill_gradient(name = paste("GO: ", ont,
+    scale_fill_gradient(name = paste("GO: ", ontology,
                                      "\nSemantic Similarity\n(",
                                      method, ")", sep = ""),
                         low = "white", high = "red") +
