@@ -55,9 +55,11 @@ filter_and_visualize_cluster(clusters = cluster,
 data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
                                                      package = "visualizeGO")))
 
-GO_BP2 <- data2[data2$Category == "BP",]
+GO_BP1 <- data[data$Category == "BP",] %>% top_n(n = 10)
+GO_BP2 <- data2[data2$Category == "BP",] %>% top_n(n = 10)
 
-go_similarity_heatmap(go_list1 = GO_BP$ID, go_list2 = GO_BP2$ID,
-                      ont = "BP", method = "Wang", orgdb = "org.Hs.eg.db",
+go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
+                      ontology = "BP", method = "Wang",
+                      orgdb = "org.Hs.eg.db",
                       xlab = "GO List 1", ylab = "GO List 2",
-                      main = "", cex = 5)
+                      main = "", cex = 10)

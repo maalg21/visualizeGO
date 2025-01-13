@@ -255,6 +255,38 @@ the term description.
 It is observed that within this cluster, metabolic pathways are present, 
 all of which are related to lipid transport.
 
+### Comparing GO-term lists
+Finally, in order to be able to compare two lists of GO-terms 
+we can also use this same package with the ``go_similarity_heatmap`` function. 
+Thanks to this function we obtain a heat map where it will be observed between 
+which GO-terms there is a greater similarity within the two lists. 
+Of course, the measurement of distances between GO-terms does not depend 
+on a network of terms; therefore, we can only choose semantic similarity terms 
+such as Jaccard, Resnik, etc.
+
+In this case it is MANDATORY that the input is two lists of GO-terms. 
+Using the same study as a basis, we will compare the two lists of GO-terms 
+that were detected for each of the groups of animals.
+
+```r
+# This is the second list of GO-terms
+data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
+                                                     package = "visualizeGO")))
+
+# We filter 10 GO-terms for each list, to make it more easy to understand
+GO_BP1 <- data[data$Category == "BP",] %>% top_n(n = 10)
+GO_BP2 <- data2[data2$Category == "BP",] %>% top_n(n = 10)
+
+go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
+                      ontology = "BP", method = "Wang",
+                      orgdb = "org.Hs.eg.db",
+                      xlab = "GO List 1", ylab = "GO List 2",
+                      main = "", cex = 10)
+```
+![Heatmap](inst/images/heatmap.png)
+Here is a comparison of 10 GO-terms from each of the lists,
+with the highest similarity shown in red and the lowest in white.
+
 ## References
 1. Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)
 2. Wang et al. (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23(10): 1274-1281 [10.1093/bioinformatics/btm087](https://doi.org/10.1093/bioinformatics/btm087)
