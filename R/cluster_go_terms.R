@@ -9,7 +9,7 @@
 #' @param similarity_matrix Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.
 #' @param graph igraph object linking the input GO-terms.
 #' @param nb_clusters If it's known, number of clusters set to group the GO-terms.
-#' @param k_range Specified range to uses silhouette scores to determine the optimal number of clusters from.
+#' @param k_range Specified range to uses Silhouette scores to determine the optimal number of clusters from.
 #' @return A list containing:
 #' \describe{
 #' \item{graph}{An igraph object with cluster memberships assigned.}
