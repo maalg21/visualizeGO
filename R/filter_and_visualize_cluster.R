@@ -103,10 +103,7 @@ filter_and_visualize_cluster <- function(clusters,
     Description = go_descriptions
   )
 
-  # Print the relationship data frame (optional, based on verbose)
-  if (verbose == "all") {
-    print(go_id_to_description)
-  }
+  print(go_id_to_description)
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
@@ -123,7 +120,7 @@ filter_and_visualize_cluster <- function(clusters,
        vertex.shape = V(subgraph)$shape,
        edge.arrow.size = 0.5,
        edge.color = "darkgray",
-       main = paste("Cluster Visualization: ", paste(selected_cluster, collapse = ", "), " Ontology: ", ontology, sep = ""),
+       main = paste("Clustering visualization of\nGO: ", ontology, sep = ""),
        rescale = TRUE)
 
   # Step 7: Add legend ----
@@ -139,13 +136,7 @@ filter_and_visualize_cluster <- function(clusters,
            inset = c(0.001, 0.05))
   }
 
-  # Add GO IDs and Terms below the clusters in the legend
-  go_terms_table <- go_id_to_description[go_id_to_description$GO_ID %in% V(subgraph)$name, ]
-  go_terms_text <- apply(go_terms_table, 1, function(x) paste(x[1], ":", x[2]))
-  legend("topleft",
-         legend = go_terms_text,
-         bty = "n", inset = c(0.001, -0.1), cex = 0.6, title = "GO IDs and Terms")
-
+  # Add a legend for the nodes sizes
   legend("topright", legend = c("Low Connectivity",
                                 "High Connectivity"),
          pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
@@ -181,7 +172,7 @@ filter_and_visualize_cluster <- function(clusters,
          vertex.shape = V(subgraph)$shape,
          edge.arrow.size = 0.5,
          edge.color = "darkgray",
-         main = paste("Cluster ", paste(selected_cluster, collapse = ", "), "\nGene Ontology ", ontology, sep = ""),
+         main = paste("Clustering visualization of\nGO: ", ontology, sep = ""),
          rescale = TRUE)
 
     # LEGEND ----
@@ -196,13 +187,6 @@ filter_and_visualize_cluster <- function(clusters,
              cex = 0.8, title = "Clusters",
              inset = c(0.001, 0.05))
     }
-
-    # Add GO IDs and Terms below the clusters in the legend
-    go_terms_table <- go_id_to_description[go_id_to_description$GO_ID %in% V(subgraph)$name, ]
-    go_terms_text <- apply(go_terms_table, 1, function(x) paste(x[1], ":", x[2]))
-    legend("topleft",
-           legend = go_terms_text,
-           bty = "n", inset = c(0.001, -0.1), cex = 0.6, title = "GO IDs and Terms")
 
     legend("topright", legend = c("Low Connectivity",
                                   "High Connectivity"),
