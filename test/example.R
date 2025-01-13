@@ -1,11 +1,13 @@
 devtools::install_github("maalg21/visualizeGO", force = T)
 library(visualizeGO)
 
+# Used data ----
 data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms.xlsx",
                                                     package = "visualizeGO")))
 data <- data[,c("Category", "ID")]
 GO_BP <- data[data$Category == "BP",]
 
+# Building the original graph ----
 graph <- build_hierarchical_graph(go_list1 = GO_BP$ID, nb_lists = "single",
                                   go_sim_object = NULL)
 expanded_graph <- expand_graph(graph = graph,
@@ -15,6 +17,7 @@ final_graph <- retain_ancestors_above_input_terms(graph = expanded_graph,
                                                   go_list1 = GO_BP$ID,
                                                   nb_lists = "single")
 
+# Semantic similarity clustering ----
 similarity_matrix <- calculate_wang(graph = final_graph,
                                     ontology = "BP",
                                     orgdb = "org.Hs.eg.db")
@@ -22,8 +25,8 @@ cluster <- cluster_go_terms(method_type = "similarity", method = "wang",
                             orgdb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix,
                             graph = final_graph, nb_clusters = NULL, k_range = 2:10)
 
+# Whole plot ----
 colors <- generate_pastel_colors(n = 7)
-
 visualize_go_hierarchy(go_list1 = GO_BP$ID,
                        go_list2 = NULL,
                        nb_lists = "single",
@@ -39,6 +42,7 @@ visualize_go_hierarchy(go_list1 = GO_BP$ID,
                        verbose = "some", # Just to know more about the process that is ocurring
                        save_plot = T, PNG = "plot1.png")
 
+# Filtering to obtain only nodes of Cluster 5 ----
 filter_and_visualize_cluster(clusters = cluster,
                              selected_cluster = 5,
                              ontology = "BP",
