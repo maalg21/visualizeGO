@@ -38,7 +38,7 @@ filter_and_visualize_cluster <- function(clusters,
     stop("Verbose must be either 'all', 'some' or 'none'.")
   }
 
-  if (is.null(cluster_result) || !"clusters" %in% names(cluster_result) || !"graph" %in% names(cluster_result)) {
+  if (is.null(clusters) || !"clusters" %in% names(clusters) || !"graph" %in% names(clusters)) {
     stop("Invalid cluster result provided. It should contain 'clusters' and 'graph' components.")
   }
 
