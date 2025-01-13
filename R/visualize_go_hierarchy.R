@@ -28,7 +28,7 @@
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
-#' @param file_name If the "save_plot" option is set to "TRUE", name of the PNG file generated.
+#' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
 #'
 #' @return This function returns the final graph, with the colours of the nodes depending
 #' on the clustering and the labels as numbers corresponding to the GO IDs in the data frame;

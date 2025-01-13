@@ -189,7 +189,7 @@ same ```generate_cluster_table``` function.
 generate_cluster_table(cluster_output = edge, method_type = "network", 
 col_palette = colors, text_color = "black")
 ```
-![Cluster Table2](inst/images/cluster_table2.png)
+![Clustering based on Edge Betweenness method.](inst/images/cluster_table2.png)
 
 As is evident, in this particular instance, the utilisation of clustering 
 techniques based on the semantic similarity of GO-terms is significantly more 
@@ -224,11 +224,20 @@ ontology = "BP",
 simplification = T, 
 min_node_size = 1, max_node_size = 10, # This is optional and arbitrary
 layout = "tree", 
-clustering = T, clusters = clusters, 
+clustering = T, clusters = cluster, 
 col_palette = colors, 
-verbose = "some"", # Just to know more about the process that is ocurring
+verbose = "some", # Just to know more about the process that is ocurring
 save_plot = F)
 ```
+![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png)
+As can be seen in the image, there are many nodes and inter-nodal relationships, 
+making the plot uninformative. Thus, we can focus on just one of the clusters 
+to see what these relationships look like. This list of GO-terms is the result 
+of a functional enrichment analysis of differentially expressed genes obtained 
+from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). 
+Thus, we are going to focus on *Cluster 5* which is related to lipid metabolism.
+
+
 
 ## References
 1. Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)
