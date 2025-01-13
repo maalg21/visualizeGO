@@ -35,11 +35,9 @@ go_similarity_heatmap <- function(go_list1, go_list2,
     if(method != "Wang"){
       # Create a GO similarity object
       library(GOSemSim)
-      go_data <- GOSemSim::godata(orgdb, ontology = ontology,
-                                  computeIC = method %in% c("Resnik", "Lin"))
+      go_data <- GOSemSim::godata(OrgDb = orgdb, ont = ontology, computeIC = T)
     } else {
-      go_data <- GOSemSim::godata(ontology = ontology,
-                                  OrgDb = orgdb, computeIC = FALSE)
+      go_data <- GOSemSim::godata(ont = ontology,  OrgDb = orgdb, computeIC = FALSE)
     }
 
     # Initialize the similarity matrix
@@ -50,7 +48,7 @@ go_similarity_heatmap <- function(go_list1, go_list2,
     # Calculate pairwise similarities
     for (i in seq_along(go_list1)) {
       for (j in seq_along(go_list2)) {
-        similarity_matrix[i, j] <- goSim(go_list1[i], go_list2[j],
+        similarity_matrix[i, j] <- GOSemSim::goSim(go_list1[i], go_list2[j],
                                          semData = go_data,
                                          measure = method)
       }
@@ -74,6 +72,8 @@ go_similarity_heatmap <- function(go_list1, go_list2,
   }
 
   # Generate the heatmap
+  library(ggplot2)
+  library(dplyr)
   heatmap_plot <- ggplot(data = as.data.frame(similarity_matrix) %>%
                            tibble::rownames_to_column(var = "GO_ID1") %>%
                            reshape2::melt(value.name = "SemanticSimilarity") %>%
