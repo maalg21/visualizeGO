@@ -284,6 +284,7 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       main = "", cex = 10)
 ```
 ![Heatmap](inst/images/heatmap.png)
+
 Here is a comparison of 10 GO-terms from each of the lists,
 with the highest similarity shown in red and the lowest in white.
 
