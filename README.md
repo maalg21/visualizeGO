@@ -242,13 +242,18 @@ filter_and_visualize_cluster(clusters = cluster,
 selected_cluster = 5, ontology = "BP",
 layout = "tree", col_palette = "#D9C9FF",
 min_node_size = 1, max_node_size = 10,
-save_plot = FALSE, PNG = NULL, verbose = "none")
+save_plot = FALSE, PNG = NULL, 
+verbose = "none")
 ```
 ![Cluster 5](inst/images/plot2.png)
 This function, in addition to filtering the above graph according to the 
 clusters we want, also gives us a table with the GO IDs relationship and 
 the term description.
 
+![ ](inst/images/cluster5.png)
+
+It is observed that within this cluster, metabolic pathways are present, 
+all of which are related to lipid transport.
 
 ## References
 1. Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)

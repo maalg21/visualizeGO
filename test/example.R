@@ -48,4 +48,5 @@ filter_and_visualize_cluster(clusters = cluster,
                              ontology = "BP",
                              layout = "tree", col_palette = "#D9C9FF",
                              min_node_size = 1, max_node_size = 10,
-                             save_plot = FALSE, PNG = NULL, verbose = "none")
+                             save_plot = FALSE, PNG = NULL,
+                             verbose = "some")
