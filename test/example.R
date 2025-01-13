@@ -50,3 +50,14 @@ filter_and_visualize_cluster(clusters = cluster,
                              min_node_size = 1, max_node_size = 10,
                              save_plot = FALSE, PNG = NULL,
                              verbose = "some")
+
+# Comparing two lists of GO-terms ----
+data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
+                                                     package = "visualizeGO")))
+
+GO_BP2 <- data2[data2$Category == "BP",]
+
+go_similarity_heatmap(go_list1 = GO_BP$ID, go_list2 = GO_BP2$ID,
+                      ont = "BP", method = "Wang", orgdb = "org.Hs.eg.db",
+                      xlab = "GO List 1", ylab = "GO List 2",
+                      main = "", cex = 5)

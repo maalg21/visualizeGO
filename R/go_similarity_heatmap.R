@@ -37,7 +37,7 @@ go_similarity_heatmap <- function(go_list1, go_list2,
       go_data <- GOSemSim::godata(orgdb, ont = ont,
                                   computeIC = method %in% c("Resnik", "Lin"))
     } else {
-      go_data <- godata(ont = ontology, OrgDb = orgdb, computeIC = FALSE)
+      go_data <- GOSemSim::godata(ont = ontology, OrgDb = orgdb, computeIC = FALSE)
     }
 
     # Initialize the similarity matrix
