@@ -45,7 +45,8 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
                                    max_node_size = NULL,
                                    layout = c("tree", "kk", "fr"),
                                    clustering = T,
-                                   clusters, col_palette = NULL,
+                                   clusters = NULL,
+                                   col_palette = NULL,
                                    verbose = c("all", "none", "some"),
                                    save_plot = F,
                                    PNG = NULL
@@ -116,6 +117,32 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
   }
 
   # Step 4: Clustering (if enabled) ----
+  # If clusters is NULL, display a message or perform an alternative action
+  if (verbose != "none" && is.null(clusters)) {
+    message("No clusters were provided, generating the graph without clustering.")
+
+    # Assign colors to all nodes based on col_palette
+    if (is.null(col_palette) || length(col_palette) == 0) {
+      # If no col_palette is provided, generate a default color
+      message("No color palette provided. Using default color palette.")
+      col_palette <- generate_pastel_colors(1)  # Single color for all nodes
+    }
+
+    # Ensure the length of col_palette matches the number of selected nodes
+    if (length(col_palette) == 1) {
+      # If only one color is provided, apply it to all selected nodes
+      V(graph)$color <- col_palette[1]
+    } else if (length(col_palette) >= length(V(graph))) {
+      # If col_palette has enough colors, assign them sequentially
+      V(graph)$color <- col_palette[seq_along(V(graph))]
+    } else {
+      stop("The provided 'col_palette' has insufficient colors for the selected nodes.")
+    }
+
+  } else {
+    message("Clusters were provided, generating the graph with groupings.")
+  }
+
   if (verbose != "none" && !is.null(clusters)) cat("Applying clustering...\n")
   if (!is.null(clusters) && isTRUE(clustering)) { # Cluster inclusion logic
 

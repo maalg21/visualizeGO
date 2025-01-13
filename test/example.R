@@ -39,15 +39,9 @@ visualize_go_hierarchy(go_list1 = GO_BP$ID,
                        verbose = "some", # Just to know more about the process that is ocurring
                        save_plot = T, PNG = "plot1.png")
 
-filter_and_visualize_cluster <- function(cluster_go_result = cluster,
-                                         selected_cluster = 5,
-                                         go_sim_object = NULL,
-                                         shape = "circle",
-                                         ontology = "BP",
-                                         layout = "tree",
-                                         col_palette = "#D9C9FF",
-                                         min_node_size = 1,
-                                         max_node_size = 10,
-                                         save_plot = FALSE,
-                                         PNG = NULL,
-                                         verbose = "none")
+filter_and_visualize_cluster(cluster_go_result = cluster,
+                             selected_cluster = 5, go_sim_object = NULL,
+                             shape = "circle", ontology = "BP",
+                             layout = "tree", col_palette = "#D9C9FF",
+                             min_node_size = 1, max_node_size = 10,
+                             save_plot = FALSE, PNG = NULL, verbose = "none")

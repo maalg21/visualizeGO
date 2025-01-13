@@ -52,7 +52,7 @@ filter_and_visualize_cluster <- function(cluster_go_result,
   # Filter out nodes belonging to the selected cluster
   selected_nodes <- names(clusters[clusters == selected_cluster])
 
-  # Crear un subgrafo con solo los nodos del cluster seleccionado
+  # Create a subnetwork with only the nodes of the selected cluster
   subgraph <- induced_subgraph(graph, vids = selected_nodes)
 
   # Display the subnetwork using visualize_go_hierarchy

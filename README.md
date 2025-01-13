@@ -235,8 +235,16 @@ making the plot uninformative. Thus, we can focus on just one of the clusters
 to see what these relationships look like. This list of GO-terms is the result 
 of a functional enrichment analysis of differentially expressed genes obtained 
 from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). 
-Thus, we are going to focus on *Cluster 5* which is related to lipid metabolism.
+Thus, we are going to focus on **Cluster 5** which is related to lipid metabolism.
 
+```r
+filter_and_visualize_cluster(cluster_go_result = cluster,
+selected_cluster = 5, go_sim_object = NULL,
+shape = "circle", ontology = "BP",
+layout = "tree", col_palette = "#D9C9FF",
+min_node_size = 1, max_node_size = 10,
+save_plot = FALSE, PNG = NULL, verbose = "none")
+```
 
 
 ## References
