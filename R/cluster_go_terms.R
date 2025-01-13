@@ -89,16 +89,12 @@ cluster_go_terms <- function(method_type = c("similarity", "network"),
     } else {
       library(igraph)
     }
-    if (!method %in% c("Walktrap", "Louvain", "EdgeBetweenness")) {
-      stop("Invalid method for network-based clustering. Choose from 'Walktrap', 'Louvain', or 'EdgeBetweenness'.")
+    if (!method %in% c("Walktrap", "EdgeBetweenness")) {
+      stop("Invalid method for network-based clustering. Choose from 'Walktrap' or 'EdgeBetweenness'.")
     }
     if (method == "Walktrap") {
       # Perform Walktrap clustering
       clusters <- cluster_walktrap(graph)
-
-    } else if (method == "Louvain") {
-      # Perform Louvain clustering
-      clusters <- cluster_louvain(graph)
 
     } else if (method == "EdgeBetweenness") {
       # Perform Edge Betweenness clustering
