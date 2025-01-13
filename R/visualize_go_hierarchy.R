@@ -64,7 +64,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     file <- system.file("extdata", file_name, package = "visualizeGO")
 
     # Check if the file exists in the specified directory
-    if (!file.exists(file())) {
+    if (!file.exists(file)) {
       stop(paste("Error: The file", file_name, "does not exist in the directory or it's corrupted."))
     } else {
       message("File found: ", file_name)
