@@ -4,7 +4,6 @@
 #'
 #' @param clusters Result of the \code{\link[visualizeGO]{cluster_go_terms}} function where the clustering information is stored.
 #' @param selected_cluster Cluster that we want to analyse more in detail.
-#' @param go_sim_object GO-terms similarity relationships saved as environment.
 #' @param shape Shape of the nodes in the plot. By default is "circle".
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process,
 #' "CC" for Cellular Component or "MF" for "Molecular Function").
@@ -24,55 +23,144 @@
 #' @return This function returns the graph of the selected cluster.
 #' @export
 
-filter_and_visualize_cluster <- function(cluster_go_result,
-                                         selected_cluster,
-                                         go_sim_object = NULL,
-                                         shape = "circle",
+filter_and_visualize_cluster <- function(clusters,
+                                         selected_cluster = NULL,
                                          ontology = c("BP", "CC", "MF"),
+                                         min_node_size = NULL,
+                                         max_node_size = NULL,
                                          layout = c("tree", "kk", "fr"),
-                                         col_palette, min_node_size,
-                                         max_node_size,
-                                         save_plot = FALSE,
-                                         PNG = NULL,
-                                         verbose = c("all", "none", "some")) {
+                                         col_palette = NULL,
+                                         verbose = c("all", "none", "some"),
+                                         save_plot = FALSE, PNG = NULL) {
 
-  # Validate verbose input
-  verbose <- match.arg(verbose)
-
-  if (verbose != "none") cat("Filtering for selected cluster...\n")
-
-  # Validate that the result of cluster_go_terms contains ‘graph’ and ‘clusters’.
-  if (!"graph" %in% names(cluster_go_result) || !"clusters" %in% names(cluster_go_result)) {
-    stop("The cluster_go_result must contain both 'graph' and 'clusters'.")
+  # Step 1: Validate inputs ----
+  if (!verbose %in% c("all", "none", "some")) {
+    stop("Verbose must be either 'all', 'some' or 'none'.")
   }
 
-  graph <- cluster_go_result$graph
-  clusters <- cluster_go_result$clusters
+  # Step 2: Extract cluster assignments from the clusters object ----
+  cluster_assignments <- clusters$clusters
+  graph <- clusters$graph
 
-  # Filter out nodes belonging to the selected cluster
-  selected_nodes <- names(clusters[clusters == selected_cluster])
+  # Step 3: Filter nodes by selected cluster(s) ----
+  if (is.null(selected_cluster)) {
+    stop("Please specify the selected cluster.")
+  }
 
-  # Create a subnetwork with only the nodes of the selected cluster
-  subgraph <- induced_subgraph(graph, vids = selected_nodes)
+  # Keep only the nodes belonging to the selected cluster(s)
+  selected_nodes <- V(graph)[V(graph)$cluster %in% selected_cluster]
 
-  # Display the subnetwork using visualize_go_hierarchy
-  if (verbose != "none") cat("Visualizing cluster...\n")
+  # Subset the graph to only include the selected nodes
+  subgraph <- induced_subgraph(graph, selected_nodes)
 
-  visualize_go_hierarchy(go_list1 = selected_nodes,
-                         go_sim_object = go_sim_object,
-                         nb_lists = "single",
-                         shape1 = shape,
-                         ontology = ontology,
-                         layout = layout,
-                         clustering = FALSE,
-                         clusters = NULL,
-                         col_palette = col_palette,
-                         min_node_size = min_node_size,
-                         max_node_size = max_node_size,
-                         save_plot = save_plot,
-                         PNG = PNG,
-                         verbose = verbose)
+  # Step 4: Prepare the graph for visualization ----
+  if (verbose != "none") cat("Building the filtered graph...\n")
 
-  # Return the sub-graph for further analysis if necessary.
-  return(subgraph)
+  # Step 5: Assign node colors based on clusters
+  if (is.null(col_palette) || length(col_palette) == 0) {
+    col_palette <- generate_pastel_colors(length(unique(V(subgraph)$cluster)))
+  }
+
+  cluster_colors <- setNames(col_palette, unique(V(subgraph)$cluster))
+  V(subgraph)$color <- cluster_colors[as.character(V(subgraph)$cluster)]
+
+  # Step 6: Assign shapes to nodes (you can customize shapes here) ----
+  V(subgraph)$shape <- "circle"
+
+  # Step 7: Scale node sizes (based on degree or any other criteria) ----
+  node_sizes <- degree(subgraph)
+
+  # If no user-defined size range, calculate it from the node degrees
+  if (is.null(min_node_size)) {
+    min_node_size <- min(node_sizes)
+  }
+  if (is.null(max_node_size)) {
+    max_node_size <- max(node_sizes)
+  }
+
+  # Scale node sizes based on the min and max values
+  scaled_node_sizes <- (node_sizes - min(node_sizes)) / (max(node_sizes) - min(node_sizes)) *
+    (max_node_size - min_node_size) + min_node_size
+  V(subgraph)$size <- scaled_node_sizes
+
+  # Step 8: Layout transformation ----
+  layout <- match.arg(layout)
+  layout_fun <- switch(layout,
+                       tree = layout_as_tree(subgraph, root = V(subgraph)[degree(subgraph, mode = "in") == 0]),
+                       fr = layout_with_fr(subgraph, niter = 500, grid = "nogrid"),
+                       kk = layout_with_kk(subgraph, niter = 1000, kkconst = 0.2, maxiter = 15000))
+
+  # Step 9: Plot the graph ----
+  if (verbose != "none") cat("Displaying the graph...\n")
+  plot(subgraph,
+       layout = layout_fun,
+       vertex.frame.color = "black",
+       vertex.label = V(subgraph)$name,
+       vertex.size = V(subgraph)$size,
+       vertex.label.color = "black",
+       vertex.color = V(subgraph)$color,
+       vertex.frame.color = "black",
+       vertex.label.cex = 0.7,
+       vertex.label.family = "sans",  # Set the font family to "sans"
+       vertex.shape = V(subgraph)$shape,
+       edge.arrow.size = 0.5,
+       edge.color = "darkgray",
+       main = paste("Cluster Visualization: ", paste(selected_cluster, collapse = ", "), " Ontology: ", ontology, sep = ""),
+       rescale = TRUE)
+
+  # Step 10: Add legend ----
+  if (!is.null(V(subgraph)$cluster)) {
+    cluster_labels <- paste("Cluster", unique(V(subgraph)$cluster))
+    cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
+    cluster_legend_colors <- cluster_colors[unique(as.character(V(subgraph)$cluster))]
+    legend("topleft",
+           legend = cluster_labels,
+           fill = cluster_legend_colors,
+           bty = "n", title.font = 2,
+           cex = 0.8, title = "Clusters",
+           inset = c(0.001, 0.05))
+  }
+
+  # Step 11: Save plot (if enabled) ----
+  if (isTRUE(save_plot)) {
+    if (verbose != "none") cat("Saving plot as", PNG, "...\n")
+
+    if (!grepl("\\.png$", PNG)) {
+      PNG <- paste0(PNG, ".png")  # Default to .png if no extension is provided
+    }
+
+    # Set high resolution for the plot (e.g., 300 DPI)
+    dpi <- 300
+
+    # Open a PNG device to save the plot with high resolution
+    png(PNG, width = 4000, height = 3000, res = dpi)
+
+    # PLOT ----
+    plot(subgraph,
+         layout = layout_fun,
+         vertex.frame.color = "black",
+         vertex.label = V(subgraph)$name,
+         vertex.size = V(subgraph)$size,
+         vertex.label.color = "black",
+         vertex.color = V(subgraph)$color,
+         vertex.frame.color = "black",
+         vertex.label.cex = 0.7,
+         vertex.label.family = "sans",
+         vertex.shape = V(subgraph)$shape,
+         edge.arrow.size = 0.5,
+         edge.color = "darkgray",
+         main = paste("Cluster Visualization: ", paste(selected_cluster, collapse = ", "), " Ontology: ", ontology, sep = ""),
+         rescale = TRUE)
+
+    # LEGEND ----
+    legend("topleft",
+           legend = cluster_labels,
+           fill = cluster_legend_colors,
+           bty = "n", title.font = 2,
+           cex = 0.8, title = "Clusters",
+           inset = c(0.001, 0.05))
+
+    dev.off()
+    if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")
+  }
 }

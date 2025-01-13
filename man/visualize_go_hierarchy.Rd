@@ -17,7 +17,7 @@ visualize_go_hierarchy(
   max_node_size = NULL,
   layout = c("tree", "kk", "fr"),
   clustering = T,
-  clusters,
+  clusters = NULL,
   col_palette = NULL,
   verbose = c("all", "none", "some"),
   save_plot = F,
