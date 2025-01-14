@@ -97,11 +97,11 @@ filter_and_visualize_cluster <- function(clusters,
   # Obtain the descriptions of the GO IDs
   go_ids <- V(subgraph)$name
   go_descriptions <- AnnotationDbi::Term(go_ids)
+  names(go_descriptions) <- go_ids
 
   go_id_to_description <- data.frame(
-    GO_ID = go_ids,
-    Description = go_descriptions
-  )
+    GO_ID = names(go_descriptions),
+    Description = go_descriptions)
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
