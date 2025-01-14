@@ -7,13 +7,15 @@
 go_similarity_heatmap(
   go_list1,
   go_list2,
-  ont = c("BP", "MF", "CC"),
+  ontology = c("BP", "MF", "CC"),
   method = c("Jaccard", "Resnik", "Lin", "Wang"),
   orgdb = "org.Hs.eg.db",
   xlab = NULL,
   ylab = NULL,
   cex = 10,
-  main = NULL
+  main = NULL,
+  values = T,
+  cex_values = 7
 )
 }
 \arguments{
@@ -21,17 +23,21 @@ go_similarity_heatmap(
 
 \item{go_list2}{Second list of GO-terms to compare.}
 
-\item{ont}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
-
 \item{orgdb}{Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"}
 
 \item{xlab}{Name of the X-axis.}
 
 \item{ylab}{Name of the Y-axis.}
 
-\item{cex}{Size of the labels.}
+\item{cex}{Size of the x- and y-labels.}
 
 \item{main}{Title of the HeatMap.}
+
+\item{values}{Option to display the similarity values for comparison face in the grid. Default = TRUE}
+
+\item{cex_values}{Size of the semantic similarity values}
+
+\item{ont}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 }
 \value{
 A HeatMap is obtained whose intensity is given by the degree of similarity between the GO-terms being compared.

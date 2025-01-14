@@ -281,7 +281,7 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       ontology = "BP", method = "Wang",
                       orgdb = "org.Hs.eg.db",
                       xlab = "GO List 1", ylab = "GO List 2",
-                      main = "", cex = 10)
+                      main = "", cex = 10, values = T, cex_values = 3)
 ```
 ![Heatmap](inst/images/heatmap.png)
 
