@@ -8,8 +8,10 @@
 #' @param orgdb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
 #' @param xlab Name of the X-axis.
 #' @param ylab Name of the Y-axis.
-#' @param cex Size of the labels.
+#' @param cex Size of the x- and y-labels.
 #' @param main Title of the HeatMap.
+#' @param values Option to display the similarity values for comparison face in the grid. Default = TRUE
+#' @param cex_values Size of the semantic similarity values
 #' @return A HeatMap is obtained whose intensity is given by the degree of similarity between the GO-terms being compared.
 #' @export
 
@@ -18,7 +20,8 @@ go_similarity_heatmap <- function(go_list1, go_list2,
                                   method = c("Jaccard", "Resnik", "Lin", "Wang"),
                                   orgdb = "org.Hs.eg.db",
                                   xlab = NULL, ylab = NULL,
-                                  cex = 10, main = NULL) {
+                                  cex = 10, main = NULL,
+                                  values = T, cex_values = 7) {
 
   # Check validity of the method
   if (!method %in% c("Jaccard", "Resnik", "Lin", "Wang")) {
@@ -74,25 +77,50 @@ go_similarity_heatmap <- function(go_list1, go_list2,
   # Generate the heatmap
   library(ggplot2)
   library(dplyr)
-  heatmap_plot <- ggplot(data = as.data.frame(similarity_matrix) %>%
-                           tibble::rownames_to_column(var = "GO_ID1") %>%
-                           reshape2::melt(value.name = "SemanticSimilarity") %>%
-                           dplyr::rename("GO_ID2" = variable)) +
-    geom_tile(mapping = aes(x = GO_ID1, y = GO_ID2, fill = SemanticSimilarity)) +
-    scale_fill_gradient(name = paste("GO: ", ontology,
-                                     "\nSemantic Similarity\n(",
-                                     method, ")", sep = ""),
-                        low = "white", high = "red") +
+  if(isTRUE(values)){
+    heatmap_plot <- ggplot(data = as.data.frame(similarity_matrix) %>%
+                             tibble::rownames_to_column(var = "GO_ID1") %>%
+                             reshape2::melt(value.name = "SemanticSimilarity") %>%
+                             dplyr::rename("GO_ID2" = variable)) +
+      geom_tile(mapping = aes(x = GO_ID1, y = GO_ID2, fill = SemanticSimilarity)) +
+      scale_fill_gradient(name = paste("GO: ", ontology,
+                                       "\nSemantic Similarity\n(",
+                                       method, ")", sep = ""),
+                          low = "white", high = "red") +
+      geom_text(mapping = aes(x = GO_ID1, y = GO_ID2,
+                              label = round(SemanticSimilarity, 2)),
+                color = "black", size = cex_values) +
+      labs(x = xlab, y = ylab) + theme_minimal() +
+      ggtitle(main) +
+      theme(axis.text.x = element_text(angle = 45, color = "black",
+                                       hjust = 1, size = cex),
+            axis.text.y = element_text(color = "black", size = cex),
+            legend.title = element_text(hjust = .5, face = "bold"),
+            axis.title = element_text(face = "bold", size = 13),
+            plot.title = element_text(face = "bold", size = 15, hjust = .5))
+  } else {
+    heatmap_plot <- ggplot(data = as.data.frame(similarity_matrix) %>%
+                             tibble::rownames_to_column(var = "GO_ID1") %>%
+                             reshape2::melt(value.name = "SemanticSimilarity") %>%
+                             dplyr::rename("GO_ID2" = variable)) +
+      geom_tile(mapping = aes(x = GO_ID1, y = GO_ID2, fill = SemanticSimilarity)) +
+      scale_fill_gradient(name = paste("GO: ", ontology,
+                                       "\nSemantic Similarity\n(",
+                                       method, ")", sep = ""),
+                          low = "white", high = "red") +
     labs(x = xlab, y = ylab) + theme_minimal() +
-    ggtitle(main) +
-    theme(axis.text.x = element_text(angle = 45, color = "black",
-                                     hjust = 1, size = cex),
-          axis.text.y = element_text(color = "black", size = cex),
-          legend.title = element_text(hjust = .5, face = "bold"),
-          axis.title = element_text(face = "bold", size = 13),
-          plot.title = element_text(face = "bold", size = 15, hjust = .5))
+      ggtitle(main) +
+      theme(axis.text.x = element_text(angle = 45, color = "black",
+                                       hjust = 1, size = cex),
+            axis.text.y = element_text(color = "black", size = cex),
+            legend.title = element_text(hjust = .5, face = "bold"),
+            axis.title = element_text(face = "bold", size = 13),
+            plot.title = element_text(face = "bold", size = 15, hjust = .5))
+  }
 
   print(heatmap_plot)
 
-  return(similarity_matrix)
+  if(!isTRUE(values)){
+    return(similarity_matrix)
+  }
 }
