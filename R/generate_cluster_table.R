@@ -65,7 +65,6 @@ generate_cluster_table <- function(cluster_output,
       if (is.na(representative_pathway_name) || length(go_ids) == 0) {
         cat("In Cluster", cluster_id, ", no representative patwhay was found.")
         representative_pathway_name <- representative_pathway_id
-        next  # Skip this cluster if any values are NA
       }
 
       # Store information in the list
