@@ -27,6 +27,8 @@
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
+#' @param legend Whether you want to display de legend. Default = TRUE
+#' @param labs Name of each of the GO-terms lists
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
 #' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
 #'
@@ -48,6 +50,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
                                    clusters = NULL,
                                    col_palette = NULL,
                                    verbose = c("all", "none", "some"),
+                                   legend = T, labs = NULL,
                                    save_plot = F,
                                    PNG = NULL
 ){
@@ -279,51 +282,53 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
   )
 
   # Step 10: Add legend ----
-  # Add a legend for clusters
-  if (!is.null(V(graph)$cluster)) {
-    cluster_labels <- paste("Cluster", unique(V(graph)$cluster))  # Create cluster labels
-    cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
-    cluster_legend_colors <- cluster_colors[unique(as.character(V(graph)$cluster))]  # Match colors
-    legend("topleft",
-           legend = cluster_labels,
-           fill = cluster_legend_colors,
-           bty = "n", title.font = 2,
-           cex = 0.8, title = "Clusters",
-           inset = c(0.001, 0.05))
+  if(isTRUE(legend)){
+    # Add a legend for clusters
+    if (!is.null(V(graph)$cluster)) {
+      cluster_labels <- paste("Cluster", unique(V(graph)$cluster))  # Create cluster labels
+      cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
+      cluster_legend_colors <- cluster_colors[unique(as.character(V(graph)$cluster))]  # Match colors
+      legend("topleft",
+             legend = cluster_labels,
+             fill = cluster_legend_colors,
+             bty = "n", title.font = 2,
+             cex = 0.8, title = "Clusters",
+             inset = c(0.001, 0.05))
+    }
+
+    # Add a legend for node shapes
+    # Map shapes to pch values
+    shape_to_pch <- ifelse(
+      V(graph)$shape == "circle", 21,  # `pch = 21` corresponds to filled circle
+      ifelse(V(graph)$shape == "square", 22,  # `pch = 22` corresponds to filled square
+             ifelse(V(graph)$shape == "rectangle", 23,  # `pch = 23` corresponds to filled rectangle
+                    NA)))  # Default to NA for unsupported shapes
+
+    # Use preprocessed pch in the legend
+    unique_shapes <- unique(V(graph)$shape)
+    legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
+    if(nb_lists == "single"){
+      legend("topright",
+             legend = c(labs, "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+    } else {
+      legend("topright",
+             legend = c(labs, "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+    }
+
+    # Add a legend for the node sizes (degree of connectivity)
+    legend("topright", legend = c("Low Connectivity",
+                                  "High Connectivity"),
+           pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
+           pt.cex = c(min(scales_node_sizes), max(scaled_node_sizes)),
+           bty = "n", cex = 0.8, title.font = 2,
+           xjust = 1, inset = c(0.00009, 0.8))
   }
-
-  # Add a legend for node shapes
-  # Map shapes to pch values
-  shape_to_pch <- ifelse(
-    V(graph)$shape == "circle", 21,  # `pch = 21` corresponds to filled circle
-    ifelse(V(graph)$shape == "square", 22,  # `pch = 22` corresponds to filled square
-           ifelse(V(graph)$shape == "rectangle", 23,  # `pch = 23` corresponds to filled rectangle
-                  NA)))  # Default to NA for unsupported shapes
-
-  # Use preprocessed pch in the legend
-  unique_shapes <- unique(V(graph)$shape)
-  legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
-  if(nb_lists == "single"){
-    legend("topright",
-           legend = c("GO List 1", "Other Terms"),
-           pch = legend_shapes, # Extract unique pch values for the legend
-           bty = "n", title.font = 2, cex = 0.8,
-           title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
-  } else {
-    legend("topright",
-           legend = c("GO List 1", "GO List 2", "Other Terms"),
-           pch = legend_shapes, # Extract unique pch values for the legend
-           bty = "n", title.font = 2, cex = 0.8,
-           title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
-  }
-
-  # Add a legend for the node sizes (degree of connectivity)
-  legend("topright", legend = c("Low Connectivity",
-                                "High Connectivity"),
-         pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-         pt.cex = c(1, max(scaled_node_sizes)/10),
-         bty = "n", cex = 0.8, title.font = 2,
-         xjust = 1, inset = c(0.00009, 0.8))
 
   # Step 11: Save plot (if enabled) ----
   if(isTRUE(save_plot)) {
@@ -359,33 +364,35 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
       rescale = TRUE # Allow the graph to scale to fit the available space
     )
     # LEGEND ----
-    legend("topleft",
-           legend = cluster_labels,
-           fill = cluster_legend_colors,
-           bty = "n", title.font = 2,
-           cex = 0.8, title = "Clusters",
-           inset = c(0.001, 0.05))
+    if(isTRUE(legend)){
+      legend("topleft",
+             legend = cluster_labels,
+             fill = cluster_legend_colors,
+             bty = "n", title.font = 2,
+             cex = 0.8, title = "Clusters",
+             inset = c(0.001, 0.05))
 
-    if(nb_lists == "single"){
-      legend("topright",
-             legend = c("GO List 1", "Other Terms"),
-             pch = legend_shapes, # Extract unique pch values for the legend
-             bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
-    } else {
-      legend("topright",
-             legend = c("GO List 1", "GO List 2", "Other Terms"),
-             pch = legend_shapes, # Extract unique pch values for the legend
-             bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+      if(nb_lists == "single"){
+        legend("topright",
+               legend = c(labs, "Other Terms"),
+               pch = legend_shapes, # Extract unique pch values for the legend
+               bty = "n", title.font = 2, cex = 0.8,
+               title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+      } else {
+        legend("topright",
+               legend = c(labs, "Other Terms"),
+               pch = legend_shapes, # Extract unique pch values for the legend
+               bty = "n", title.font = 2, cex = 0.8,
+               title = "Node Origin", xjust = 1, inset = c(0.035, 0.6))
+      }
+
+      legend("topright", legend = c("Low Connectivity",
+                                    "High Connectivity"),
+             pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
+             pt.cex = c(min(scales_node_sizes), max(scaled_node_sizes)),
+             bty = "n", cex = 0.8, title.font = 2,
+             xjust = 1, inset = c(0.00009, 0.8))
     }
-
-    legend("topright", legend = c("Low Connectivity",
-                                  "High Connectivity"),
-           pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-           pt.cex = c(1, max(scaled_node_sizes)/10),
-           bty = "n", cex = 0.8, title.font = 2,
-           xjust = 1, inset = c(0.00009, 0.8))
 
     dev.off()
     if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")
