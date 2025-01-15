@@ -263,6 +263,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
 
   # Step 9: Plot the graph ----
   if (verbose != "none") cat("Displaying graph...\n")
+  par(mar = c(1, 1, 1, 1))
   plot(
     graph,
     layout = layout,
@@ -278,7 +279,8 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     edge.arrow.size = 0.5,
     edge.color = "darkgray",
     main = paste("Hierarchical GO:", ontology, " Graph", sep = ""),
-    rescale = TRUE # Allow the graph to scale to fit the available space
+    rescale = TRUE, # Allow the graph to scale to fit the available space
+    margin = 0          # Remove additional margins from the plot
   )
 
   # Step 10: Add legend ----
@@ -325,7 +327,8 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     legend("topright", legend = c("Low Connectivity",
                                   "High Connectivity"),
            pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-           pt.cex = c(min_node_size, max_node_size),
+           pt.cex = c(min(scaled_node_sizes),
+                      max(scaled_node_sizes)),
            bty = "n", cex = 0.8, title.font = 2,
            xjust = 1, inset = c(0.00009, 0.8))
   }
@@ -346,6 +349,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     png(PNG, width = 4000, height = 3000, res = dpi)
 
     # PLOT ----
+    par(mar = c(1, 1, 1, 1))
     plot(
       graph,
       layout = layout,
@@ -361,7 +365,8 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
       edge.arrow.size = 0.5,
       edge.color = "darkgray",
       main = paste("Hierarchical GO:", ontology, " Graph", sep = ""),
-      rescale = TRUE # Allow the graph to scale to fit the available space
+      rescale = TRUE, # Allow the graph to scale to fit the available space
+      margin = 0          # Remove additional margins from the plot
     )
     # LEGEND ----
     if(isTRUE(legend)){
@@ -389,7 +394,8 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
       legend("topright", legend = c("Low Connectivity",
                                     "High Connectivity"),
              pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-             pt.cex = c(min(scales_node_sizes), max(scaled_node_sizes)),
+             pt.cex = c(min(scaled_node_sizes),
+                        max(scaled_node_sizes)),
              bty = "n", cex = 0.8, title.font = 2,
              xjust = 1, inset = c(0.00009, 0.8))
     }
