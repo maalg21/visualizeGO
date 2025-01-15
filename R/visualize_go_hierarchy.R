@@ -325,7 +325,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     legend("topright", legend = c("Low Connectivity",
                                   "High Connectivity"),
            pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-           pt.cex = c(min(scales_node_sizes), max(scaled_node_sizes)),
+           pt.cex = c(min_node_size, max_node_size),
            bty = "n", cex = 0.8, title.font = 2,
            xjust = 1, inset = c(0.00009, 0.8))
   }
