@@ -20,6 +20,8 @@ visualize_go_hierarchy(
   clusters = NULL,
   col_palette = NULL,
   verbose = c("all", "none", "some"),
+  legend = T,
+  labs = NULL,
   save_plot = F,
   PNG = NULL
 )
@@ -61,6 +63,10 @@ function where the clustering information is stored.}
 Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.}
+
+\item{legend}{Whether you want to display de legend. Default = TRUE}
+
+\item{labs}{Name of each of the GO-terms lists}
 
 \item{save_plot}{Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.}
 
