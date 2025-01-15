@@ -105,6 +105,7 @@ filter_and_visualize_cluster <- function(clusters,
     GO_ID = names(go_descriptions),
     Description = go_descriptions,
     Cluster = paste("Cluster ", V(subgraph)[V(subgraph)$name == go_ids]$cluster, sep = "")
+    )
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
