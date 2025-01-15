@@ -64,7 +64,7 @@ Different from the rest of the packages; choose between ‘none’, so that no m
 ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.}
 
-\item{legend}{Whether you want to display de legend. Default = TRUE}
+\item{legend}{Whether you want to display the legend. Default = TRUE}
 
 \item{labs}{Name of each of the GO-terms lists}
 

@@ -13,6 +13,7 @@ filter_and_visualize_cluster(
   layout = c("tree", "kk", "fr"),
   col_palette = NULL,
   verbose = c("all", "none", "some"),
+  legend = T,
   save_plot = FALSE,
   PNG = NULL
 )
@@ -20,7 +21,7 @@ filter_and_visualize_cluster(
 \arguments{
 \item{clusters}{Result of the \code{\link[visualizeGO]{cluster_go_terms}} function where the clustering information is stored.}
 
-\item{selected_cluster}{Cluster that we want to analyse more in detail.}
+\item{selected_cluster}{Clusters that we want to analyse more in detail.}
 
 \item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process,
 "CC" for Cellular Component or "MF" for "Molecular Function").}
@@ -39,6 +40,8 @@ algorithms respectively. For more information see the bullet points in the R \hr
 Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.}
+
+\item{legend}{Whether you want to display the legend. Default = TRUE}
 
 \item{save_plot}{Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.}
 

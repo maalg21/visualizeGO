@@ -3,7 +3,7 @@
 #' This function  computes all the information in a single plot with the hierarchical relationship between the input GO-terms from a single selected cluster.
 #'
 #' @param clusters Result of the \code{\link[visualizeGO]{cluster_go_terms}} function where the clustering information is stored.
-#' @param selected_cluster Cluster that we want to analyse more in detail.
+#' @param selected_cluster Clusters that we want to analyse more in detail.
 #' @param shape Shape of the nodes in the plot. By default is "circle".
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process,
 #' "CC" for Cellular Component or "MF" for "Molecular Function").
@@ -17,6 +17,7 @@
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
+#' @param legend Whether you want to display the legend. Default = TRUE
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
 #' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
 #'
@@ -31,6 +32,7 @@ filter_and_visualize_cluster <- function(clusters,
                                          layout = c("tree", "kk", "fr"),
                                          col_palette = NULL,
                                          verbose = c("all", "none", "some"),
+                                         legend = T,
                                          save_plot = FALSE, PNG = NULL) {
 
   # Step 1: Validate inputs ----
@@ -47,7 +49,7 @@ filter_and_visualize_cluster <- function(clusters,
 
   # Step 2: Filter nodes by selected cluster(s) ----
   if (is.null(selected_cluster)) {
-    stop("Please specify the selected cluster.")
+    stop("Please specify the number of the selected clusters.")
   }
 
   # Keep only the nodes belonging to the selected cluster(s)
@@ -101,7 +103,8 @@ filter_and_visualize_cluster <- function(clusters,
 
   go_id_to_description <- data.frame(
     GO_ID = names(go_descriptions),
-    Description = go_descriptions)
+    Description = go_descriptions,
+    Cluster = paste("Cluster ", V(subgraph)[V(subgraph)$name == go_ids]$cluster), sep = "")
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
@@ -116,31 +119,34 @@ filter_and_visualize_cluster <- function(clusters,
        vertex.label.cex = 0.7,
        vertex.label.family = "sans",  # Set the font family to "sans"
        vertex.shape = V(subgraph)$shape,
-       edge.arrow.size = 0.5,
+       edge.arrow.size = 0.3,
        edge.color = "darkgray",
        main = paste("Clustering visualization of\nGO: ", ontology, sep = ""),
        rescale = TRUE)
 
   # Step 7: Add legend ----
-  if (!is.null(V(subgraph)$cluster)) {
-    cluster_labels <- paste("Cluster", unique(V(subgraph)$cluster))
-    cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
-    cluster_legend_colors <- cluster_colors[unique(as.character(V(subgraph)$cluster))]
-    legend("topleft",
-           legend = cluster_labels,
-           fill = cluster_legend_colors,
-           bty = "n", title.font = 2,
-           cex = 0.8, title = "Clusters",
-           inset = c(0.001, 0.05))
-  }
+  if(isTRUE(legend)){
+    if (!is.null(V(subgraph)$cluster)) {
+      cluster_labels <- paste("Cluster", unique(V(subgraph)$cluster))
+      cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
+      cluster_legend_colors <- cluster_colors[unique(as.character(V(subgraph)$cluster))]
+      legend("topleft",
+             legend = cluster_labels,
+             fill = cluster_legend_colors,
+             bty = "n", title.font = 2,
+             cex = 0.8, title = "Clusters",
+             inset = c(-0.3, 0.001))
+    }
 
-  # Add a legend for the nodes sizes
-  legend("topright", legend = c("Low Connectivity",
-                                "High Connectivity"),
-         pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-         pt.cex = c(1, max(scaled_node_sizes)/10),
-         bty = "n", cex = 0.8, title.font = 2,
-         xjust = 1, inset = c(0.00009, 0.8))
+    # Add a legend for the nodes sizes
+    legend("topright", legend = c("Low Connectivity",
+                                  "High Connectivity"),
+           pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
+           pt.cex = c(min(scaled_node_sizes),
+                      max(scaled_node_sizes)/3),
+           bty = "n", cex = 0.8, title.font = 2,
+           xjust = 1, inset = c(-0.5, 0.7))
+  }
 
   # Step 8: Save plot (if enabled) ----
   if (isTRUE(save_plot)) {
@@ -174,24 +180,27 @@ filter_and_visualize_cluster <- function(clusters,
          rescale = TRUE)
 
     # LEGEND ----
-    if (!is.null(V(subgraph)$cluster)) {
-      cluster_labels <- paste("Cluster", unique(V(subgraph)$cluster))
-      cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
-      cluster_legend_colors <- cluster_colors[unique(as.character(V(subgraph)$cluster))]
-      legend("topleft",
-             legend = cluster_labels,
-             fill = cluster_legend_colors,
-             bty = "n", title.font = 2,
-             cex = 0.8, title = "Clusters",
-             inset = c(0.001, 0.05))
-    }
+    if(isTRUE(legend)){
+      if (!is.null(V(subgraph)$cluster)) {
+        cluster_labels <- paste("Cluster", unique(V(subgraph)$cluster))
+        cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
+        cluster_legend_colors <- cluster_colors[unique(as.character(V(subgraph)$cluster))]
+        legend("topleft",
+               legend = cluster_labels,
+               fill = cluster_legend_colors,
+               bty = "n", title.font = 2,
+               cex = 0.8, title = "Clusters",
+               inset = c(-0.3, 0.001))
+      }
 
-    legend("topright", legend = c("Low Connectivity",
-                                  "High Connectivity"),
-           pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-           pt.cex = c(1, max(scaled_node_sizes)/10),
-           bty = "n", cex = 0.8, title.font = 2,
-           xjust = 1, inset = c(0.00009, 0.8))
+      legend("topright", legend = c("Low Connectivity",
+                                    "High Connectivity"),
+             pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
+             pt.cex = c(min(scaled_node_sizes),
+                        max(scaled_node_sizes)/3),
+             bty = "n", cex = 0.8, title.font = 2,
+             xjust = 1, inset = c(-0.5, 0.7))
+    }
 
     dev.off()
     if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")

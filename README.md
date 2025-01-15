@@ -142,6 +142,12 @@ pathway and which GO IDs belong to each cluster.
 Table <- generate_cluster_table(cluster_output = cluster, method_type = "similarity", 
 similarity_matrix = similarity_matrix, text_color = "black", col_palette = colors)
 ```
+Note that sometimes the GO IDs of the most representative path in the cluster do not 
+exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) database, 
+which is the one we use for the identification 
+of term's names from their ID. Therefore, in the table, instead of the term name in the 
+*Representative Pathway* column, the GO ID will appear. We promise that we will try to 
+improve this peculiarity by investigating more R annotation packages for GO IDs.
 
 To save the table as PNG we will use the ```save_cluster_table_as_png``` function.
 ```r
@@ -227,6 +233,8 @@ layout = "tree",
 clustering = T, clusters = cluster, 
 col_palette = colors, 
 verbose = "some", # Just to know more about the process that is ocurring
+legend = T,
+labs = "GO-Terms BP",
 save_plot = F)
 ```
 ![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png)

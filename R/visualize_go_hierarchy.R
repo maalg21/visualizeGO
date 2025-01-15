@@ -27,7 +27,7 @@
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
-#' @param legend Whether you want to display de legend. Default = TRUE
+#' @param legend Whether you want to display the legend. Default = TRUE
 #' @param labs Name of each of the GO-terms lists
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
 #' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
