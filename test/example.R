@@ -53,6 +53,16 @@ filter_and_visualize_cluster(clusters = cluster,
                              save_plot = T, PNG = "plot2.png",
                              verbose = "some", legend = T)
 
+# # Filtering to obtain nodes of Cluster 6 & 7 ----
+filter_and_visualize_cluster(clusters = cluster,
+                             selected_cluster = c(6,7),
+                             ontology = "BP",
+                             layout = "tree",
+                             col_palette = generate_pastel_colors(n = 7)[c(6,7)],
+                             min_node_size = 1, max_node_size = 10,
+                             save_plot = T, PNG = "plot3.png",
+                             verbose = "some", legend = T)
+
 # Comparing two lists of GO-terms ----
 data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
                                                      package = "visualizeGO")))
@@ -67,3 +77,29 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       main = "", cex = 10)
 
 # Comparing clusters of GO-terms ----
+graph <- build_hierarchical_graph(go_list1 = data2[data2$Category == "BP",]$ID,
+                                  nb_lists = "single",
+                                  go_sim_object = NULL)
+expanded_graph <- expand_graph(graph = graph,
+                               go_list1 = data2[data2$Category == "BP",]$ID,
+                               nb_lists = "single")
+final_graph <- retain_ancestors_above_input_terms(graph = expanded_graph,
+                                                  go_list1 = data2[data2$Category == "BP",]$ID,
+                                                  nb_lists = "single")
+
+# Semantic similarity clustering ----
+similarity_matrix <- calculate_wang(graph = final_graph,
+                                    ontology = "BP",
+                                    orgdb = "org.Hs.eg.db")
+cluster2 <- cluster_go_terms(method_type = "similarity", method = "wang",
+                            orgdb = "org.Hs.eg.db", ontology = "BP",
+                            similarity_matrix = similarity_matrix,
+                            graph = final_graph, nb_clusters = NULL,
+                            k_range = 2:25)
+# "Optimal k using Silhouette Method: 24"
+
+compare_clusters(cluster_list1 = cluster, cluster_list2 = cluster2,
+                 ontology = "BP", OrgDb = "org.Hs.eg.db",
+                 method = "Wang", combine = "BMA", plot = T,
+                 low = "white", high = "red3",
+                 labs = c("List 1", "List 2"), cex = 3)
