@@ -123,7 +123,7 @@ filter_and_visualize_cluster <- function(clusters,
        vertex.shape = V(subgraph)$shape,
        edge.arrow.size = 0.3,
        edge.color = "darkgray",
-       main = paste("Clustering visualization of\nGO: ", ontology, sep = ""),
+       main = paste("Clustering visualization of GO: ", ontology, sep = ""),
        rescale = TRUE)
 
   # Step 7: Add legend ----
@@ -176,7 +176,7 @@ filter_and_visualize_cluster <- function(clusters,
          vertex.shape = V(subgraph)$shape,
          edge.arrow.size = 0.5,
          edge.color = "darkgray",
-         main = paste("Clustering visualization of\nGO: ", ontology, sep = ""),
+         main = paste("Clustering visualization of GO: ", ontology, sep = ""),
          rescale = TRUE)
 
     # LEGEND ----

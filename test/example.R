@@ -41,16 +41,8 @@ visualize_go_hierarchy(go_list1 = GO_BP$ID,
                        col_palette = colors,
                        legend = T, labs = "GO-Terms",
                        verbose = "some", # Just to know more about the process that is ocurring
-                       save_plot = F)
-
-visualize_go_hierarchy(go_list1 = GO_BP$ID, nb_lists = "single",
-                       shape1 = "circle", ontology = "BP",
-                       simplification = T,
-                       min_node_size = 1, max_node_size = 10,
-                       layout = "tree", clustering = T, clusters = cluster,
-                       col_palette = colors, legend = T, labs = "GO-Terms",
-                       verbose = "some", save_plot = T,
-                       PNG = "./inst/images/plot1.png")
+                       save_plot = T, # For saving the following plot
+                       PNG = "plot1.png")
 
 # Filtering to obtain only nodes of Cluster 5 ----
 filter_and_visualize_cluster(clusters = cluster,
@@ -59,6 +51,14 @@ filter_and_visualize_cluster(clusters = cluster,
                              layout = "tree", col_palette = "#D9C9FF",
                              min_node_size = 1, max_node_size = 10,
                              save_plot = FALSE, PNG = NULL,
+                             verbose = "some", legend = T)
+
+filter_and_visualize_cluster(clusters = cluster,
+                             selected_cluster = 5,
+                             ontology = "BP",
+                             layout = "tree", col_palette = "#D9C9FF",
+                             min_node_size = 1, max_node_size = 10,
+                             save_plot = T, PNG = "./inst/images/plot2.png",
                              verbose = "some", legend = T)
 
 # Comparing two lists of GO-terms ----
