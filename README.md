@@ -6,23 +6,23 @@
 
 **INDEX**
 
--   📝 [Introduction]
--   🛠️ [Installation]
--   💻 [Basic Use]
-    -   [Data Input]
-    -   [Build the hierarchical graph]
-    -   [Clustering the GO-terms]
-        -   [Clustering the GO-terms using Wang Similarity Method]
-        -   [Clustering the GO-terms based on the network]
-    -   [Visualize GO-terms relationships]
-    -   [Comparing GO-term lists]
-        -   [Comparing lists of GO-terms]
-        -   [Comparing clusters of GO-terms]
--   📚 [References]
--   🤝 [Contribution]
--   📜 [Licence]
+-   📝 [Introduction](#introduction)
+-   🛠️ [Installation](#installation)
+-   💻 [Basic Use](#basic-use)
+    -   [Data Input](#data-input)
+    -   [Build the hierarchical graph](#build-the-hierarchical-graph)
+    -   [Clustering the GO-terms](#clustering-the-go-terms)
+        -   [Clustering the GO-terms using Wang Similarity Method](#clustering-the-go-terms-using-wang-similarity-method)
+        -   [Clustering the GO-terms based on the network](#clustering-the-go-terms-based-on-the-network)
+    -   [Visualize GO-terms relationships](#visualize-go-terms-relationships)
+    -   [Comparing GO-term lists](#comparing-go-term-lists)
+        -   [Comparing lists of GO-terms](#comparing-lists-of-go-terms)
+        -   [Comparing clusters of GO-terms](#comparing-clusters-of-go-terms)
+-   📚 [References](#references)
+-   🤝 [Contribution](#contribution)
+-   📜 [Licence](#licence)
 
-## Introduction {#introduction}
+## Introduction
 
 **visualizeGO** has been developed in order to create hierarchical graphs of a list of interesting GO terms. The package uses a clustering method to group GO terms, making it easier to observe the relationships between these terms. This process improves the understanding of the intracluster relationships of the highlighted metabolic pathways.
 
@@ -31,7 +31,7 @@ The package consists of several important parts:\
 2. **Clustering.** In this part you can select the type of grouping you want to make of the terms. This grouping can be based on semantic similarity metrics *(Jaccard Index, Resnik, Lin or Wang methods)* or by how the term network itself is configured. You do you!\
 3. **Final visualisation.** This final graph shows the input GO-terms and their relationships with other GO-terms, and the clusters that are formed, all in the form of a network.
 
-## Installation {#installation}
+## Installation
 
 You can install the development version of visualizeGO like so:
 
@@ -42,9 +42,9 @@ devtools::install_github("maalg21/visualizeGO",
 )
 ```
 
-## Basic Use {#basic-use}
+## Basic Use
 
-### Data input {#data-input}
+### Data input
 
 The first step is to import the list (or lists) of GO-terms of interest. To exemplify the use of the package's functions, we will use one of the lists of enriched GO-terms obtained from [Alonso-García et al. (2023)](https://doi.org/10.3389/fvets.2023.1150996).
 
@@ -65,19 +65,33 @@ GO_BP <- data[data$Category == "BP",]
 # GO_MF <- data[data$Category == "MF",]
 ```
 
-For the time being, we will only use GO-terms from the Biological Process (BP) category.
+For the time being, we will only use GO-terms from the Biological Process (BP) 
+category.
 
 ### Build the hierarchical graph
 
-The first step in the use-flow of this package is to obtain the similarity and hierarchy relationships between the selected GO-terms. For this, we need an annotation file where all the semantic relations between terms are found by relating the GO IDs to each other. In this package you will find a file `go_term_database_all_ontologies` obtained from the R package [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) where all these relations are. If you want to make this file yourself, we leave you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/example.R) of how we have done it.
+The first step in the use-flow of this package is to obtain the similarity and 
+hierarchy relationships between the selected GO-terms. For this, we need an 
+annotation file where all the semantic relations between terms are found by 
+relating the GO IDs to each other. In this package you will find a 
+file `go_term_database_all_ontologies` obtained from the R package 
+[GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) 
+where all these relations are. If you want to make this file yourself, we leave 
+you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/example.R) 
+of how we have done it.
 
 ``` r
 graph <- build_hierarchical_graph(go_list1 = GO_BP$ID, nb_lists = "single", go_sim_object = NULL)
 ```
 
-In this case, we will only use a single list of GO-terms. But the package allows us to obtain the semantic relations between two lists of GO-terms. Once we have created the initial graph - *where ALL semantic relations are annotated* - we filter this graph, to keep only the most informative relations (*those directly related to the terms of interest*).
+In this case, we will only use a single list of GO-terms. But the package allows 
+us to obtain the semantic relations between two lists of GO-terms. Once we have 
+created the initial graph - *where ALL semantic relations are annotated* - we 
+filter this graph, to keep only the most informative relations 
+(*those directly related to the terms of interest*).
 
-This first function filters out those nodes (GO-terms) that are not connected to any of the GO-terms used as input.
+This first function filters out those nodes (GO-terms) that are not connected 
+to any of the GO-terms used as input.
 
 ``` r
 expanded_graph <- expand_graph(graph = graph, 
@@ -95,17 +109,30 @@ final_graph <- retain_ancestors_above_input_terms(graph = expanded_graph,
 
 From this final graph, we then grouped the GO-terms.
 
-### Clustering the GO-terms {#clustering-the-go-terms}
+### Clustering the GO-terms
 
-The package allows you to make mainly two types of groupings: 1. According to the degree of similarity that exists between the GO-terms. 2. According to the network of GO-terms itself.
+The package allows you to make mainly two types of groupings: 1. According to the 
+degree of similarity that exists between the GO-terms. 2. According to the network 
+of GO-terms itself.
 
-The function `cluster_go_terms` assigns cluster memberships to the graph nodes (GO terms) based on the chosen network clustering method. The function has two main modes of operation: (1) Similarity-based clustering using a similarity matrix and performs hierarchical clustering, and assigns GO terms to clusters. It uses silhouette scores to determine the optimal number of clusters (`nb_clusters`) from a specified range. (2) Network-based clustering, this method requires a network object (e.g., an igraph object) representing GO terms and their relationships. It supports two network clustering methods: Walktrap and Edge Betweenness.
+The function `cluster_go_terms` assigns cluster memberships to the graph nodes 
+(GO terms) based on the chosen network clustering method. The function has two 
+main modes of operation: (1) Similarity-based clustering using a similarity 
+matrix and performs hierarchical clustering, and assigns GO terms to clusters. 
+It uses silhouette scores to determine the optimal number of clusters 
+(`nb_clusters`) from a specified range. (2) Network-based clustering, this method 
+requires a network object (e.g., an igraph object) representing GO terms and 
+their relationships. It supports two network clustering methods: Walktrap and 
+Edge Betweenness.
 
-To see how both clustering methods behave, we will perform both and check how our GO-terms are grouped.
+To see how both clustering methods behave, we will perform both and check how 
+our GO-terms are grouped.
 
 #### Clustering the GO-terms using Wang Similarity Method
 
-To make the grouping based on the degree of similarity that exists, we must calculate the similarity matrix between them. In this case, we choose [Wang's method](https://doi.org/10.1093/bioinformatics/btm087).
+To make the grouping based on the degree of similarity that exists, we must 
+calculate the similarity matrix between them. In this case, we choose 
+[Wang's method](https://doi.org/10.1093/bioinformatics/btm087).
 
 ``` r
 similarity_matrix <- calculate_wang(graph = final_graph, # From the graph, we get the nodes.
@@ -113,7 +140,8 @@ ontology = "BP", # We select the category to which our GO-terms belong.
 orgdb = "org.Hs.eg.db") # We use human annotation as a reference.
 ```
 
-Once the similarity matrix is obtained, we calculate - *through the Silhouette Method* - the number of clusters in which the GO-terms are grouped.
+Once the similarity matrix is obtained, we calculate - *through the Silhouette Method* - 
+the number of clusters in which the GO-terms are grouped.
 
 ``` r
 cluster <- cluster_go_terms(method_type = "similarity", method = "wang", 
@@ -121,13 +149,21 @@ orgdb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix,
 graph = final_graph, nb_clusters = NULL, k_range = 2:10)
 ```
 
-This function tells you the number of clusters in which your list of GO-terms input is grouped according to the Silhouette method. In addition, it is also possible to know the number of clusters through `clusters$nb_clusters`.
+This function tells you the number of clusters in which your list of GO-terms 
+input is grouped according to the Silhouette method. In addition, it is also 
+possible to know the number of clusters through `clusters$nb_clusters`.
 
-In our case, 7 clusters have been detected. As this is a grouping by similarity, each cluster has a more representative metabolic pathway associated with it, being the one that is more closely related to the rest of the GO-terms within the cluster.
+In our case, 7 clusters have been detected. As this is a grouping by similarity, 
+each cluster has a more representative metabolic pathway associated with it, 
+being the one that is more closely related to the rest of the GO-terms within 
+the cluster.
 
 *Note that if the number of clusters detected is 10, it is possible that the maximum number of k-means has been reached when applying the Silhouette method. Check if raising the `k_range` parameter to 2:20 is still 10.*
 
-To see what 7 clusters are, we use the `generate_cluster_table` function, which will give us a table (which we can later save as a PNG) with the relationship of the clusters, the color they will have later in the final graph, the most representative pathway and which GO IDs belong to each cluster.
+To see what 7 clusters are, we use the `generate_cluster_table` function, which 
+will give us a table (which we can later save as a PNG) with the relationship of 
+the clusters, the color they will have later in the final graph, the most 
+representative pathway and which GO IDs belong to each cluster.
 
 ``` r
 # colors <- generate_pastel_colors(n = 7) # This function was only created to generate a list of pastel colours of the number we determine 😊
@@ -135,7 +171,13 @@ Table <- generate_cluster_table(cluster_output = cluster, method_type = "similar
 similarity_matrix = similarity_matrix, text_color = "black", col_palette = colors)
 ```
 
-Note that sometimes the GO IDs of the most representative path in the cluster do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) database, which is the one we use for the identification of term's names from their ID. Therefore, in the table, instead of the term name in the *Representative Pathway* column, the GO ID will appear. We promise that we will try to improve this peculiarity by investigating more R annotation packages for GO IDs.
+Note that sometimes the GO IDs of the most representative path in the cluster 
+do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) 
+database, which is the one we use for the identification of term's names from 
+their ID. Therefore, in the table, instead of the term name in 
+the *Representative Pathway* column, the GO ID will appear. We promise that 
+we will try to improve this peculiarity by investigating more R annotation 
+packages for GO IDs.
 
 To save the table as PNG we will use the `save_cluster_table_as_png` function.
 
@@ -144,13 +186,22 @@ save_cluster_table_as_png(cluster_df = Table, file_name = "cluster_table.png",
 width = 1500, height = 600,zoom = 2)
 ```
 
-![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of our grouping looks like.
+![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
+our grouping looks like.
 
 #### Clustering the GO-terms based on the network
 
-In this case, the grouping of GO-terms is based on how the terms relate to each other and how the network behaves. Unlike the similarity-based method, in this case we do not obtain a more representative metabolic pathway for each term.
+In this case, the grouping of GO-terms is based on how the terms relate to each 
+other and how the network behaves. Unlike the similarity-based method, in this 
+case we do not obtain a more representative metabolic pathway for each term.
 
-We choose for this the *Edge Betweenness* method. The Edge Betweenness method is a network clustering algorithm used to identify communities or clusters of nodes in a graph or network. This method is based on the idea of edge betweenness centrality, which measures the number of shortest paths that pass through a given edge. By focusing on edges that connect different clusters, the Edge Betweenness method interactively removes edges that are critical for connecting different parts of the network, revealing communities or clusters of nodes.
+We choose for this the *Edge Betweenness* method. The Edge Betweenness method is 
+a network clustering algorithm used to identify communities or clusters of nodes 
+in a graph or network. This method is based on the idea of edge betweenness 
+centrality, which measures the number of shortest paths that pass through a given 
+edge. By focusing on edges that connect different clusters, the Edge Betweenness 
+method interactively removes edges that are critical for connecting different parts 
+of the network, revealing communities or clusters of nodes.
 
 ``` r
 edge <- cluster_go_terms(method_type = "network", method = "EdgeBetweenness", 
@@ -305,14 +356,14 @@ compare_clusters(cluster_list1 = cluster, cluster_list2 = cluster2,
 
 The graph shows how Cluster 4 in List 1 and Cluster 23 in List 2 are the most similar. In fact, Cluster 4 corresponds to GO-terms related to *animal organ development* and Cluster 23 are GO-terms related to *regulation of endothelial cell proliferation*.
 
-## References {#references}
+## References
 
 1.  Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)
 2.  Wang et al. (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23(10): 1274-1281 [10.1093/bioinformatics/btm087](https://doi.org/10.1093/bioinformatics/btm087)
 3.  Rousseeuw (1987) Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. *Journal of Computational and Applied Mathematics*, 20: 53-65 [10.1016/0377-0427(87)90125-7](https://doi.org/10.1016/0377-0427(87)90125-7)
 4.  Pons & Latapy (2005) Computing Communities in Large Networks Using Random Walks. In: *Computer and Information Sciences*, 3733 [10.1007/11569596_31](https://doi.org/10.1007/11569596_31)
 
-## Contribution {#contribution}
+## Contribution
 
 We welcome contributions to this project! There are several ways you can help:
 
@@ -341,7 +392,7 @@ Please follow our [Code of Conduct](./CODE_OF_CONDUCT.md) when participating in 
 
 Thank you for helping to improve this project!😊
 
-## Licence {#licence}
+## Licence
 
 This package is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
