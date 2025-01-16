@@ -295,7 +295,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              fill = cluster_legend_colors,
              bty = "n", title.font = 2,
              cex = 0.8, title = "Clusters",
-             inset = c(-0.15, 0.001))
+             inset = c(-0.1, 0.001))
     }
 
     # Add a legend for node shapes
@@ -310,27 +310,27 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     unique_shapes <- unique(V(graph)$shape)
     legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
     if(nb_lists == "single"){
-      legend("topright",
+      legend("topleft",
              legend = c(labs, "Other Terms"),
              pch = legend_shapes, # Extract unique pch values for the legend
              bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
+             title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
     } else {
-      legend("topright",
+      legend("topleft",
              legend = c(labs, "Other Terms"),
              pch = legend_shapes, # Extract unique pch values for the legend
              bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
+             title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
     }
 
     # Add a legend for the node sizes (degree of connectivity)
-    legend("topright", legend = c("Low Connectivity",
+    legend("topleft", legend = c("Low Connectivity",
                                   "High Connectivity"),
            pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
            pt.cex = c(min(scaled_node_sizes),
                       max(scaled_node_sizes)/3),
            bty = "n", cex = 0.8, title.font = 2,
-           xjust = 1, inset = c(-0.4, 0.7))
+           xjust = 1, inset = c(-0.12, 0.8))
   }
 
   # Step 11: Save plot (if enabled) ----
@@ -370,34 +370,37 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     )
     # LEGEND ----
     if(isTRUE(legend)){
-      legend("topleft",
-             legend = cluster_labels,
-             fill = cluster_legend_colors,
-             bty = "n", title.font = 2,
-             cex = 0.8, title = "Clusters",
-             inset = c(-0.15, 0.001))
+      # Add a legend for clusters
+        legend("topleft",
+               legend = cluster_labels,
+               fill = cluster_legend_colors,
+               bty = "n", title.font = 2,
+               cex = 0.8, title = "Clusters",
+               inset = c(-0.1, 0.001))
 
+      # Add legend for node origin (shapes)
       if(nb_lists == "single"){
-        legend("topright",
+        legend("topleft",
                legend = c(labs, "Other Terms"),
                pch = legend_shapes, # Extract unique pch values for the legend
                bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
+               title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
       } else {
-        legend("topright",
+        legend("topleft",
                legend = c(labs, "Other Terms"),
                pch = legend_shapes, # Extract unique pch values for the legend
                bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
+               title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
       }
 
-      legend("topright", legend = c("Low Connectivity",
-                                    "High Connectivity"),
+      # Add a legend for the node sizes (degree of connectivity)
+      legend("topleft", legend = c("Low Connectivity",
+                                   "High Connectivity"),
              pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
              pt.cex = c(min(scaled_node_sizes),
                         max(scaled_node_sizes)/3),
              bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(-0.3, 0.7))
+             xjust = 1, inset = c(-0.12, 0.8))
     }
 
     dev.off()
