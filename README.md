@@ -24,11 +24,15 @@
 
 ## Introduction
 
-**visualizeGO** has been developed in order to create hierarchical graphs of a list of interesting GO terms. The package uses a clustering method to group GO terms, making it easier to observe the relationships between these terms. This process improves the understanding of the intracluster relationships of the highlighted metabolic pathways.
+**visualizeGO** has been developed in order to create hierarchical graphs of a 
+list of interesting GO terms. The package uses a clustering method to group GO 
+terms, making it easier to observe the relationships between these terms. This 
+process improves the understanding of the intracluster relationships of the 
+highlighted metabolic pathways.
 
-The package consists of several important parts:\
-1. **Creation of a network of GO terms.** Here the list of GO terms of interest is analysed and, through the [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) R package, the hierarchically related terms - both "*parents*" and "*children*" - to the input terms are obtained.\
-2. **Clustering.** In this part you can select the type of grouping you want to make of the terms. This grouping can be based on semantic similarity metrics *(Jaccard Index, Resnik, Lin or Wang methods)* or by how the term network itself is configured. You do you!\
+The package consists of several important parts:
+1. **Creation of a network of GO terms.** Here the list of GO terms of interest is analysed and, through the [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) R package, the hierarchically related terms - both "*parents*" and "*children*" - to the input terms are obtained.
+2. **Clustering.** In this part you can select the type of grouping you want to make of the terms. This grouping can be based on semantic similarity metrics *(Jaccard Index, Resnik, Lin or Wang methods)* or by how the term network itself is configured. You do you!
 3. **Final visualisation.** This final graph shows the input GO-terms and their relationships with other GO-terms, and the clusters that are formed, all in the form of a network.
 
 ## Installation
