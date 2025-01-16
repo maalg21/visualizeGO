@@ -97,8 +97,7 @@ where all these relations are. If you want to make this file yourself,
 we leave you a [script]() of how we have done it.
 
 ``` r
-graph <- build_hierarchical_graph(go_list1 = GO_BP$ID, nb_lists = "single", 
-go_sim_object = NULL)
+graph <- build_hierarchical_graph(go_list1 = GO_BP$ID, nb_lists = "single", go_sim_object = NULL)
 ```
 
 In this case, we will only use a single list of GO-terms. But the
@@ -138,11 +137,11 @@ nodes (GO terms) based on the chosen network clustering method. The
 function has two main modes of operation: (1) Similarity-based
 clustering using a similarity matrix and performs hierarchical
 clustering, and assigns GO terms to clusters. It uses silhouette scores
-to determine the optimal number of clusters (nb_clusters) from a
+to determine the optimal number of clusters (`nb_clusters`) from a
 specified range. (2) Network-based clustering, this method requires a
 network object (e.g., an igraph object) representing GO terms and their
-relationships. It supports various network clustering methods: Walktrap,
-Louvain, or EdgeBetweenness.
+relationships. It supports two network clustering methods: Walktrap and
+Edge Betweenness.
 
 To see how both clustering methods behave, we will perform both and
 check how our GO-terms are grouped.
@@ -181,7 +180,7 @@ rest of the GO-terms within the cluster.
 
 *Note that if the number of clusters detected is 10, it is possible that
 the maximum number of k-means has been reached when applying the
-Silhouette method. Check if raising the \``k_range` parameter to 2:20 is
+Silhouette method. Check if raising the `k_range` parameter to 2:20 is
 still 10.*
 
 To see what 7 clusters are, we use the `generate_cluster_table`
@@ -228,7 +227,7 @@ method is a network clustering algorithm used to identify communities or
 clusters of nodes in a graph or network. This method is based on the
 idea of edge betweenness centrality, which measures the number of
 shortest paths that pass through a given edge. By focusing on edges that
-connect different clusters, the Edge Betweenness method iteratively
+connect different clusters, the Edge Betweenness method interactively
 removes edges that are critical for connecting different parts of the
 network, revealing communities or clusters of nodes.
 
@@ -267,11 +266,11 @@ col_palette = colors, text_color = "black")
 ![Clustering based on Edge Betweenness
 method.](inst/images/cluster_table2.png)
 
-As is evident, in this particular instance, the utilisation of
+As is evident, in this particular instance, the utilization of
 clustering techniques based on the semantic similarity of GO-terms is
 significantly more efficacious and substantially reduces the amount of
 information obtained. Consequently, the tutorial will persist in its
-utilisation of this information in accordance with Wang's method.
+utilization of this information in accordance with Wang's method.
 
 ## Visualize GO-terms relationships
 
@@ -353,15 +352,15 @@ us a table with the GO IDs relationship and the term description.
 
 ![](inst/images/cluster5.png)
 
-It is observed that within this cluster, metabolic pathways are present,
-all of which are related to lipid transport.
+It is observed that within this cluster, the metabolic pathways that
+compose the cluster all are related to lipid transport.
 
 This function also allows you to select several clusters and visualize
 them in the same plot.
 
-![Six and seven](inst/images/plot3.png)
-For example, in this case, we selected **Clusters 6** and **7** which 
-are related to the immune system.
+![Six and seven](inst/images/plot3.png) For example, in this case, we
+selected **Clusters 6** and **7** which are related to the immune
+system.
 
 ### Comparing GO-term lists
 
@@ -371,11 +370,11 @@ Thanks to this function we obtain a heat map where it will be observed
 between which GO-terms there is a greater similarity within the two
 lists. Of course, the measurement of distances between GO-terms does not
 depend on a network of terms; therefore, we can only choose semantic
-similarity terms such as Jaccard, Resnik, etc.
+similarity terms such as Resnik, Lin, etc.
 
-In this case it is MANDATORY that the input is two lists of GO-terms.
-Using the same study as a basis, we will compare the two lists of
-GO-terms that were detected for each of the groups of animals.
+In this case it is **MANDATORY** that the input is two lists of
+GO-terms. Using the same study as a basis, we will compare the two lists
+of GO-terms that were detected for each of the groups of animals.
 
 ``` r
 # This is the second list of GO-terms
@@ -390,7 +389,9 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       ontology = "BP", method = "Wang",
                       orgdb = "org.Hs.eg.db",
                       xlab = "GO List 1", ylab = "GO List 2",
-                      main = "", cex = 10, values = T, cex_values = 3)
+                      main = "", cex = 10, 
+                      values = T, # You can choose to show or not the similarity values inside the plot matrix
+                      cex_values = 3)
 ```
 
 ![](inst/images/heatmap.png)
@@ -403,13 +404,13 @@ have been previously detected by semantic similarity. In this case, the
 comparison can only be done with one of the similarity methods such as
 Resnik, Lin and Wang.
 
-In order to understand how this step would be done, the code below 
-shows step by step how to obtain the clusters for the second data 
-table `data2`. Remember that **ONLY** clusters of GO-terms of 
-the same ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be 
-compared. Also, it would not make *biological* sense to compare 
-clusters of GO-terms obtained through their conformation in the 
-network ... But you do you!
+In order to understand how this step would be done, the code below shows
+step by step how to obtain the clusters for the second data table
+`data2`. Remember that **ONLY** clusters of GO-terms of the same
+ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be compared.
+Also, it would not make *biological* sense to compare clusters of
+GO-terms obtained through their conformation in the network ... But you
+do you!
 
 ``` r
 # First, graph
@@ -442,12 +443,13 @@ compare_clusters(cluster_list1 = cluster, cluster_list2 = cluster2,
                  low = "white", high = "red3",
                  labs = c("List 1", "List 2"), cex = 3)
 ```
+
 ![](inst/images/heatmap2.png)
 
-The graph shows how Cluster 4 in List 1 and Cluster 23 in List 2 
-are the most similar. In fact, Cluster 4 corresponds to GO-terms 
-related to  *animal organ development* and Cluster 23 are GO-terms 
-related to *regulation of endothelial cell proliferation*.
+The graph shows how Cluster 4 in List 1 and Cluster 23 in List 2 are the
+most similar. In fact, Cluster 4 corresponds to GO-terms related to
+*animal organ development* and Cluster 23 are GO-terms related to
+*regulation of endothelial cell proliferation*.
 
 ## References {#references}
 
