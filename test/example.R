@@ -50,15 +50,7 @@ filter_and_visualize_cluster(clusters = cluster,
                              ontology = "BP",
                              layout = "tree", col_palette = "#D9C9FF",
                              min_node_size = 1, max_node_size = 10,
-                             save_plot = FALSE, PNG = NULL,
-                             verbose = "some", legend = T)
-
-filter_and_visualize_cluster(clusters = cluster,
-                             selected_cluster = 5,
-                             ontology = "BP",
-                             layout = "tree", col_palette = "#D9C9FF",
-                             min_node_size = 1, max_node_size = 10,
-                             save_plot = T, PNG = "./inst/images/plot2.png",
+                             save_plot = T, PNG = "plot2.png",
                              verbose = "some", legend = T)
 
 # Comparing two lists of GO-terms ----
@@ -73,3 +65,5 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       orgdb = "org.Hs.eg.db",
                       xlab = "GO List 1", ylab = "GO List 2",
                       main = "", cex = 10)
+
+# Comparing clusters of GO-terms ----

@@ -8,21 +8,42 @@ compare_clusters(
   cluster_list1,
   cluster_list2,
   ontology = c("BP", "CC", "MF"),
-  OrgDb = "org.Hs.eg.db"
+  OrgDb = "org.Hs.eg.db",
+  method = c("Resnik", "Lin", "Wang"),
+  combine = c("avg", "BMA", "max", "rcmax"),
+  plot = T,
+  low = "white",
+  high = "red3",
+  labs = NULL,
+  cex = 3
 )
 }
 \arguments{
-\item{go_list1}{List of GO-terms of interest.}
+\item{cluster_list1}{A set of GO-terms.}
 
-\item{go_list2}{If enabled, second list of GO-terms to compare with the first one.}
+\item{cluster_list2}{Another set of GO-terms.}
 
-\item{go_sim_object}{GO-terms similarity relationships save as environment.}
+\item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 
-\item{nb_lists}{Allows to select whenever you are gonna use one ("single") or two ("double") lists}
+\item{OrgDb}{Organism to use as reference to obtain the GO-terms similarities. GOSemSimDATA object. Default = "org.Hs.eg.db" (human)}
+
+\item{method}{One of "Resnik", "Lin" and "Wang" methods.}
+
+\item{combine}{One of "max", "avg", "rcmax", "BMA" methods, for combining semantic similarity scores of multiple GO terms associated with protein or multiple proteins assiciated with protein cluster.}
+
+\item{plot}{Option to display or not the graph. Default = TRUE}
+
+\item{low}{Colour of the minimum value of the matrix}
+
+\item{high}{Colour of the highest value of the matrix}
+
+\item{labs}{Name of the X and Y axes.}
+
+\item{cex}{Font size of the inside of the matrix in the plot.}
 }
 \value{
-A graph object that links the input GO-terms with their ancestors and childrens.
+Semantic similarity matrix of GO-terms clusters. If selected, the matrix is displayed in graph format.
 }
 \description{
-asdfghjlñ
+This function aims to compare clusters of GO-terms that have been previously detected by semantic similarity. The comparison is performed by one of the similarity methods such as Resnik, Lin and Wang.
 }
