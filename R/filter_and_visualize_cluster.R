@@ -109,6 +109,7 @@ filter_and_visualize_cluster <- function(clusters,
 
   # Step 6: Plot the graph ----
   if (verbose != "none") cat("Displaying the graph...\n")
+  par(mar = c(1.5, 1.5, 1.5, 1.5))
   plot(subgraph,
        layout = layout_fun,
        vertex.frame.color = "black",
@@ -161,6 +162,7 @@ filter_and_visualize_cluster <- function(clusters,
     png(PNG, width = 1427, height = 674, res = 100)
 
     # PLOT ----
+    par(mar = c(1.5, 1.5, 1.5, 1.5))
     plot(subgraph,
          layout = layout_fun,
          vertex.frame.color = "black",

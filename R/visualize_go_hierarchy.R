@@ -263,7 +263,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
 
   # Step 9: Plot the graph ----
   if (verbose != "none") cat("Displaying graph...\n")
-  par(mar = c(1, 1, 1, 1))
+  par(mar = c(1.5, 1.5, 1.5, 1.5))
   plot(
     graph,
     layout = layout,
@@ -346,7 +346,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     png(PNG, width = 1427, height = 674, res = 100)
 
     # PLOT ----
-    par(mar = c(1, 1, 1, 1))
+    par(mar = c(1.5, 1.5, 1.5, 1.5))
     plot(
       graph,
       layout = layout,
