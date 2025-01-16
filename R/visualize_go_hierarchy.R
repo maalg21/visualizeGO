@@ -295,7 +295,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              fill = cluster_legend_colors,
              bty = "n", title.font = 2,
              cex = 0.8, title = "Clusters",
-             inset = c(-0.3, 0.001))
+             inset = c(-0.2, 0.001))
     }
 
     # Add a legend for node shapes
@@ -375,7 +375,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              fill = cluster_legend_colors,
              bty = "n", title.font = 2,
              cex = 0.8, title = "Clusters",
-             inset = c(-0.3, 0.001))
+             inset = c(-0.2, 0.001))
 
       if(nb_lists == "single"){
         legend("topright",
