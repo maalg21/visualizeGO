@@ -295,7 +295,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              fill = cluster_legend_colors,
              bty = "n", title.font = 2,
              cex = 0.8, title = "Clusters",
-             inset = c(-0.1, 0.001))
+             inset = c(-0.01, 0.001))
     }
 
     # Add a legend for node shapes
@@ -314,13 +314,13 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              legend = c(labs, "Other Terms"),
              pch = legend_shapes, # Extract unique pch values for the legend
              bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
+             title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
     } else {
       legend("topleft",
              legend = c(labs, "Other Terms"),
              pch = legend_shapes, # Extract unique pch values for the legend
              bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
+             title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
     }
 
     # Add a legend for the node sizes (degree of connectivity)
@@ -330,7 +330,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
            pt.cex = c(min(scaled_node_sizes),
                       max(scaled_node_sizes)/3),
            bty = "n", cex = 0.8, title.font = 2,
-           xjust = 1, inset = c(-0.12, 0.8))
+           xjust = 1, inset = c(-0.012, 0.8))
   }
 
   # Step 11: Save plot (if enabled) ----
@@ -373,7 +373,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
                fill = cluster_legend_colors,
                bty = "n", title.font = 2,
                cex = 0.8, title = "Clusters",
-               inset = c(-0.1, 0.001))
+               inset = c(-0.01, 0.001))
 
       # Add legend for node origin (shapes)
       if(nb_lists == "single"){
@@ -381,13 +381,13 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
                legend = c(labs, "Other Terms"),
                pch = legend_shapes, # Extract unique pch values for the legend
                bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
+               title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
       } else {
         legend("topleft",
                legend = c(labs, "Other Terms"),
                pch = legend_shapes, # Extract unique pch values for the legend
                bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(-0.1, 0.7))
+               title = "Node Origin", xjust = 1, inset = c(-0.01, 0.7))
       }
 
       # Add a legend for the node sizes (degree of connectivity)
@@ -397,7 +397,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
              pt.cex = c(min(scaled_node_sizes),
                         max(scaled_node_sizes)/3),
              bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(-0.12, 0.8))
+             xjust = 1, inset = c(-0.012, 0.8))
     }
 
     dev.off()
