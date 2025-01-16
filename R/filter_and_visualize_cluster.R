@@ -137,7 +137,7 @@ filter_and_visualize_cluster <- function(clusters,
              fill = cluster_legend_colors,
              bty = "n", title.font = 2,
              cex = 0.8, title = "Clusters",
-             inset = c(-0.1, 0.001))
+             inset = c(0.02, 0.001))
     }
 
     # Add a legend for the nodes sizes
@@ -147,7 +147,7 @@ filter_and_visualize_cluster <- function(clusters,
            pt.cex = c(min(scaled_node_sizes),
                       max(scaled_node_sizes)/3),
            bty = "n", cex = 0.8, title.font = 2,
-           xjust = 1, inset = c(-0.12, 0.8))
+           xjust = 1, inset = c(0.022, 0.8))
   }
 
   # Step 8: Save plot (if enabled) ----
@@ -190,7 +190,7 @@ filter_and_visualize_cluster <- function(clusters,
                fill = cluster_legend_colors,
                bty = "n", title.font = 2,
                cex = 0.8, title = "Clusters",
-               inset = c(-0.1, 0.001))
+               inset = c(0.02, 0.001))
       }
 
       legend("topleft", legend = c("Low Connectivity",
@@ -199,7 +199,7 @@ filter_and_visualize_cluster <- function(clusters,
              pt.cex = c(min(scaled_node_sizes),
                         max(scaled_node_sizes)/3),
              bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(-0.12, 0.8))
+             xjust = 1, inset = c(0.022, 0.8))
     }
 
     dev.off()
