@@ -6,12 +6,21 @@
 
 **INDEX**
 
--   📝 [Introduction](#introduction)
--   🛠️ [Installation](#installation)
--   💻 [Basic Use](#basic-use)
--   📚 [References](#references)
--   🤝 [Contribution](#contribution)
--   📜 [Licence](#licence)
+-   📝 [Introduction]
+-   🛠️ [Installation]
+-   💻 [Basic Use]
+    -   [Data Input]
+    -   [Build the hierarchical graph]
+    -   [Clustering the GO-terms]
+        -   [Clustering the GO-terms using Wang Similarity Method]
+        -   [Clustering the GO-terms based on the network]
+    -   [Visualize GO-terms relationships]
+    -   [Comparing GO-term lists]
+        -   [Comparing lists of GO-terms]
+        -   [Comparing clusters of GO-terms]
+-   📚 [References]
+-   🤝 [Contribution]
+-   📜 [Licence]
 
 ## Introduction {#introduction}
 
@@ -224,6 +233,10 @@ This function also allows you to select several clusters and visualize them in t
 
 ### Comparing GO-term lists
 
+In this case, we can compare lists of GO-terms in two ways.
+
+#### Comparing lists of GO-terms
+
 Finally, in order to be able to compare two lists of GO-terms we can also use this same package with the `go_similarity_heatmap` function. Thanks to this function we obtain a heat map where it will be observed between which GO-terms there is a greater similarity within the two lists. Of course, the measurement of distances between GO-terms does not depend on a network of terms; therefore, we can only choose semantic similarity terms such as Resnik, Lin, etc.
 
 In this case it is **MANDATORY** that the input is two lists of GO-terms. Using the same study as a basis, we will compare the two lists of GO-terms that were detected for each of the groups of animals.
@@ -249,6 +262,8 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
 ![](inst/images/heatmap.png)
 
 Here is a comparison of 10 GO-terms from each of the lists, with the highest similarity shown in red and the lowest in white.
+
+#### Comparing clusters of GO-terms
 
 In addition, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity. In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin and Wang.
 
