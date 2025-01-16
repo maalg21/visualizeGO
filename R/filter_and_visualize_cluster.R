@@ -157,11 +157,8 @@ filter_and_visualize_cluster <- function(clusters,
       PNG <- paste0(PNG, ".png")  # Default to .png if no extension is provided
     }
 
-    # Set high resolution for the plot (e.g., 300 DPI)
-    dpi <- 300
-
     # Open a PNG device to save the plot with high resolution
-    png(PNG, width = 1427, height = 674, res = dpi)
+    png(PNG, width = 1427, height = 674, res = 100)
 
     # PLOT ----
     plot(subgraph,

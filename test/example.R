@@ -39,8 +39,9 @@ visualize_go_hierarchy(go_list1 = GO_BP$ID,
                        layout = "tree",
                        clustering = T, clusters = cluster,
                        col_palette = colors,
+                       legend = T, labs = "GO-Terms",
                        verbose = "some", # Just to know more about the process that is ocurring
-                       save_plot = T, PNG = "plot1.png")
+                       save_plot = F)
 
 # Filtering to obtain only nodes of Cluster 5 ----
 filter_and_visualize_cluster(clusters = cluster,
@@ -49,7 +50,7 @@ filter_and_visualize_cluster(clusters = cluster,
                              layout = "tree", col_palette = "#D9C9FF",
                              min_node_size = 1, max_node_size = 10,
                              save_plot = FALSE, PNG = NULL,
-                             verbose = "some")
+                             verbose = "some", legend = T)
 
 # Comparing two lists of GO-terms ----
 data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",

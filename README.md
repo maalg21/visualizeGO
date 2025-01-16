@@ -34,7 +34,9 @@ You can install the development version of visualizeGO like so:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("maalg21/visualizeGO")
+devtools::install_github("maalg21/visualizeGO", 
+# force = TRUE # Just in case you have already installed an old version of the package
+)
 ```
 
 ## Basic Use
@@ -133,9 +135,11 @@ In our case, 7 clusters have been detected. As this is a grouping by similarity,
 each cluster has a more representative metabolic pathway associated with it, 
 being the one that is more closely related to the rest of the GO-terms within the cluster.
 
+*Note that if the number of clusters detected is 10, it is possible that the maximum number of k-means has been reached when applying the Silhouette method. Check if raising the ```k_range`` parameter to 2:20 is still 10.*
+
 To see what 7 clusters are, we use the ```generate_cluster_table``` function, 
 which will give us a table (which we can later save as a PNG) with the relationship of 
-the clusters, the colour they will have later in the final graph, the most representative 
+the clusters, the color they will have later in the final graph, the most representative 
 pathway and which GO IDs belong to each cluster.
 ```r
 # colors <- generate_pastel_colors(n = 7) # This function was only created to generate a list of pastel colours of the number we determine 😊
@@ -234,7 +238,7 @@ clustering = T, clusters = cluster,
 col_palette = colors, 
 verbose = "some", # Just to know more about the process that is ocurring
 legend = T,
-labs = "GO-Terms BP",
+labs = "GO-Terms BP", # Name of the list of GO-Terms
 save_plot = F)
 ```
 ![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png)
@@ -262,6 +266,9 @@ the term description.
 
 It is observed that within this cluster, metabolic pathways are present, 
 all of which are related to lipid transport.
+
+This function also allows you to select several clusters and visualize them
+in the same plot.
 
 ### Comparing GO-term lists
 Finally, in order to be able to compare two lists of GO-terms 
@@ -291,10 +298,19 @@ go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
                       xlab = "GO List 1", ylab = "GO List 2",
                       main = "", cex = 10, values = T, cex_values = 3)
 ```
-![Heatmap](inst/images/heatmap.png)
+![ ](inst/images/heatmap.png)
 
 Here is a comparison of 10 GO-terms from each of the lists,
 with the highest similarity shown in red and the lowest in white.
+
+In addition, it is also possible to compare clusters of GO-terms 
+that have been previously detected by semantic similarity. 
+In this case, the comparison can only be done with one of the 
+similarity methods such as Resnik, Lin and Wang.
+
+```r
+
+```
 
 ## References
 1. Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)
