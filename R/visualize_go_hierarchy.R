@@ -346,7 +346,7 @@ visualize_go_hierarchy <- function(go_list1, go_list2 = NULL,
     dpi <- 300  # High resolution
 
     # Open a PNG device to save the plot with high resolution
-    png(PNG, width = 4000, height = 3000, res = dpi)
+    png(PNG, width = 1427, height = 674, res = dpi)
 
     # PLOT ----
     par(mar = c(1, 1, 1, 1))
