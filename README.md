@@ -184,11 +184,20 @@ we will try to improve this peculiarity by investigating more R annotation
 packages for GO IDs.
 
 To save the table as PNG we will use the `save_cluster_table_as_png` function.
-
 ``` r
 save_cluster_table_as_png(cluster_df = Table, file_name = "cluster_table.png", 
 width = 1500, height = 600,zoom = 2)
 ```
+
+Furthermore, with the ```scatterGO``` function we can represent the GO terms as a
+scatter plot represented by the first two components of a Principal Component Analysis
+(PCA) of the similarity matrix.
+``` r
+scatterGO <- function(similarity_matrix, cluster,
+                      title = "Distance Between GO-Terms", colors = colors,
+                      labels = T)
+```
+
 
 ![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
 our grouping looks like.
