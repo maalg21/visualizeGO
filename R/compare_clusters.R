@@ -31,7 +31,7 @@ compare_clusters <- function(cluster_list1, cluster_list2,
     stop("OrgDb object is required.")
   }
   cat("Getting GOSemSimData...\n")
-  GOData <- godata(annoDb = OrgDb, ont = ontology)
+  GOData <- GOSemSim::godata(annoDb = OrgDb, ont = ontology)
 
   # Step 2. List of GO-terms clusters ----
   if(is.null(cluster_list1) | is.null(cluster_list2)){
@@ -54,7 +54,7 @@ compare_clusters <- function(cluster_list1, cluster_list2,
   colnames(semantic_similarity) <- paste("Cluster ", 1:n, sep = "")
   for(m in 1:m){
     for(n in 1:n){
-      value <- mgoSim(GO1 = names(cluster_list1[cluster_list1 == m]),
+      value <- GOSemSim::mgoSim(GO1 = names(cluster_list1[cluster_list1 == m]),
                       GO2 = names(cluster_list2[cluster_list2 == n]),
                       semData = GOData,
                       measure = method,
