@@ -188,6 +188,8 @@ To save the table as PNG we will use the `save_cluster_table_as_png` function.
 save_cluster_table_as_png(cluster_df = Table, file_name = "cluster_table.png", 
 width = 1500, height = 600,zoom = 2)
 ```
+![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
+our grouping looks like.
 
 Furthermore, with the ```scatterGO``` function we can represent the GO terms as a
 scatter plot represented by the first two components of a Principal Component Analysis
@@ -197,10 +199,7 @@ scatterGO <- function(similarity_matrix, cluster,
                       title = "Distance Between GO-Terms", colors = colors,
                       labels = T)
 ```
-
-
-![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
-our grouping looks like.
+![Scatter Plot](inst/images/scatter_plot.png)
 
 #### Clustering the GO-terms based on the network
 
