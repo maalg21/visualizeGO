@@ -19,9 +19,10 @@ compare_clusters(
 )
 }
 \arguments{
-\item{cluster_list1}{A set of GO-terms.}
+\item{cluster_list1}{A named vector that indicates the cluster to which each GO-term belongs,
+i.e.: Variable clusters from the output of the cluster_go_terms function.}
 
-\item{cluster_list2}{Another set of GO-terms.}
+\item{cluster_list2}{Another set of GO-terms to compare with.}
 
 \item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 

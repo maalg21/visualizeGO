@@ -2,8 +2,9 @@
 #'
 #' @description This function aims to compare clusters of GO-terms that have been previously detected by semantic similarity. The comparison is performed by one of the similarity methods such as Resnik, Lin and Wang.
 #'
-#' @param cluster_list1 A set of GO-terms.
-#' @param cluster_list2 Another set of GO-terms.
+#' @param cluster_list1 A named vector that indicates the cluster to which each GO-term belongs,
+#' i.e.: Variable clusters from the output of the cluster_go_terms function.
+#' @param cluster_list2 Another set of GO-terms to compare with.
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
 #' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. GOSemSimDATA object. Default = "org.Hs.eg.db" (human)
 #' @param method One of "Resnik", "Lin" and "Wang" methods.
@@ -37,25 +38,24 @@ compare_clusters <- function(cluster_list1, cluster_list2,
     stop("Two clustering results are needed through semantic similarity")
   }
 
-  if (!"clusters" %in% names(cluster_list1) || !"clusters" %in% names(cluster_list2)) {
-    stop("The clusters input must contain 'clusters' components.")
+  if (is.null(names(cluster_list1)) && all(names(cluster_list1) != "")) {
+    print("cluster_list1 is not a named vector.")
   }
 
-  List1 <- split(names(cluster_list1$clusters),
-                     paste("Cluster ", cluster_list1$clusters, sep = ""))
-  List2 <- split(names(cluster_list2$clusters),
-                paste("Cluster ", cluster_list2$clusters, sep = ""))
+  if (is.null(names(cluster_list2)) && all(names(cluster_list2) != "")) {
+    print("cluster_list2 is not a named vector.")
+  }
 
-  m <- length(List1)
-  n <- length(List2)
+  m <- length(cluster_list1)
+  n <- length(cluster_list2)
 
   semantic_similarity <- matrix(nrow = m, ncol = n)
   rownames(semantic_similarity) <- paste("Cluster ", 1:m, sep = "")
   colnames(semantic_similarity) <- paste("Cluster ", 1:n, sep = "")
   for(m in 1:m){
     for(n in 1:n){
-      value <- mgoSim(GO1 = unlist(List1[m]),
-                      GO2 = unlist(List2[n]),
+      value <- mgoSim(GO1 = names(cluster_list1[m]),
+                      GO2 = names(cluster_list2[n]),
                       semData = GOData,
                       measure = method,
                       combine = combine)
