@@ -320,7 +320,8 @@ Here is a comparison of 10 GO-terms from each of the lists, with the highest sim
 
 #### Comparing clusters of GO-terms
 
-In addition, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity. In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin and Wang.
+In addition, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity (**or by other packages that make the clustering of GO-terms**).
+In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin and Wang.
 
 In order to understand how this step would be done, the code below shows step by step how to obtain the clusters for the second data table `data2`. Remember that **ONLY** clusters of GO-terms of the same ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make *biological* sense to compare clusters of GO-terms obtained through their conformation in the network ... But you do you!
 
@@ -349,7 +350,8 @@ cluster2 <- cluster_go_terms(method_type = "similarity", method = "wang",
 # And that's suspicious ... Indeed the optimal number now is 24.
 
 # Third, comparison
-compare_clusters(cluster_list1 = cluster, cluster_list2 = cluster2,
+compare_clusters(cluster_list1 = cluster$clusters, 
+                 cluster_list2 = cluster2$clusters,
                  ontology = "BP", OrgDb = "org.Hs.eg.db",
                  method = "Wang", combine = "BMA", plot = T,
                  low = "white", high = "red3",
