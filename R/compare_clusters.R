@@ -54,8 +54,8 @@ compare_clusters <- function(cluster_list1, cluster_list2,
   colnames(semantic_similarity) <- paste("Cluster ", 1:n, sep = "")
   for(m in 1:m){
     for(n in 1:n){
-      value <- mgoSim(GO1 = names(cluster_list1[m]),
-                      GO2 = names(cluster_list2[n]),
+      value <- mgoSim(GO1 = names(cluster_list1[cluster_list1 == m]),
+                      GO2 = names(cluster_list2[cluster_list2 == n]),
                       semData = GOData,
                       measure = method,
                       combine = combine)
