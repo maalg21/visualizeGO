@@ -46,8 +46,8 @@ compare_clusters <- function(cluster_list1, cluster_list2,
     print("cluster_list2 is not a named vector.")
   }
 
-  m <- length(cluster_list1)
-  n <- length(cluster_list2)
+  m <- length(unique(cluster_list1))
+  n <- length(unique(cluster_list2))
 
   semantic_similarity <- matrix(nrow = m, ncol = n)
   rownames(semantic_similarity) <- paste("Cluster ", 1:m, sep = "")
