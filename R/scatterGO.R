@@ -29,7 +29,7 @@ scatterGO <- function(similarity_matrix, cluster,
     stop("A GO semantic similarity matrix is required for performing the plot.")
   }
 
-  if (!"clusters" %in% names(clusters) || !"graph" %in% names(clusters)) {
+  if (!"clusters" %in% names(cluster) || !"graph" %in% names(cluster)) {
     stop("The 'clusters' input must contain both 'graph' and 'clusters' components.")
   }
 
