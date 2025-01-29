@@ -8,16 +8,22 @@
 #'
 #' @param similarity_matrix Squared matrix of the semantic similarity for each pair of terms calculated through any of the methods.
 #' @param cluster Grouping of GO-terms in the different clusters.
+#' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. GOSemSimDATA object. Default = "org.Hs.eg.db" (human)
 #' @param title Title of the plot
 #' @param colors Vector of colors for each of the represented clusters.
 #' @param labels Enable to write the Clusters number in the plot
+#' @param size Determine what the determination of the size of the dots is based on.
+#' It can be "genes" or "padj", if it depends on the number of genes annotated for that GO-term or on the significance value (calculated as -log10(padj)) of each GO-term respectively.
+#' @param scores If the size of the GO terms represented has been chosen according to their "padj", a named numerical vector of the values to be used. Normally, this value is reflected as -log10(padj).
 #'
-#' @return A description of what the function returns (e.g., a numeric vector, data frame, list).
+#' @return Scatter plot of the distances of the GO-terms..
 #'
 #' @export
 scatterGO <- function(similarity_matrix, cluster,
+                      OrgDb = "org.Hs.eg.db",
                       title = NULL, colors = NULL,
-                      labels = T) {
+                      labels = T, size = c("genes", "padj"),
+                      scores = NULL) {
 
   if (is.null(similarity_matrix)) {
     stop("A GO semantic similarity matrix is required for performing the plot.")
@@ -38,6 +44,29 @@ scatterGO <- function(similarity_matrix, cluster,
     tibble::column_to_rownames(var = "Row.names") %>%
     dplyr::mutate("Cluster" = paste("Cluster ", .$Cluster, sep = ""))
 
+  if (size == "genes") {
+    library(clusterProfiler)
+    library(OrgDb, character.only = T)
+
+    go_terms <- names(cluster$clusters)
+
+    # Get genes annotated to the GO terms
+    go_gene_mapping <- lapply(go_terms, function(go_term) {
+      genes <- clusterProfiler::bitr(go_term,
+                                     fromType = "GO",
+                                     toType = "SYMBOL",
+                                     OrgDb = OrgDb)
+      return(genes$SYMBOL)
+    })
+
+    names(go_gene_mapping) <- go_terms
+    size <- sapply(go_gene_mapping, length)/100
+
+  } else if (size == "padj") {
+
+
+  }
+
   library(ggplot2)
   if(is.null(colors)){
     colors <- generate_pastel_colors(n = cluster$nb_clusters)
@@ -51,10 +80,11 @@ scatterGO <- function(similarity_matrix, cluster,
 
     ggplot(pca_scores, aes(x = PC1, y = PC2,
                            color = Cluster)) +
-      geom_point(size = 4, alpha = 0.8) +
+      geom_point(aes(size = group), size = 4, alpha = 0.8) +
       geom_label(data = centroids, aes(label = Cluster),
                  vjust = -0.5, hjust = 0.5) +
       scale_color_manual(values = colors) +
+      scale_size_manual(values = size) +
       geom_hline(yintercept = 0, colour = "black") +
       geom_vline(xintercept = 0, colour = "black") +
       theme_minimal() +

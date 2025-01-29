@@ -5,7 +5,7 @@
 #' @param method_type Choose between "similarity" or "network" to select the method to assign the clusters to each input GO term.
 #' @param method Once selected the type of assignment, it's the method within each type selected to obtain the clusters.
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
-#' @param orgdb Organism to use as reference to obtain the GO-terms similarities. Default: "org.Hs.eg.db"
+#' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. Default: "org.Hs.eg.db"
 #' @param similarity_matrix Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.
 #' @param graph igraph object linking the input GO-terms.
 #' @param nb_clusters If it's known, number of clusters set to group the GO-terms.
@@ -20,7 +20,7 @@
 
 cluster_go_terms <- function(method_type = c("similarity", "network"),
                              method = NULL,
-                             orgdb = "org.Hs.eg.db",
+                             OrgDb = "org.Hs.eg.db",
                              ontology = c("BP", "CC", "MF"),
                              similarity_matrix = NULL,
                              graph,

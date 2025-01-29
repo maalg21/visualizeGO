@@ -125,7 +125,7 @@ calculate the similarity matrix between them. In this case, we choose
 [Wang's method](https://doi.org/10.1093/bioinformatics/btm087).
 
 ``` r
-similarity_matrix <- calculate_wang(graph = final_graph, # From the graph, we get the nodes.
+similarity_matrix <- calculate_wang(graph = graph, # From the graph, we get the nodes.
 ontology = "BP", # We select the category to which our GO-terms belong.
 orgdb = "org.Hs.eg.db") # We use human annotation as a reference.
 ```
@@ -136,7 +136,7 @@ the number of clusters in which the GO-terms are grouped.
 ``` r
 cluster <- cluster_go_terms(method_type = "similarity", method = "wang", 
 orgdb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix, 
-graph = final_graph, nb_clusters = NULL, k_range = 2:10)
+graph = graph, nb_clusters = NULL, k_range = 2:10)
 ```
 
 This function tells you the number of clusters in which your list of GO-terms 
@@ -180,10 +180,11 @@ our grouping looks like.
 Furthermore, with the ```scatterGO``` function we can represent the GO terms as a
 scatter plot represented by the first two components of a Principal Component Analysis
 (PCA) of the similarity matrix.
+
 ``` r
-scatterGO <- function(similarity_matrix, cluster,
-                      title = "Distance Between GO-Terms", colors = colors,
-                      labels = T)
+scatterGO(similarity_matrix, cluster,
+title = "Distance Between GO-Terms",
+colors = colors, labels = T)
 ```
 ![Scatter Plot](inst/images/scatter_plot.png)
 

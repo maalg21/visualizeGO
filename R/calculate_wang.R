@@ -11,13 +11,13 @@
 #'
 #' @param graph A graph object that connects the input GO-terms with their parents and children terms
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
-#' @param orgdb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
+#' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
 #' @return A similarity matrix with all the relationships between the GO-terms presented in the input graph.
 #' @references Wang et al., (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23:10, 1274–1281, \href{https://doi.org/10.1093/bioinformatics/btm087}{10.1093/bioinformatics/btm087}
 #' @export
 
 calculate_wang <- function(graph, ontology = c("BP", "CC", "MF"),
-                                      orgdb = "org.Hs.eg.db") {
+                                      OrgDb = "org.Hs.eg.db") {
   # Load required libraries
   if (!requireNamespace("GOSemSim", quietly = TRUE)) {
     stop("Please install the 'GOSemSim' package.")
@@ -27,8 +27,8 @@ calculate_wang <- function(graph, ontology = c("BP", "CC", "MF"),
   library(GOSemSim)
 
   # Load the appropriate GO data
-  if (!requireNamespace(orgdb, quietly = TRUE)) {
-    stop(paste("Please install the", orgdb, "package to proceed."))
+  if (!requireNamespace(OrgDb, quietly = TRUE)) {
+    stop(paste("Please install the", OrgDb, "package to proceed."))
   }
 
   # Validate graph input
@@ -44,7 +44,7 @@ calculate_wang <- function(graph, ontology = c("BP", "CC", "MF"),
     stop("Not enough unique GO terms to compute similarity.")
   }
 
-  sem_data <- godata(ont = ontology, OrgDb = orgdb, computeIC = FALSE)
+  sem_data <- godata(ont = ontology, OrgDb = OrgDb, computeIC = FALSE)
 
   # Initialize similarity matrix for all GO terms
   similarity_matrix <- matrix(0,

@@ -9,13 +9,13 @@
 #'
 #' @param graph A graph object that connects the input GO-terms with their parents and children terms
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
-#' @param orgdb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
+#' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
 #' @return A similarity matrix with all the relationships between the GO-terms presented in the input graph.
 #' @references Resnik (1995) Using Information Content to Evaluate Semantic Similarity in a Taxonomy. *Proceedings of the 14th International Joint Conference on Artificial Intelligence*, \href{https://doi.org/10.48550/arXiv.cmp-lg/9511007}{10.48550/arXiv.cmp-lg/9511007}
 #' @export
 
 calculate_resnik <- function(graph, ontology = c("BP", "CC", "MF"),
-                             orgdb = "org.Hs.eg.db") {
+                             OrgDb = "org.Hs.eg.db") {
   # Load necessary library
   if (!requireNamespace("GOSemSim", quietly = TRUE)) {
     stop("The GOSemSim package is required. Install it using install.packages('GOSemSim').")
@@ -24,8 +24,8 @@ calculate_resnik <- function(graph, ontology = c("BP", "CC", "MF"),
   library(GOSemSim)
 
   # Load the appropriate GO data
-  if (!requireNamespace(orgdb, quietly = TRUE)) {
-    stop(paste("Please install the", orgdb, "package to proceed."))
+  if (!requireNamespace(OrgDb, quietly = TRUE)) {
+    stop(paste("Please install the", OrgDb, "package to proceed."))
   }
 
   # Validate graph input
@@ -42,7 +42,7 @@ calculate_resnik <- function(graph, ontology = c("BP", "CC", "MF"),
   }
 
   # Prepare the GO data
-  sem_data <- godata(OrgDb = orgdb, ont = ontology, computeIC = TRUE)
+  sem_data <- godata(OrgDb = OrgDb, ont = ontology, computeIC = TRUE)
 
   # Initialize similarity matrix for individual GO terms
   similarity_matrix <- matrix(0,

@@ -114,6 +114,7 @@ build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = 
       warning("Filtering resulted in an empty graph. Returning the full graph instead.")
     }
 
+    V(graph)$origin <- ifelse(V(graph)$name %in% input_terms, "input", "external")
     return(graph)
 
   } else {
