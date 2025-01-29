@@ -33,6 +33,11 @@ scatterGO <- function(similarity_matrix, cluster,
     stop("The 'clusters' input must contain both 'graph' and 'clusters' components.")
   }
 
+  # Only representing the distances between inputed GO-terms
+  graph <- cluster$graph
+  similarity_matrix <- similarity_matrix[V(graph)$name[V(graph)$origin == "input"],
+                                         V(graph)$name[V(graph)$origin == "input"]]
+
   distance_matrix <- 1 - similarity_matrix
   mds_result <- cmdscale(as.dist(distance_matrix), k = 2)
   pca_result <- prcomp(as.dist(distance_matrix))
@@ -40,31 +45,31 @@ scatterGO <- function(similarity_matrix, cluster,
   pca_scores <- merge(pca_scores, by.x = "row.names",
                       data.frame("IDs" = names(cluster$clusters),
                                  "Cluster" = cluster$clusters), by.y = "IDs",
-                      all = T) %>%
+                      all.x = T) %>%
     tibble::column_to_rownames(var = "Row.names") %>%
     dplyr::mutate("Cluster" = paste("Cluster ", .$Cluster, sep = ""))
 
   if (size == "genes") {
-    library(clusterProfiler)
+    library(AnnotationDbi)
     library(OrgDb, character.only = T)
 
-    go_terms <- names(cluster$clusters)
+    go_terms <- c(V(graph)$name[V(graph)$origin == "input"])
 
     # Get genes annotated to the GO terms
-    go_gene_mapping <- lapply(go_terms, function(go_term) {
-      genes <- clusterProfiler::bitr(go_term,
-                                     fromType = "GO",
-                                     toType = "SYMBOL",
-                                     OrgDb = OrgDb)
-      return(genes$SYMBOL)
-    })
-
+    go_gene_mapping <- list()
+    for(g in 1:length(go_terms)){
+      tmp <- AnnotationDbi::select(x = get(OrgDb),
+                                   keys = go_terms[g],
+                                   keytype = "GOALL",
+                                   columns = "SYMBOL")
+      genes <- c(tmp$SYMBOL)
+      go_gene_mapping[[g]] <- unique(genes)
+    }
     names(go_gene_mapping) <- go_terms
     size <- sapply(go_gene_mapping, length)/100
 
   } else if (size == "padj") {
-
-
+    size <- scores
   }
 
   library(ggplot2)
@@ -78,15 +83,15 @@ scatterGO <- function(similarity_matrix, cluster,
       group_by(Cluster) %>%
       dplyr::summarise(PC1 = mean(PC1), PC2 = mean(PC2))
 
-    ggplot(pca_scores, aes(x = PC1, y = PC2,
-                           color = Cluster)) +
-      geom_point(aes(size = group), size = 4, alpha = 0.8) +
+    ggplot(pca_scores %>% tibble::rownames_to_column(var = "group"),
+           aes(x = PC1, y = PC2, color = Cluster)) +
+      geom_point(aes(size = group), alpha = 0.8) +
       geom_label(data = centroids, aes(label = Cluster),
                  vjust = -0.5, hjust = 0.5) +
       scale_color_manual(values = colors) +
       scale_size_manual(values = size) +
-      geom_hline(yintercept = 0, colour = "black") +
-      geom_vline(xintercept = 0, colour = "black") +
+      geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
+      geom_vline(xintercept = 0, colour = "black", linetype = "dashed") +
       theme_minimal() +
       theme(legend.position = "none",
             axis.title = element_text(size = 15, face = "bold", hjust = .5),
@@ -94,14 +99,15 @@ scatterGO <- function(similarity_matrix, cluster,
       labs(title = title,
            x = "PC1",y = "PC2")
   } else {
-    ggplot(pca_scores, aes(x = PC1, y = PC2,
-                           color = Cluster)) +
-      geom_point(size = 4, alpha = 0.8) +
+    ggplot(pca_scores %>% tibble::rownames_to_column(var = "group"),
+           aes(x = PC1, y = PC2, color = Cluster)) +
+      geom_point(aes(size = group), alpha = 0.8) +
       scale_color_manual(values = colors) +
-      geom_hline(yintercept = 0, colour = "black") +
-      geom_vline(xintercept = 0, colour = "black") +
+      scale_size_manual(values = size) +
+      geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
+      geom_vline(xintercept = 0, colour = "black", linetype = "dashed") +
       theme_minimal() +
-      theme(legend.position = "none",
+      theme(legend.position = "right",
             axis.title = element_text(size = 15, face = "bold", hjust = .5),
             plot.title = element_text(size = 20, face = "bold", hjust = .5)) +
       labs(title = title,
