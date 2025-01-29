@@ -4,14 +4,14 @@
 \alias{calculate_lin}
 \title{Calculate Lin Similarity Matrix}
 \usage{
-calculate_lin(graph, ontology = c("BP", "CC", "MF"), orgdb = "org.Hs.eg.db")
+calculate_lin(graph, ontology = c("BP", "CC", "MF"), OrgDb = "org.Hs.eg.db")
 }
 \arguments{
 \item{graph}{A graph object that connects the input GO-terms with their parents and children terms}
 
 \item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 
-\item{orgdb}{Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"}
+\item{OrgDb}{Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"}
 }
 \value{
 A similarity matrix with all the relationships between the GO-terms presented in the input graph.

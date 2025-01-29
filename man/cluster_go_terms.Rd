@@ -7,7 +7,7 @@
 cluster_go_terms(
   method_type = c("similarity", "network"),
   method = NULL,
-  orgdb = "org.Hs.eg.db",
+  OrgDb = "org.Hs.eg.db",
   ontology = c("BP", "CC", "MF"),
   similarity_matrix = NULL,
   graph,
@@ -20,7 +20,7 @@ cluster_go_terms(
 
 \item{method}{Once selected the type of assignment, it's the method within each type selected to obtain the clusters.}
 
-\item{orgdb}{Organism to use as reference to obtain the GO-terms similarities. Default: "org.Hs.eg.db"}
+\item{OrgDb}{Organism to use as reference to obtain the GO-terms similarities. Default: "org.Hs.eg.db"}
 
 \item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 
