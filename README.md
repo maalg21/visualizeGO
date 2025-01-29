@@ -15,9 +15,7 @@
         -   [Clustering the GO-terms using Wang Similarity Method](#clustering-the-go-terms-using-wang-similarity-method)
         -   [Clustering the GO-terms based on the network](#clustering-the-go-terms-based-on-the-network)
     -   [Visualize GO-terms relationships](#visualize-go-terms-relationships)
-    -   [Comparing GO-term lists](#comparing-go-term-lists)
-        -   [Comparing lists of GO-terms](#comparing-lists-of-go-terms)
-        -   [Comparing clusters of GO-terms](#comparing-clusters-of-go-terms)
+    -   [Comparing lists of GO-terms](#comparing-lists-of-go-terms)
 -   📚 [References](#references)
 -   🤝 [Contribution](#contribution)
 -   📜 [Licence](#licence)
@@ -85,33 +83,21 @@ you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/example.R
 of how we have done it.
 
 ``` r
-graph <- build_hierarchical_graph(go_list1 = GO_BP$ID, nb_lists = "single", go_sim_object = NULL)
+graph <- build_hierarchical_graph(go_list1 = GO_BP$ID,
+nb_lists = "single", go_sim_object = NULL, filter = T)
 ```
+
+The number of GO terms that require analysis is increased by obtaining all the parent 
+and child terms from the list of input GO terms. In order to focus only on the input 
+GO terms, the `filter` argument is used to obtain those terms most related to the input 
+GO terms. That is to say, the parental terms linked to more than one input GO term 
+and the child terms that link two (or more) input GO terms. However, it is important 
+to note that the filter does not remove those GO terms that are children of only one 
+term but are parents of another, and these are included in the graph.
 
 In this case, we will only use a single list of GO-terms. But the package allows 
-us to obtain the semantic relations between two lists of GO-terms. Once we have 
-created the initial graph - *where ALL semantic relations are annotated* - we 
-filter this graph, to keep only the most informative relations 
-(*those directly related to the terms of interest*).
-
-This first function filters out those nodes (GO-terms) that are not connected 
-to any of the GO-terms used as input.
-
-``` r
-expanded_graph <- expand_graph(graph = graph, 
-                               go_list1 = GO_BP$ID,
-                               nb_lists = "single")
-```
-
-Next, we retain the ancestor GO-terms of those used as input.
-
-``` r
-final_graph <- retain_ancestors_above_input_terms(graph = expanded_graph, 
-                                                  go_list1 = GO_BP$ID, 
-                                                  nb_lists = "single")
-```
-
-From this final graph, we then grouped the GO-terms.
+us to obtain the semantic relations between two lists of GO-terms. From this final 
+graph, we then grouped the GO-terms.
 
 ### Clustering the GO-terms
 
@@ -294,15 +280,18 @@ This function also allows you to select several clusters and visualize them in t
 
 ![Six and seven](inst/images/plot3.png) For example, in this case, we selected **Clusters 6** and **7** which are related to the immune system.
 
-### Comparing GO-term lists
+### Comparing lists of GO-terms
 
-In this case, we can compare lists of GO-terms in two ways.
+Finally, in order to be able to compare two lists of GO-terms or two lists of Clusters
+we can also use this same package with the `compareGO` function. Thanks to this
+function we obtain a heat map where it will be observed between which GO-terms there
+is a greater similarity within the two lists. Of course, the measurement of distances
+between GO-terms does not depend on a network of terms; therefore, we can only choose
+between semantic similarity methods, such as Resnik, Lin, etc. to perform the analysis.
 
-#### Comparing lists of GO-terms
-
-Finally, in order to be able to compare two lists of GO-terms we can also use this same package with the `go_similarity_heatmap` function. Thanks to this function we obtain a heat map where it will be observed between which GO-terms there is a greater similarity within the two lists. Of course, the measurement of distances between GO-terms does not depend on a network of terms; therefore, we can only choose semantic similarity terms such as Resnik, Lin, etc.
-
-In this case it is **MANDATORY** that the input is two lists of GO-terms. Using the same study as a basis, we will compare the two lists of GO-terms that were detected for each of the groups of animals.
+In this case it is **MANDATORY** that the input is two lists of GO-terms or two lists of
+clusters of GO-terms. Using the same study as a basis, we will compare the two lists
+of GO-terms that were detected for each of the groups of animals.
 
 ``` r
 # This is the second list of GO-terms
@@ -313,25 +302,31 @@ data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
 GO_BP1 <- data[data$Category == "BP",] %>% top_n(n = 10)
 GO_BP2 <- data2[data2$Category == "BP",] %>% top_n(n = 10)
 
-go_similarity_heatmap(go_list1 = GO_BP1$ID, go_list2 = GO_BP2$ID,
-                      ontology = "BP", method = "Wang",
-                      orgdb = "org.Hs.eg.db",
-                      xlab = "GO List 1", ylab = "GO List 2",
-                      main = "", cex = 10, 
-                      values = T, # You can choose to show or not the similarity values inside the plot matrix
-                      cex_values = 3)
+compareGO(comaprison = "GO",
+list1 = GO_BP1$ID, list2 = GO_BP2$ID,
+ontology = "BP", OrgDb = "org.Hs.eg.db",
+method = "Wang", plot = T,
+low = "white", high = "red3",
+labs = c("GO List 1", "GO List 2"),
+cex = 3, cex_axis = 10)
 ```
 
 ![](inst/images/heatmap.png)
 
 Here is a comparison of 10 GO-terms from each of the lists, with the highest similarity shown in red and the lowest in white.
 
-#### Comparing clusters of GO-terms
+Or, on the other hand, it is also possible to compare clusters of GO-terms that have
+been previously detected by semantic similarity
+(**or by other packages that make the clustering of GO-terms such as [rrvgo](https://www.bioconductor.org/packages/release/bioc/html/rrvgo.html)**).
+In this case, the comparison can only be done with one of the similarity methods such
+as Resnik, Lin or Wang.
 
-In addition, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity (**or by other packages that make the clustering of GO-terms**).
-In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin and Wang.
-
-In order to understand how this step would be done, the code below shows step by step how to obtain the clusters for the second data table `data2`. Remember that **ONLY** clusters of GO-terms of the same ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make *biological* sense to compare clusters of GO-terms obtained through their conformation in the network ... But you do you!
+In order to understand how this step would be done, the code below shows step by step
+how to obtain the clusters for the second data table `data2`. Remember that
+**ONLY** clusters of GO-terms of the same ontology category
+*(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make
+*biological* sense to compare clusters of GO-terms obtained through their
+conformation in the network ... But you do you!
 
 ``` r
 # First, graph
@@ -358,12 +353,13 @@ cluster2 <- cluster_go_terms(method_type = "similarity", method = "wang",
 # And that's suspicious ... Indeed the optimal number now is 24.
 
 # Third, comparison
-compare_clusters(cluster_list1 = cluster$clusters, 
-                 cluster_list2 = cluster2$clusters,
-                 ontology = "BP", OrgDb = "org.Hs.eg.db",
-                 method = "Wang", combine = "BMA", plot = T,
-                 low = "white", high = "red3",
-                 labs = c("List 1", "List 2"), cex = 3)
+compareGO(comaprison = "cluster",
+list1 = cluster$clusters, list2 = cluster2$clusters,
+ontology = "BP", OrgDb = "org.Hs.eg.db",
+method = "Wang", combine = "BMA", plot = T,
+low = "white", high = "red3",
+labs = c("List 1", "List 2"),
+cex = 3, cex_axis = 10)
 ```
 
 ![](inst/images/heatmap2.png)

@@ -8,7 +8,8 @@ build_hierarchical_graph(
   go_list1,
   go_list2 = NULL,
   go_sim_object = NULL,
-  nb_lists = c("single", "double")
+  nb_lists = c("single", "double"),
+  filter = T
 )
 }
 \arguments{
@@ -18,11 +19,13 @@ build_hierarchical_graph(
 
 \item{go_sim_object}{GO-terms similarity relationships save as environment.}
 
-\item{nb_lists}{Allows to select whenever you are gonna use one ("single") or two ("double") lists}
+\item{nb_lists}{Allows to select whenever you are gonna use one ("single") or two ("double") lists.}
+
+\item{filter}{Default = TRUE.}
 }
 \value{
 A graph object that links the input GO-terms with their ancestors and childrens.
 }
 \description{
-This function link all the parent and child of the input GO-terms list and make a graph
+This function links all parents and children in the list of input GO terms and creates a graph, establishing hierarchical relationships between the GO terms.
 }
