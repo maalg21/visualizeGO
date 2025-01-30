@@ -4,12 +4,9 @@
 #'
 #' @param method_type Choose between "similarity" or "network" to select the method to assign the clusters to each input GO term.
 #' @param method Once selected the type of assignment, it's the method within each type selected to obtain the clusters.
-#' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
-#' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. Default: "org.Hs.eg.db"
 #' @param similarity_matrix Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.
 #' @param graph igraph object linking the input GO-terms.
 #' @param nb_clusters If it's known, number of clusters set to group the GO-terms.
-#' @param k_range Specified range to uses Silhouette scores to determine the optimal number of clusters from.
 #' @return A list containing:
 #' \describe{
 #' \item{graph}{An igraph object with cluster memberships assigned.}
@@ -20,8 +17,6 @@
 
 cluster_go_terms <- function(method_type = c("similarity", "network"),
                              method = NULL,
-                             OrgDb = "org.Hs.eg.db",
-                             ontology = c("BP", "CC", "MF"),
                              similarity_matrix = NULL,
                              graph, nb_clusters = NULL) {
 
@@ -83,7 +78,7 @@ cluster_go_terms <- function(method_type = c("similarity", "network"),
 
   } else if (method_type == "network") {
     if (!requireNamespace("igraph", quietly = TRUE)) {
-      stop("The igraph package is required. Install it using install.packages('GOSemSim').")
+      stop("The igraph package is required. Install it using install.packages('igraph').")
     } else {
       library(igraph)
     }

@@ -1,17 +1,20 @@
-#' Scatter Plot of GO-terms
+#' Filter GO-terms
 #'
-#' Function to make a plot of GO terms as scattered points.
-#' Distances between points represent the similarity between terms, and axes
-#' are the first 2 components of applying a PCA to the similarity matrix.
-#' Size of the point represents the number of genes the GO term contains.
-#' Each color represents a cluster.
+#' This function filters the GO-terms of the graph to obtain those that are more connected (similarity score above the threshold).
 #'
 #' @param similarity_matrix Squared matrix of the semantic similarity for each pair of terms calculated through any of the methods.
 #' @param cluster Grouping of GO-terms in the different clusters.
 #' @param threshold Similarity threshold (0-1). Default = 0.1
 #' @param input_terms Important GO-terms (tipically those that you analyzed) that you want to keep in the next steps. Normally, only those introduced at the start are kept.
 #'
-#' @return Filtered graph and three vectors of connected terms, eliminated terms and outliers.
+#' @return A list containing:
+#' \describe{
+#' \item{graph}{A filtered igraph object, where the least connected terms have been eliminated.}
+#' \item{similarity_matrix}{}
+#' \item{deleted}{List of GO-terms eliminated for not presenting a similarity greater than the threshold in at least half of the relationships.}
+#' \item{connected}{List of GO-terms that are kept in the analysis.}
+#' \item{outliers}{List of GO-terms considered outliers.}
+#' }
 #'
 #' @export
 

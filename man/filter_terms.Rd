@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_terms.R
 \name{filter_terms}
 \alias{filter_terms}
-\title{Scatter Plot of GO-terms}
+\title{Filter GO-terms}
 \usage{
 filter_terms(similarity_matrix, graph, threshold = 0.1, input_terms = NULL)
 }
@@ -16,12 +16,15 @@ filter_terms(similarity_matrix, graph, threshold = 0.1, input_terms = NULL)
 \item{cluster}{Grouping of GO-terms in the different clusters.}
 }
 \value{
-Filtered graph and three vectors of connected terms, eliminated terms and outliers.
+A list containing:
+\describe{
+\item{graph}{A filtered igraph object, where the least connected terms have been eliminated.}
+\item{similarity_matrix}{}
+\item{deleted}{List of GO-terms eliminated for not presenting a similarity greater than the threshold in at least half of the relationships.}
+\item{connected}{List of GO-terms that are kept in the analysis.}
+\item{outliers}{List of GO-terms considered outliers.}
+}
 }
 \description{
-Function to make a plot of GO terms as scattered points.
-Distances between points represent the similarity between terms, and axes
-are the first 2 components of applying a PCA to the similarity matrix.
-Size of the point represents the number of genes the GO term contains.
-Each color represents a cluster.
+This function filters the GO-terms of the graph to obtain those that are more connected (similarity score above the threshold).
 }

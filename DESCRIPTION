@@ -1,7 +1,7 @@
 Package: visualizeGO
 Type: Package
 Title: Hierarchical clustered visualization of GO terms
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person(
       "María", "Alonso-García",
@@ -31,7 +31,8 @@ Imports:
     webshot,
     grid,
     gridExtra,
-    scales
+    scales,
+    factoextra
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends: R (>= 4.0.0)

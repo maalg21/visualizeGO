@@ -105,13 +105,18 @@ of GO-terms itself.
 
 The function `cluster_go_terms` assigns cluster memberships to the graph nodes 
 (GO terms) based on the chosen network clustering method. The function has two 
-main modes of operation: (1) Similarity-based clustering using a similarity 
-matrix and performs hierarchical clustering, and assigns GO terms to clusters. 
-It uses silhouette scores to determine the optimal number of clusters 
-(`nb_clusters`) from a specified range. (2) Network-based clustering, this method 
-requires a network object (e.g., an igraph object) representing GO terms and 
-their relationships. It supports two network clustering methods: Walktrap and 
-Edge Betweenness.
+main modes of operation: 
+
+1. Similarity-based clustering using a similarity matrix and perform hierarchical
+clustering, and assigns GO terms to clusters. To determine the optimal number of
+clusters (`nb_clusters`) you have to choose a range (`k_range`). Afterwards, 
+the number of clusters is determined using the
+[Elbow](https://www.atlantis-press.com/proceedings/isstec-19/125944915) 
+and/or [Silhouette](https://www.sciencedirect.com/science/article/pii/0377042787901257) methods.  
+
+2. Network-based clustering, this method requires a network object (e.g., an igraph
+object) representing GO terms and their relationships. It supports two network
+clustering methods: Walktrap and Edge Betweenness.
 
 To see how both clustering methods behave, we will perform both and check how 
 our GO-terms are grouped.
@@ -140,24 +145,60 @@ filtered_graph <- filter_terms(similarity_matrix, graph, threshold = 0.1)
 From this function we obtain the filtered graph and several vectors of GO-terms:
 (1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a
 similarity score above the threshold 
-(*you will never find the input terms here even if they are not connected*) and 
+(*you will never find the input terms here even if they are not connected*), and 
 (3) outliers (*those that are not similar to any other term*).
 
-Once the similarity matrix is obtained, we calculate - *through the Silhouette Method* - 
-the number of clusters in which the GO-terms are grouped.
+This filtering is important, especially when it comes to detecting outliers which, 
+when we carry out the clustering, have a great influence on the distances between 
+terms, making the clustering incorrect.
 
-To determine the ```k_range``` typically 
+Following the filtration of the similarity matrix, the number of clusters into
+which the GO terms are grouped is calculated. To this end, two different methods
+are employed: the Elbow method and the Silhouette method, based on the
+[`fviz_nbclust`](https://www.rdocumentation.org/packages/factoextra/versions/1.0.7/topics/fviz_nbclust)
+function of the 
+[`factoextra`](https://rdocumentation.org/packages/factoextra/versions/1.0.7) 
+package. Within this package, the `determine_nbclusters` function is presented,
+which incorporates both methods in a single step, thereby enabling the user to
+determine the number of clusters. 
+
+K-means clustering is probably one of the best known partitioning methods. The idea
+behind k-means clustering is to define groups in such a way that the total variation
+within a group, which measures the compactness of the groups, is minimized. The
+k-means algorithm is not deterministic, which means that the clustering results can
+be different each time the algorithm is run, even on the same data set.
+
+The silhouette score interpretation measures the quality of the Silhouette score
+of k-means by evaluating the quality of grouping of data points within their assigned
+clusters compared to data points in other clusters. On the other hand, the Elbow
+method calculates and graphs the sum of squares for each number of clusters and
+looks for a change in slope from steep to gentle (an elbow) to determine the optimal
+number of clusters. 
+
+
+For both methods, it's necessary to determine the `k_range`. This range includes
+the number of clusters in which both methods will test the groupings. In this case,
+we recommend to set this range from 1 
+(*all terms are included in the same cluster*) to the number of GO-terms
+(*i.e., each GO-term is in a cluster of its own*).
+
+```r
+set.seed(1234) # For reproducibility
+similarity_matrix <- filtered_graph$similarity_matrix
+graph <- filtered_graph$graph
+
+
+```
+
+This function tells you the number of clusters in which your list of GO-terms 
+input is grouped according to each method.
+
 
 ``` r
 cluster <- cluster_go_terms(method_type = "similarity", method = "wang", 
 OrgDb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix, 
 graph = graph, k_range = 2:length(GO_BP$ID))
 ```
-
-This function tells you the number of clusters in which your list of GO-terms 
-input is grouped according to the Silhouette method. In addition, it is also 
-possible to know the number of clusters through `clusters$nb_clusters`.
-
 In our case, 7 clusters have been detected. As this is a grouping by similarity, 
 each cluster has a more representative metabolic pathway associated with it, 
 being the one that is more closely related to the rest of the GO-terms within 
@@ -230,7 +271,13 @@ graph = final_graph, ontology = "BP", orgdb = "org.Hs.eg.db")
 
 A look at the `network$clusters` object shows that we have obtained 35 clusters.
 
-Using other method - *Walktrap method* - we get 29 clusters. This method is a community detection algorithm used to cluster nodes in a network (graph) based on their structural properties. It is based on the idea that nodes in the same community are more likely to be reachable from each other by short random walks than nodes from different communities. This method was proposed by [Pons & Latapy (2005)](https://doi.org/10.1007/11569596_31) in the context of social networks and other complex systems.
+Using other method - *Walktrap method* - we get 29 clusters. This method is a
+community detection algorithm used to cluster nodes in a network (graph) based on
+their structural properties. It is based on the idea that nodes in the same community
+are more likely to be reachable from each other by short random walks than nodes
+from different communities. This method was proposed by
+[Pons & Latapy (2005)](https://doi.org/10.1007/11569596_31) in the context of
+social networks and other complex systems.
 
 ``` r
 walk <- cluster_go_terms(method_type = "network", method = "Walktrap", 
@@ -391,9 +438,10 @@ The graph shows how Cluster 4 in List 1 and Cluster 23 in List 2 are the most si
 ## References
 
 1.  Alonso-García et al. (2023) Transcriptome analysis of perirenal fat from Spanish Assaf suckling lamb carcasses showing different levels of kidney knob and channel fat. *Frontiers in Veterinary Science*, 10 [10.3389/fvets.2023.1150996](https://doi.org/10.3389/fvets.2023.1150996)
-2.  Wang et al. (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23(10): 1274-1281 [10.1093/bioinformatics/btm087](https://doi.org/10.1093/bioinformatics/btm087)
+2.  Umargono et al. (2020) K-Means Clustering Optimization Using the Elbow Method and Early Centroid Determination Based on Mean and Median Formula. *Proceedings of the 2nd International Seminar on Science and Technology*, ISSTEC 2019 [10.2991/assehr.k.201010.019](https://www.atlantis-press.com/proceedings/isstec-19/125944915)
 3.  Rousseeuw (1987) Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. *Journal of Computational and Applied Mathematics*, 20: 53-65 [10.1016/0377-0427(87)90125-7](https://doi.org/10.1016/0377-0427(87)90125-7)
-4.  Pons & Latapy (2005) Computing Communities in Large Networks Using Random Walks. In: *Computer and Information Sciences*, 3733 [10.1007/11569596_31](https://doi.org/10.1007/11569596_31)
+4.  Wang et al. (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23(10): 1274-1281 [10.1093/bioinformatics/btm087](https://doi.org/10.1093/bioinformatics/btm087)
+5.  Pons & Latapy (2005) Computing Communities in Large Networks Using Random Walks. In: *Computer and Information Sciences*, 3733 [10.1007/11569596_31](https://doi.org/10.1007/11569596_31)
 
 ## Contribution
 

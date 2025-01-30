@@ -6,14 +6,12 @@
 #' @param go_list2 If enabled, second list of GO-terms to compare with the first one.
 #' @param go_sim_object GO-terms similarity relationships save as environment.
 #' @param nb_lists Allows to select whenever you are gonna use one ("single") or two ("double") lists.
-#' @param filter Default = TRUE.
 #'
 #' @return (1) A graph object that links the input GO-terms with their ancestors and childrens, (2).
 #' @export
 
 build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = NULL,
-                                     nb_lists = c("single", "double"),
-                                     filter = T) {
+                                     nb_lists = c("single", "double")) {
   # Match argument for nb_lists
   nb_lists <- match.arg(nb_lists)
 
