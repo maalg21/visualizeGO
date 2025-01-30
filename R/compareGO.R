@@ -62,7 +62,7 @@ compareGO <- function(comparison = c("GO", "cluster"),
       stop("list2 is not a named vector.")
     }
 
-    if (combine != c("avg", "BMA", "max", "rcmax")){
+    if (!combine %in% c("avg", "BMA", "max", "rcmax")){
       stop("One of 'max', 'avg', 'rcmax', 'BMA' methods")
     }
   }
@@ -78,14 +78,14 @@ compareGO <- function(comparison = c("GO", "cluster"),
   # GO-terms comparison ----
   if(comparison == "GO"){
     # Initialize the similarity matrix
-    similarity_matrix <- matrix(0, nrow = length(list1),
+    semantic_similarity <- matrix(0, nrow = length(list1),
                                 ncol = length(list2),
                                 dimnames = list(list1, list2))
 
     # Calculate pairwise similarities
-    for (i in seq_along(go_list1)) {
-      for (j in seq_along(go_list2)) {
-        similarity_matrix[i, j] <- GOSemSim::goSim(list1[i], list2[j],
+    for (i in seq_along(list1)) {
+      for (j in seq_along(list2)) {
+        semantic_similarity[i, j] <- GOSemSim::goSim(list1[i], list2[j],
                                                    semData = go_data,
                                                    measure = method)
       }
@@ -94,17 +94,21 @@ compareGO <- function(comparison = c("GO", "cluster"),
 
   # Clusters comparison ----
   if (comparison == "cluster") {
-    m <- length(unique(cluster_list1))
-    n <- length(unique(cluster_list2))
+    m <- length(unique(list1))
+    n <- length(unique(list2))
 
     semantic_similarity <- matrix(nrow = m, ncol = n)
-    rownames(semantic_similarity) <- paste("Cluster ", 1:m, sep = "")
-    colnames(semantic_similarity) <- paste("Cluster ", 1:n, sep = "")
+    rownames(semantic_similarity) <- paste("Cluster ",
+                                           1:length(unique(list1)),
+                                           sep = "")
+    colnames(semantic_similarity) <- paste("Cluster ",
+                                           1:length(unique(list2)),
+                                           sep = "")
     for(m in 1:m){
       for(n in 1:n){
-        value <- GOSemSim::mgoSim(GO1 = names(cluster_list1[cluster_list1 == m]),
-                                  GO2 = names(cluster_list2[cluster_list2 == n]),
-                                  semData = GOData,
+        value <- GOSemSim::mgoSim(GO1 = names(list1[list1 == m]),
+                                  GO2 = names(list2[list2 == n]),
+                                  semData = go_data,
                                   measure = method,
                                   combine = combine)
         semantic_similarity[m, n] <- value
