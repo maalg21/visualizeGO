@@ -11,8 +11,7 @@ cluster_go_terms(
   ontology = c("BP", "CC", "MF"),
   similarity_matrix = NULL,
   graph,
-  nb_clusters = NULL,
-  k_range = 2:10
+  nb_clusters = NULL
 )
 }
 \arguments{

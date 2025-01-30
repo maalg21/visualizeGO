@@ -8,7 +8,7 @@
 #' @param nb_lists Allows to select whenever you are gonna use one ("single") or two ("double") lists.
 #' @param filter Default = TRUE.
 #'
-#' @return A graph object that links the input GO-terms with their ancestors and childrens.
+#' @return (1) A graph object that links the input GO-terms with their ancestors and childrens, (2).
 #' @export
 
 build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = NULL,

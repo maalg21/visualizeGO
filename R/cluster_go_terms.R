@@ -23,9 +23,7 @@ cluster_go_terms <- function(method_type = c("similarity", "network"),
                              OrgDb = "org.Hs.eg.db",
                              ontology = c("BP", "CC", "MF"),
                              similarity_matrix = NULL,
-                             graph,
-                             nb_clusters = NULL,
-                             k_range = 2:10) {
+                             graph, nb_clusters = NULL) {
 
   method_type <- match.arg(method_type)
 

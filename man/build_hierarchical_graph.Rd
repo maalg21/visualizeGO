@@ -24,7 +24,7 @@ build_hierarchical_graph(
 \item{filter}{Default = TRUE.}
 }
 \value{
-A graph object that links the input GO-terms with their ancestors and childrens.
+(1) A graph object that links the input GO-terms with their ancestors and childrens, (2).
 }
 \description{
 This function links all parents and children in the list of input GO terms and creates a graph, establishing hierarchical relationships between the GO terms.

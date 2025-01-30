@@ -39,9 +39,7 @@ You can install the development version of visualizeGO like so:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("maalg21/visualizeGO", 
-# force = TRUE # Just in case you have already installed an old version of the package
-)
+devtools::install_github("maalg21/visualizeGO", force = TRUE)
 ```
 
 ## Basic Use
@@ -59,7 +57,7 @@ data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms.xlsx", p
 This table contains all the GO-terms enriched for one of the sample groups of the study taken as a reference, and will be the GO-terms we will use as a reference in this explanation. We only need the GO IDs and the Gene Ontology (GO) category to which they belong.
 
 ``` r
-data <- data[,c("Category", "ID")]
+data <- data[,c("Category", "ID", "Padj")]
 
 # To make it easier, we will divide the main table into three categories (entirely optional).
 GO_BP <- data[data$Category == "BP",]
@@ -127,16 +125,33 @@ calculate the similarity matrix between them. In this case, we choose
 ``` r
 similarity_matrix <- calculate_wang(graph = graph, # From the graph, we get the nodes.
 ontology = "BP", # We select the category to which our GO-terms belong.
-orgdb = "org.Hs.eg.db") # We use human annotation as a reference.
+OrgDb = "org.Hs.eg.db") # We use human annotation as a reference.
 ```
+
+GO terms that demonstrate similarity above the designated ```threshold``` in a
+minimum of half of the comparisons will be designated as connected. Consequently,
+an elevated threshold will result in a reduced number of GO terms for clustering,
+and the threshold should be interpreted as the minimum level of similarity between
+GO terms.
+
+``` r
+filtered_graph <- filter_terms(similarity_matrix, graph, threshold = 0.1)
+```
+From this function we obtain the filtered graph and several vectors of GO-terms:
+(1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a
+similarity score above the threshold 
+(*you will never find the input terms here even if they are not connected*) and 
+(3) outliers (*those that are not similar to any other term*).
 
 Once the similarity matrix is obtained, we calculate - *through the Silhouette Method* - 
 the number of clusters in which the GO-terms are grouped.
 
+To determine the ```k_range``` typically 
+
 ``` r
 cluster <- cluster_go_terms(method_type = "similarity", method = "wang", 
-orgdb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix, 
-graph = graph, nb_clusters = NULL, k_range = 2:10)
+OrgDb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix, 
+graph = graph, k_range = 2:length(GO_BP$ID))
 ```
 
 This function tells you the number of clusters in which your list of GO-terms 
@@ -148,15 +163,13 @@ each cluster has a more representative metabolic pathway associated with it,
 being the one that is more closely related to the rest of the GO-terms within 
 the cluster.
 
-*Note that if the number of clusters detected is 10, it is possible that the maximum number of k-means has been reached when applying the Silhouette method. Check if raising the `k_range` parameter to 2:20 is still 10.*
-
 To see what 7 clusters are, we use the `generate_cluster_table` function, which 
 will give us a table (which we can later save as a PNG) with the relationship of 
 the clusters, the color they will have later in the final graph, the most 
 representative pathway and which GO IDs belong to each cluster.
 
 ``` r
-# colors <- generate_pastel_colors(n = 7) # This function was only created to generate a list of pastel colours of the number we determine 😊
+# colors <- generate_pastel_colors(n = 3) # This function was only created to generate a list of pastel colours of the number we determine 😊
 Table <- generate_cluster_table(cluster_output = cluster, method_type = "similarity", 
 similarity_matrix = similarity_matrix, text_color = "black", col_palette = colors)
 ```
@@ -179,14 +192,22 @@ our grouping looks like.
 
 Furthermore, with the ```scatterGO``` function we can represent the GO terms as a
 scatter plot represented by the first two components of a Principal Component Analysis
-(PCA) of the similarity matrix.
+(PCA) of the similarity matrix. For this function, we can choose whether the size
+of the dots that will represent the GO-terms is based on the size of the term based
+on the number of genes related to it ("```gene```"), or based on the adjusted p-value
+("```padj```") that characterises it in the previous analysis for its detection. If the
+latter option is chosen, it should be borne in mind that the padj values are very
+low, so we must provide the function with transformed values (*usually ```-log10(padj)```*).
 
 ``` r
 scatterGO(similarity_matrix, cluster,
+OrgDb = "org.Hs.eg.db",
 title = "Distance Between GO-Terms",
-colors = colors, labels = T)
+colors = colors, labels = T, size = "padj",
+scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 ![Scatter Plot](inst/images/scatter_plot.png)
+
 
 #### Clustering the GO-terms based on the network
 
