@@ -6,7 +6,7 @@
 #' @param method Once selected the type of assignment, it's the method within each type selected to obtain the clusters.
 #' @param similarity_matrix Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.
 #' @param graph igraph object linking the input GO-terms.
-#' @param nb_clusters If it's known, number of clusters set to group the GO-terms.
+#' @param nb_clusters Number of clusters previously calculated set to group the GO-terms.
 #' @return A list containing:
 #' \describe{
 #' \item{graph}{An igraph object with cluster memberships assigned.}
@@ -49,21 +49,6 @@ cluster_go_terms <- function(method_type = c("similarity", "network"),
 
     # Perform hierarchical clustering
     hc <- hclust(dist_matrix, method = "average")
-
-    # Assign cluster memberships to graph nodes
-    if(is.null(nb_clusters)){
-      # Calculate silhouette scores for a range of k
-      silhouette_scores <- sapply(k_range, function(k) {
-        cluster_assignment <- cutree(hc, k = k)
-        sil <- cluster::silhouette(cluster_assignment, dist_matrix)
-        mean(sil[, 3])  # Extract the average silhouette width
-      })
-
-      # Find the optimal k based on maximum silhouette score
-      optimal_k <- k_range[which.max(silhouette_scores)]
-      print(paste("Optimal k using Silhouette Method:", optimal_k))
-      nb_clusters <- optimal_k
-    }
 
     # Cut tree to form clusters
     cluster_assignments <- cutree(hc, k = nb_clusters)
