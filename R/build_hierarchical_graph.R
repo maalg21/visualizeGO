@@ -119,7 +119,7 @@ build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = 
   }
 
   # Add the origin for each node
-  if(nb_list == "double"){
+  if(nb_lists == "double"){
     V(graph)$list <- case_when(
       V(graph)$name %in% go_list1 ~ "List1",
       V(graph)$name %in% go_list2 ~ "List2",
