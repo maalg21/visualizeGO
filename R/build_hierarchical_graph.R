@@ -113,9 +113,20 @@ build_hierarchical_graph <- function(go_list1, go_list2 = NULL, go_sim_object = 
     }
 
     V(graph)$origin <- ifelse(V(graph)$name %in% input_terms, "input", "external")
-    return(graph)
 
   } else {
     stop("No edges found for the provided GO terms.")
   }
+
+  # Add the origin for each node
+  if(nb_list == "double"){
+    V(graph)$list <- case_when(
+      V(graph)$name %in% go_list1 ~ "List1",
+      V(graph)$name %in% go_list2 ~ "List2",
+      TRUE ~ NA)
+  } else {
+    V(graph)$list <- ifelse(V(graph)$name %in% go_list1, "List1", NA)
+  }
+
+  return(graph)
 }
