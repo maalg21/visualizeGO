@@ -47,6 +47,8 @@ filter_terms <- function(similarity_matrix,
     cat("GO-Terms", Outlier, "were not similar to any other GO-term. They are outliers.\n")
     cat("It'll be removed from the graph.\n")
     graph <- delete_vertices(graph, Outlier)
+    remove <- grep(Outlier, row.names(similarity_matrix))
+    similarity_matrix <- similarity_matrix[-remove, -remove]
   }
 
   # Obtain those GO-terms with lower similarity than the threshold ----
@@ -62,7 +64,14 @@ filter_terms <- function(similarity_matrix,
     deleted_GOterms <- V(graph)[!V(graph)$name %in% go_terms]$name
     graph <- delete_vertices(graph, deleted_GOterms)
     cat(paste(deleted_GOterms, collapse = ", "), "were removed from the graph.\n")
+    remove <- grep(paste(deleted_GOterms, collapse = "|"),
+                   row.names(similarity_matrix))
+    similarity_matrix <- similarity_matrix[-remove, -remove]
   }
 
-  return(list(graph = graph, deleted = deleted_GOterms, outliers = Outlier, connected = Connected))
+  return(list(graph = graph,
+              deleted = deleted_GOterms,
+              outliers = Outlier,
+              connected = Connected,
+              similarity_matrix = similarity_matrix))
 }
