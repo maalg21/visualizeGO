@@ -57,7 +57,14 @@ filter_terms <- function(similarity_matrix,
   # Obtain those GO-terms with lower similarity than the threshold ----
   above_threshold <- similarity_matrix >= threshold
   above_threshold <- rowSums(above_threshold)
-  Connected <- which(above_threshold>=(n / 2))
+
+  result <- tryCatch({
+    Connected <- which(above_threshold>=(n / 2))
+  }, error = function(e) {
+    stop("Error: The comparison operation failed. Lower your threshold as there is no term that has a greater similarity to it in at least half of the comparisons.")
+    return(NULL)
+  })
+
   Conected <- names(Connected)
 
   if (length(Connected) != 0){
