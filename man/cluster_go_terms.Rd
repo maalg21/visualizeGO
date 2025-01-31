@@ -21,7 +21,7 @@ cluster_go_terms(
 
 \item{graph}{igraph object linking the input GO-terms.}
 
-\item{nb_clusters}{If it's known, number of clusters set to group the GO-terms.}
+\item{nb_clusters}{Number of clusters previously calculated set to group the GO-terms.}
 }
 \value{
 A list containing:
