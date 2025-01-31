@@ -251,55 +251,29 @@ visualizeGO <- function(cluster,
     # Use preprocessed pch in the legend
     unique_shapes <- unique(V(graph)$shape)
     legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
-    if(length(unique(V(graph)$cluster)) <= 15){
-      if(nb_lists == "single"){
-        legend("topleft",
-               legend = c(labs, "Other Terms"),
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      } else {
-        legend("topleft",
-               legend = c(labs, "Other Terms"),
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      }
+
+    if(nb_lists == "single"){
+      legend("topright",
+             legend = c(labs, "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
     } else {
-      if(nb_lists == "single"){
-        legend("topright",
-               legend = c(labs, "Other Terms"),
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      } else {
-        legend("topright",
-               legend = c(labs, "Other Terms"),
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      }
+      legend("topright",
+             legend = c(labs, "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
     }
 
     # Add a legend for the node sizes (degree of connectivity)
-    if(length(unique(V(graph)$cluster)) <= 15){
-      legend("topleft", legend = c("Low Connectivity",
-                                   "High Connectivity"),
-             pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-             pt.cex = c(min(scaled_node_sizes),
-                        max(scaled_node_sizes)/3),
-             bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(0.01, 0.85))
-    } else {
-      legend("topright", legend = c("Low Connectivity",
-                                    "High Connectivity"),
-             pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-             pt.cex = c(min(scaled_node_sizes),
-                        max(scaled_node_sizes)/3),
-             bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(-0.035, 0.85))
-    }
-
+    legend("topright", legend = c("Low Connectivity",
+                                  "High Connectivity"),
+           pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
+           pt.cex = c(min(scaled_node_sizes),
+                      max(scaled_node_sizes)/3),
+           bty = "n", cex = 0.8, title.font = 2,
+           xjust = 1, inset = c(-0.035, 0.85))
   }
 
   # Step 11: Save plot (if enabled) ----

@@ -324,34 +324,35 @@ The last step is to represent the relationships between the GO-terms of interest
 8.  We can save this plot directly from the function with `save_plot = T`.
 
 ``` r
-visualizeGO()
+visualizeGO(cluster = cluster,
+shape1 = "square", min_node_size = 1, max_node_size = 10, 
+layout = "tree", col_palette = colors, verbose = "some",
+legend = T, ID = F)
 ```
 
 ![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png) As
 can be seen in the image, there are many nodes and inter-nodal relationships,
-making the plot uninformative. Thus, we can focus on just one of the clusters
+making the plot uninformative. Thus, we can focus on some of the clusters
 to see what these relationships look like. This list of GO-terms is the result
 of a functional enrichment analysis of differentially expressed genes obtained
 from transcriptome analysis of adipose tissue from suckling lambs
 [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996).
-Thus, we are going to focus on **Cluster 5** which is related to lipid metabolism.
+Thus, we are going to focus on **Clusters 1, 18, 19 & 20** which are related
+to lipid metabolism.
 
 ``` r
 visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
-ontology = "BP", shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
-layout = "tree", col_palette = colors[c(1,18,19,20)], title = "Fatty acid related clusters",
-verbose = "some", legend = T, ID = T, labs = "Alonso-García et al. (2023)")
+shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
+layout = "tree", col_palette = colors[c(1,18,19,20)], 
+title = "Fatty acid related clusters",
+verbose = "some", legend = T, ID = T,
+labs = "Alonso-García et al. (2023)")
 ```
 
-![Cluster 5](inst/images/plot2.png) This function, in addition to filtering the above graph according to the clusters we want, also gives us a table with the GO IDs relationship and the term description.
-
-![](inst/images/cluster5.png)
-
-It is observed that within this cluster, the metabolic pathways that compose the cluster all are related to lipid transport.
-
-This function also allows you to select several clusters and visualize them in the same plot.
-
-![Six and seven](inst/images/plot3.png) For example, in this case, we selected **Clusters 6** and **7** which are related to the immune system.
+![](inst/images/plot2.png) This function, in addition to filtering
+the above graph according to the clusters we want, also gives us a table
+with the GO IDs relationship and the term description that we can save as
+a PNG.
 
 ### Comparing lists of GO-terms
 
