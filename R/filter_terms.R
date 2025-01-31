@@ -50,7 +50,7 @@ filter_terms <- function(similarity_matrix,
     cat("GO-Terms", Outlier, "were not similar to any other GO-term. They are outliers.\n")
     cat("It'll be removed from the graph.\n")
     graph <- delete_vertices(graph, Outlier)
-    remove <- grep(Outlier, row.names(similarity_matrix))
+    remove <- grep(paste(Outlier, collapse = "|"), row.names(similarity_matrix))
     similarity_matrix <- similarity_matrix[-remove, -remove]
   }
 
