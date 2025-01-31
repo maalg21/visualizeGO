@@ -77,18 +77,17 @@ relating the GO IDs to each other. In this package you will find a
 file `go_term_database_all_ontologies` obtained from the R package 
 [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) 
 where all these relations are. If you want to make this file yourself, we leave 
-you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/example.R) 
+you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R) 
 of how we have done it.
 
 ``` r
 graph <- build_hierarchical_graph(go_list1 = GO_BP$ID,
-nb_lists = "single", go_sim_object = NULL, filter = T)
+nb_lists = "single", go_sim_object = NULL)
 ```
 
 The number of GO terms that require analysis is increased by obtaining all the parent 
 and child terms from the list of input GO terms. In order to focus only on the input 
-GO terms, the `filter` argument is used to obtain those terms most related to the input 
-GO terms. That is to say, the parental terms linked to more than one input GO term 
+GO terms, the parental terms linked to more than one input GO term 
 and the child terms that link two (or more) input GO terms. However, it is important 
 to note that the filter does not remove those GO terms that are children of only one 
 term but are parents of another, and these are included in the graph.
@@ -137,10 +136,11 @@ GO terms that demonstrate similarity above the designated ```threshold``` in a
 minimum of half of the comparisons will be designated as connected. Consequently,
 an elevated threshold will result in a reduced number of GO terms for clustering,
 and the threshold should be interpreted as the minimum level of similarity between
-GO terms.
+GO terms. In the example, `threshold = 0.25` implies that a minimum similarity of
+25% is required.
 
 ``` r
-filtered_graph <- filter_terms(similarity_matrix, graph, threshold = 0.1)
+filtered_graph <- filter_terms(similarity_matrix, graph, threshold = 0.25)
 ```
 From this function we obtain the filtered graph and several vectors of GO-terms:
 (1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a
@@ -187,34 +187,48 @@ set.seed(1234) # For reproducibility
 similarity_matrix <- filtered_graph$similarity_matrix
 graph <- filtered_graph$graph
 
-
+determine_nbclusters(graph = graph, similarity_matrix = similarity_matrix)
+# Based on the Elbow method, the optimal number of clusters (k) is: 132 
+# Based on the Silhouette method, the optimal number of clusters (k) is: 55
 ```
+![ ](inst/images/determine_nbcluster.png)
 
 This function tells you the number of clusters in which your list of GO-terms 
-input is grouped according to each method.
+input is grouped according to each method. In this case, after filtering out
+terms that do not have a high similarity with the input GO-terms, when testing
+the best number of clusters for our list of terms, each of the methods gives us
+a different value. 
 
+If we want to see how our GO-terms are grouped according to how the number of
+clusters changes, we can use the R package 
+[clustree](https://github.com/lazappi/clustree). In the case of selecting the
+Silhouette method, the groupings are made as follows:
+![ ](inst/images/clustree.png)
+See the script [`crustree_script.R`](https://github.com/maalg21/visualizeGO/blob/master/test/clustree_script.R) for details.
+
+
+The value given to us by the Elbow method is very high, so we
+will obtain very small clusters and that is not what we are looking for. So for
+this tutorial, we chose `nb_cluster = 55` based on the Silhouette method.
 
 ``` r
-cluster <- cluster_go_terms(method_type = "similarity", method = "wang", 
-OrgDb = "org.Hs.eg.db", ontology = "BP", similarity_matrix = similarity_matrix, 
-graph = graph, k_range = 2:length(GO_BP$ID))
+cluster <- cluster_go_terms(method_type = "similarity", method = "wang",
+similarity_matrix = similarity_matrix, graph = graph, nb_clusters = 55)
 ```
-In our case, 7 clusters have been detected. As this is a grouping by similarity, 
-each cluster has a more representative metabolic pathway associated with it, 
-being the one that is more closely related to the rest of the GO-terms within 
-the cluster.
+As this is a grouping by similarity, each cluster has a more representative
+metabolic pathway associated with it, being the one that is more closely
+related to the rest of the GO-terms within the cluster.
 
-To see what 7 clusters are, we use the `generate_cluster_table` function, which 
+To see what 55 clusters are, we use the `generate_cluster_table` function, which 
 will give us a table (which we can later save as a PNG) with the relationship of 
 the clusters, the color they will have later in the final graph, the most 
 representative pathway and which GO IDs belong to each cluster.
 
 ``` r
-# colors <- generate_pastel_colors(n = 3) # This function was only created to generate a list of pastel colours of the number we determine 😊
+# colors <- generate_pastel_colors(n = 55) # This function was only created to generate a list of pastel colours of the number we determine 😊
 Table <- generate_cluster_table(cluster_output = cluster, method_type = "similarity", 
 similarity_matrix = similarity_matrix, text_color = "black", col_palette = colors)
 ```
-
 Note that sometimes the GO IDs of the most representative path in the cluster 
 do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) 
 database, which is the one we use for the identification of term's names from 
@@ -226,7 +240,7 @@ packages for GO IDs.
 To save the table as PNG we will use the `save_cluster_table_as_png` function.
 ``` r
 save_cluster_table_as_png(cluster_df = Table, file_name = "cluster_table.png", 
-width = 1500, height = 600,zoom = 2)
+width = 1600, height = 1600,zoom = 2)
 ```
 ![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
 our grouping looks like.
@@ -310,33 +324,20 @@ The last step is to represent the relationships between the GO-terms of interest
 8.  We can save this plot directly from the function with `save_plot = T`.
 
 ``` r
-visualize_go_hierarchy(go_list1 = GO_BP$ID, 
-go_list2 = NULL, 
-nb_lists = "single", 
-go_sim_object = NULL, 
-shape1 = "circle", # By default, it would be circles
-shape2 = NULL, 
-ontology = "BP", 
-simplification = T, 
-min_node_size = 1, max_node_size = 10, # This is optional and arbitrary
-layout = "tree", 
-clustering = T, clusters = cluster, 
-col_palette = colors, 
-verbose = "some", # Just to know more about the process that is ocurring
-legend = T,
-labs = "GO-Terms BP", # Name of the list of GO-Terms
-save_plot = F)
+visualizeGO()
 ```
 
-![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png) As can be seen in the image, there are many nodes and inter-nodal relationships, making the plot uninformative. Thus, we can focus on just one of the clusters to see what these relationships look like. This list of GO-terms is the result of a functional enrichment analysis of differentially expressed genes obtained from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). Thus, we are going to focus on **Cluster 5** which is related to lipid metabolism.
+![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png) As
+can be seen in the image, there are many nodes and inter-nodal relationships,
+making the plot uninformative. Thus, we can focus on just one of the clusters
+to see what these relationships look like. This list of GO-terms is the result
+of a functional enrichment analysis of differentially expressed genes obtained
+from transcriptome analysis of adipose tissue from suckling lambs
+[(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996).
+Thus, we are going to focus on **Cluster 5** which is related to lipid metabolism.
 
 ``` r
-filter_and_visualize_cluster(clusters = cluster,
-selected_cluster = 5, ontology = "BP",
-layout = "tree", col_palette = "#D9C9FF",
-min_node_size = 1, max_node_size = 10,
-save_plot = FALSE, PNG = NULL, 
-verbose = "none")
+visualizeGO()
 ```
 
 ![Cluster 5](inst/images/plot2.png) This function, in addition to filtering the above graph according to the clusters we want, also gives us a table with the GO IDs relationship and the term description.
@@ -368,10 +369,10 @@ data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx",
                                                      package = "visualizeGO")))
 
 # We filter 10 GO-terms for each list, to make it more easy to understand
-GO_BP1 <- data[data$Category == "BP",] %>% top_n(n = 10)
+GO_BP1 <- data[data$Category == "BP", c("Category", "ID")] %>% top_n(n = 10)
 GO_BP2 <- data2[data2$Category == "BP",] %>% top_n(n = 10)
 
-compareGO(comaprison = "GO",
+compareGO(comparison = "GO",
 list1 = GO_BP1$ID, list2 = GO_BP2$ID,
 ontology = "BP", OrgDb = "org.Hs.eg.db",
 method = "Wang", plot = T,
@@ -395,45 +396,28 @@ how to obtain the clusters for the second data table `data2`. Remember that
 **ONLY** clusters of GO-terms of the same ontology category
 *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make
 *biological* sense to compare clusters of GO-terms obtained through their
-conformation in the network ... But you do you!
+conformation in the network ... But you do you! In this case we want to
+see how similar the terms used in the clustering are. 
 
 ``` r
-# First, graph
-graph <- build_hierarchical_graph(go_list1 = data2[data2$Category == "BP",]$ID, 
-                                  nb_lists = "single",
-                                  go_sim_object = NULL)
-expanded_graph <- expand_graph(graph = graph,
-                               go_list1 = data2[data2$Category == "BP",]$ID,
-                               nb_lists = "single")
-final_graph <- retain_ancestors_above_input_terms(graph = expanded_graph,
-                                                  go_list1 = data2[data2$Category == "BP",]$ID,
-                                                  nb_lists = "single")
-                                                  
-# Second, clustering
-similarity_matrix <- calculate_wang(graph = final_graph,
-                                    ontology = "BP",
-                                    orgdb = "org.Hs.eg.db")
-cluster2 <- cluster_go_terms(method_type = "similarity", method = "wang",
-                            orgdb = "org.Hs.eg.db", ontology = "BP", 
-                            similarity_matrix = similarity_matrix,
-                            graph = final_graph, nb_clusters = NULL, 
-                            k_range = 2:25) 
-# Here we increased the k-range because when using 2:10 the optimal number was the maximum
-# And that's suspicious ... Indeed the optimal number now is 24.
-
-# Third, comparison
-compareGO(comaprison = "cluster",
-list1 = cluster$clusters, list2 = cluster2$clusters,
+compareGO(comparison = "cluster",
+list1 = cluster$clusters, list2 = cluster$clusters,
 ontology = "BP", OrgDb = "org.Hs.eg.db",
 method = "Wang", combine = "BMA", plot = T,
 low = "white", high = "red3",
-labs = c("List 1", "List 2"),
+labs = NULL,
 cex = 3, cex_axis = 10)
 ```
 
 ![](inst/images/heatmap2.png)
 
-The graph shows how Cluster 4 in List 1 and Cluster 23 in List 2 are the most similar. In fact, Cluster 4 corresponds to GO-terms related to *animal organ development* and Cluster 23 are GO-terms related to *regulation of endothelial cell proliferation*.
+The graph shows how groups 1 to 14 are very similar, which is biologically coherent
+as they are terms grouped in clusters closely related to lipid metabolism. Two of
+the most similar clusters are Cluster 18 ("*negative regulation of fatty acid metabolic process*") and Cluster
+24 ("*regulation of cellular ketone metabolic process*") (similarity score = ~70%). If we make the
+graph of both clusters we obtain:
+
+![](inst/images/plot4.png)
 
 ## References
 

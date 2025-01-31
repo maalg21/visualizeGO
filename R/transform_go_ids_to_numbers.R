@@ -19,7 +19,7 @@ transform_go_ids_to_numbers <- function(graph) {
   go_descriptions <- sapply(go_terms, function(go_term) {
     # Fetch description using GO.db
     desc <- tryCatch({
-      Term(go_term)  # Get description using Term function from GO.db
+      AnnotationDbi::Term(go_term)  # Get description using Term function from GO.db
     }, error = function(e) {
       NA  # If not found, return NA
     })
