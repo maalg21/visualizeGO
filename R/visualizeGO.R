@@ -27,7 +27,8 @@
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
-#' @param labels If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.
+#' @param ID If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.
+#' @param labs Origin of each of the lists of GO-terms displayed in the plot.
 #' @param legend Whether you want to display the legend. Default = TRUE
 #' @param labs Name of each of the GO-terms lists
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
@@ -48,7 +49,8 @@ visualizeGO <- function(cluster,
                         layout = c("tree", "kk", "fr"),
                         col_palette = NULL,
                         verbose = c("all", "none", "some"),
-                        labels = T, legend = T, save_plot = F,
+                        ID = T, labs = NULL,
+                        legend = T, save_plot = F,
                         PNG = NULL){
 
   # Step 0: Manage the verbose ----

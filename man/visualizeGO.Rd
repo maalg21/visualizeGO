@@ -15,7 +15,8 @@ visualizeGO(
   layout = c("tree", "kk", "fr"),
   col_palette = NULL,
   verbose = c("all", "none", "some"),
-  labels = T,
+  ID = T,
+  labs = NULL,
   legend = T,
   save_plot = F,
   PNG = NULL
@@ -44,7 +45,9 @@ Different from the rest of the packages; choose between ‘none’, so that no m
 ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.}
 
-\item{labels}{If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.}
+\item{ID}{If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.}
+
+\item{labs}{Name of each of the GO-terms lists}
 
 \item{legend}{Whether you want to display the legend. Default = TRUE}
 
@@ -66,8 +69,6 @@ in addition to the messages that indicate how the whole process is going, you al
 
 \item{clusters}{If the above argument is set to ‘TRUE’, result of the \code{\link[visualizeGO]{cluster_go_terms}}
 function where the clustering information is stored.}
-
-\item{labs}{Name of each of the GO-terms lists}
 }
 \value{
 This function returns the final graph, with the colours of the nodes depending
