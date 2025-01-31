@@ -339,7 +339,7 @@ Thus, we are going to focus on **Cluster 5** which is related to lipid metabolis
 ``` r
 visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
 ontology = "BP", shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
-layout = "tree", col_palette = generate_pastel_colors(55)[c(1,18,19,20)], 
+layout = "tree", col_palette = colors[c(1,18,19,20)], title = "Fatty acid related clusters",
 verbose = "some", legend = T, ID = T, labs = "Alonso-García et al. (2023)")
 ```
 

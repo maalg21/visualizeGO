@@ -11,8 +11,6 @@
 #' @param go_sim_object GO-terms similarity relationships saved as environment.
 #' @param shape1 Shape of the nodes in the plot. By default is "circle".
 #' @param shape2 If two lists are used, the shape of the nodes for the second list.
-#' @param ontology Gene Ontology category to use (could be "BP" for Biological Process,
-#' "CC" for Cellular Component or "MF" for "Molecular Function").
 #' @param simplification If you want to filter out the GO-terms that are going to be in the plot. Default is FALSE.
 #' @param min_node_size Minimum size of the nodes less connected with others. If is NULL, the size is calculated.
 #' @param max_node_size Maximum size of the nodes more connected with the others. If is NULL, the size is calculated.
@@ -27,6 +25,7 @@
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
 #' ‘some’ if you want to generate messages about how the process is going, or ‘all’ if you want that,
 #' in addition to the messages that indicate how the whole process is going, you also get intermediate tables with information.
+#' @param title Title of the plot.
 #' @param ID If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.
 #' @param labs Origin of each of the lists of GO-terms displayed in the plot.
 #' @param legend Whether you want to display the legend. Default = TRUE
@@ -49,7 +48,7 @@ visualizeGO <- function(cluster,
                         layout = c("tree", "kk", "fr"),
                         col_palette = NULL,
                         verbose = c("all", "none", "some"),
-                        ID = T, labs = NULL,
+                        title = NULL, ID = T, labs = NULL,
                         legend = T, save_plot = F,
                         PNG = NULL){
 
@@ -168,7 +167,7 @@ visualizeGO <- function(cluster,
   }
 
   # Step 8: If enabled, transform GO IDs to numbers ----
-  if (!isTRUE(labels)) {
+  if (!isTRUE(ID)) {
     if (verbose != "none") cat("Transform GO IDs to numbers ...\n")
     transformation_result <- transform_go_ids_to_numbers(graph)
     graph <- transformation_result$graph
@@ -221,7 +220,7 @@ visualizeGO <- function(cluster,
     vertex.shape = V(graph)$shape,
     edge.arrow.size = 0.3,
     edge.color = "darkgray",
-    main = paste("Hierarchical GO:", ontology, " Graph", sep = ""),
+    main = title,
     rescale = TRUE, # Allow the graph to scale to fit the available space
     margin = 0          # Remove additional margins from the plot
   )
@@ -331,7 +330,7 @@ visualizeGO <- function(cluster,
       vertex.shape = V(graph)$shape,
       edge.arrow.size = 0.5,
       edge.color = "darkgray",
-      main = paste("Hierarchical GO:", ontology, " Graph", sep = ""),
+      main = title,
       rescale = TRUE, # Allow the graph to scale to fit the available space
       margin = 0          # Remove additional margins from the plot
     )
