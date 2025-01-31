@@ -337,7 +337,10 @@ from transcriptome analysis of adipose tissue from suckling lambs
 Thus, we are going to focus on **Cluster 5** which is related to lipid metabolism.
 
 ``` r
-visualizeGO()
+visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
+ontology = "BP", shape1 = "circle", min_node_size = 1, max_node_size = 10, 
+layout = "tree", col_palette = generate_pastel_colors(55)[c(1,18,19,20)], 
+verbose = "some", legend = T)
 ```
 
 ![Cluster 5](inst/images/plot2.png) This function, in addition to filtering the above graph according to the clusters we want, also gives us a table with the GO IDs relationship and the term description.
