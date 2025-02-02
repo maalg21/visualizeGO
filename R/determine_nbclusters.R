@@ -25,9 +25,13 @@ determine_nbclusters <- function(graph, similarity_matrix){
                         k.max = nb_terms-1)
 
   elbow_values <- elbow$data$y
-  diff_elbow <- diff(elbow_values)
-  optimal_k <- which.min(abs(diff_elbow)) + 1
-  cat("Based on the Elbow method, the optimal number of clusters (k) is:", optimal_k, "\n")
+  # Compute the first derivative (rate of change)
+  diff <- diff(elbow_values)
+  # Compute the second derivative (acceleration)
+  diff2 <- diff(diff)
+  # Find the knee/elbow point (where the second derivative is maximized)
+  optimal_k_elbow <- which.max(abs(diff2)) + 1
+  cat("Based on the Elbow method, the optimal number of clusters (k) is:", optimal_k_elbow, "\n")
 
   p1 <- elbow + theme_minimal() + ggtitle("The Elbow Method") +
     geom_line(color = "red", linewidth = 0.5, group = 1) +
@@ -46,8 +50,8 @@ determine_nbclusters <- function(graph, similarity_matrix){
                       k.max = nb_terms-1)
 
   sil_scores <- sil$data$y
-  optimal_k <- which.max(sil_scores)
-  cat("Based on the Silhouette method, the optimal number of clusters (k) is:", optimal_k, "\n")
+  optimal_k_sil <- which.max(sil_scores)
+  cat("Based on the Silhouette method, the optimal number of clusters (k) is:", optimal_k_sil, "\n")
 
   p2 <- sil + theme_minimal() + ggtitle("The Silhouette Method") +
     geom_line(color = "red", linewidth = 0.5, group = 1) +
@@ -63,4 +67,9 @@ determine_nbclusters <- function(graph, similarity_matrix){
   library(gridExtra)
   grid.newpage()
   grid.arrange(p1, p2, ncol = 2)
+
+  return(list(optimal_Silhouette = optimal_k_sil,
+              optimal_Elbow = optimal_k_elbow,
+              Elbow_plot = p1,
+              Silhouette_plot = p2))
 }
