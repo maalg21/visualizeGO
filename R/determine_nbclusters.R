@@ -67,10 +67,9 @@ determine_nbclusters <- function(graph, similarity_matrix){
   library(grid)
   library(gridExtra)
   grid.newpage()
-  grid.arrange(p1, p2, ncol = 2)
+  plot <- grid.arrange(p1, p2, ncol = 2)
 
   return(list(optimal_Silhouette = optimal_k_sil,
-              optimal_Elbow = optimal_k_elbow,
-              Elbow_plot = p1,
-              Silhouette_plot = p2))
+              optimal_Elbow = optimal_k_elbow, plot))
+  print(plot)
 }
