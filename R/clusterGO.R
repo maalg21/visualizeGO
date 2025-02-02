@@ -15,7 +15,7 @@
 #' }
 #' @export
 
-cluster_go_terms <- function(method_type = c("similarity", "network"),
+clusterGO <- function(method_type = c("similarity", "network"),
                              method = NULL,
                              similarity_matrix = NULL,
                              graph, nb_clusters = NULL) {

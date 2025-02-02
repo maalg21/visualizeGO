@@ -1,7 +1,7 @@
 Package: visualizeGO
 Type: Package
 Title: Hierarchical clustered visualization of GO terms
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person(
       "María", "Alonso-García",
