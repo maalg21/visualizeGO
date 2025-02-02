@@ -36,6 +36,7 @@ determine_nbclusters <- function(graph, similarity_matrix){
   p1 <- elbow + theme_minimal() + ggtitle("The Elbow Method") +
     geom_line(color = "red", linewidth = 0.5, group = 1) +
     geom_point(color = "red") +
+    geom_vline(xintercept = optimal_k_elbow, color = "red") +
     scale_x_discrete(breaks = as.character(seq(0, nb_terms, by = 20))) +
     labs(x = "Number of Clusters", y = "Total WSS", tag = "A") +
     theme(plot.title = element_text(face = "bold", hjust = .5, size = 13),
@@ -56,7 +57,7 @@ determine_nbclusters <- function(graph, similarity_matrix){
   p2 <- sil + theme_minimal() + ggtitle("The Silhouette Method") +
     geom_line(color = "red", linewidth = 0.5, group = 1) +
     geom_point(color = "red") +
-    geom_vline(xintercept = optimal_k, color = "red") +
+    geom_vline(xintercept = optimal_k_sil, color = "red") +
     scale_x_discrete(breaks = as.character(seq(0, nb_terms, by = 20))) +
     labs(x = "Number of Clusters", y = "Average Silhouette Width", tag = "B") +
     theme(plot.title = element_text(face = "bold", hjust = .5, size = 13),
