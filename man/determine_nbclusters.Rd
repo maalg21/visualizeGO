@@ -4,12 +4,11 @@
 \alias{determine_nbclusters}
 \title{Determine the Number of Clusters}
 \usage{
-determine_nbclusters(graph, similarity_matrix)
+determine_nbclusters(similarity_matrix)
 }
 \arguments{
-\item{graph}{igraph object linking the input GO-terms.}
-
-\item{similarity_matrix}{Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.}
+\item{similarity_matrix}{Similarity matrix previously calculated that
+relates the GO-terms depending on their semantic similarity.}
 }
 \value{
 A plot showing the optimal number of clusters based on the different methods.

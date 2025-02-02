@@ -4,10 +4,14 @@
 \alias{calculate_resnik}
 \title{Calculate Resnik Similarity Matrix}
 \usage{
-calculate_resnik(graph, ontology = c("BP", "CC", "MF"), OrgDb = "org.Hs.eg.db")
+calculate_resnik(
+  input_terms,
+  ontology = c("BP", "CC", "MF"),
+  OrgDb = "org.Hs.eg.db"
+)
 }
 \arguments{
-\item{graph}{A graph object that connects the input GO-terms with their parents and children terms}
+\item{input_terms}{A vector containing the input GO-terms IDs}
 
 \item{ontology}{Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").}
 

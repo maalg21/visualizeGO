@@ -6,25 +6,27 @@
 \usage{
 generate_cluster_table(
   cluster_output,
-  method_type = c("similarity", "network"),
-  similarity_matrix = NULL,
   col_palette = NULL,
-  text_color = "black"
+  text_color = "black",
+  file_name = NULL,
+  width = 800,
+  height = 600,
+  zoom = 2
 )
 }
 \arguments{
-\item{cluster_output}{Result from "cluster_go_terms".}
-
-\item{method_type}{Method used to perform the clustering; either "similarity" or "network".}
-
-\item{similarity_matrix}{If the method used was "similarity"; similarity matrix used to perform the clustering.}
+\item{cluster_output}{Result from "clusterGO".}
 
 \item{col_palette}{Colors to use for each cluster.}
 
 \item{text_color}{Color of the text in the table.}
+
+\item{file_name}{Name of the saved file.}
 }
 \value{
-Combines cluster data into a single data frame. Assigns colors to rows based on cluster memberships using the provided or default color palette.
+Combines cluster data into a single data frame.
+Assigns colors to rows based on cluster memberships using the provided or
+default color palette. If enabled, saves the table as a PNG file.
 }
 \description{
 A formatted HTML table summarizing: (1) Cluster ID, (2) Representative Pathway

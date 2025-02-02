@@ -5,21 +5,17 @@
 #' @details
 #' This function has a lot of arguments to make the plot highly customizable. I recommend ‘playing’ with the parameters to see which plot best suits what you are looking for 😊
 #'
-#' @param go_list1 List of GO-terms of interest.
-#' @param go_list2 If enabled, second list of GO-terms to compare with the first one.
-#' @param nb_lists Allows to select whenever you are gonna use one ("single") or two ("double") lists.
-#' @param go_sim_object GO-terms similarity relationships saved as environment.
+#' @param graph An igraph object from familyGO.
 #' @param shape1 Shape of the nodes in the plot. By default is "circle".
 #' @param shape2 If two lists are used, the shape of the nodes for the second list.
-#' @param simplification If you want to filter out the GO-terms that are going to be in the plot. Default is FALSE.
 #' @param min_node_size Minimum size of the nodes less connected with others. If is NULL, the size is calculated.
 #' @param max_node_size Maximum size of the nodes more connected with the others. If is NULL, the size is calculated.
 #' @param layout Arrangement of the nodes in the network. Can be ‘tree’, ‘kk’ or ‘fr’
 #' if the chosen arrangement is tree-like, or using the Kamada-Kawai or Fruchterman-Reingold
 #' algorithms respectively. For more information see the bullet points in the R \href{https://igraph.org/r/}{igraph} package.
-#' @param clustering Argument indicating whether nodes are to be clustered. Default is TRUE.
 #' @param clusters If the above argument is set to ‘TRUE’, result of the \code{\link[visualizeGO]{cluster_go_terms}}
 #' function where the clustering information is stored.
+#' @param selected_cluster Clusters selected for plotting.
 #' @param col_palette Colors to use for each cluster.
 #' @param verbose You choose the number of messages you want to be displayed on the console.
 #' Different from the rest of the packages; choose between ‘none’, so that no message is produced,
@@ -38,9 +34,8 @@
 #' and also a table with the correspondence of the number appearing in the plot and the GO ID.
 #' @export
 
-visualizeGO <- function(cluster,
+visualizeGO <- function(graph, cluster,
                         selected_cluster = NULL,
-                        ontology = c("BP", "CC", "MF"),
                         shape1 = "circle",
                         shape2 = NULL,
                         min_node_size = NULL,
@@ -63,30 +58,34 @@ visualizeGO <- function(cluster,
     stop("cluster cannot be NULL or empty.")
   }
 
-  if (is.null(cluster) || !"clusters" %in% names(cluster) || !"graph" %in% names(cluster)) {
-    stop("Invalid cluster result provided. It should contain 'clusters' and 'graph' components.")
+  if (is.null(cluster) ||
+      !"clusters" %in% names(cluster) ||
+      !"descriptions" %in% names(cluster) ||
+      !"representative_pathways" %in% names(cluster)) {
+    stop("Invalid cluster result provided.")
   }
 
   cluster_assignments <- cluster$clusters
-  graph <- cluster$graph
 
   # Step 2: Validate vertex names ----
   if (verbose != "none") cat("Validating vertex names...\n")
-  if (is.null(V(graph)$name) || any(is.na(V(graph)$name)) || any(duplicated(V(graph)$name))) {
+  if (is.null(V(graph)$name) ||
+      any(is.na(V(graph)$name)) ||
+      any(duplicated(V(graph)$name))) {
     stop("Invalid vertex names detected. Ensure all vertices have unique, non-NA names.")
   }
 
   # Step 3: Filter nodes by selected cluster(s) if enabled ----
   if (!is.null(selected_cluster)) {
     # Keep only the nodes belonging to the selected cluster(s)
-    selected_nodes <- V(graph)[V(graph)$cluster %in% selected_cluster]
+    selected_nodes <- V(graph)[V(graph)$Cluster %in% selected_cluster]
 
     # Subset the graph to only include the selected nodes
     graph <- induced_subgraph(graph, selected_nodes)
   }
 
   # Step 4: Determine cluster colors ----
-  unique_clusters <- unique(V(graph)$cluster)
+  unique_clusters <- unique(V(graph)$Cluster)
   unique_clusters <- unique_clusters[!is.na(unique_clusters)]  # Exclude NA values
 
   # Ensure col_palette matches the number of unique clusters
@@ -106,28 +105,17 @@ visualizeGO <- function(cluster,
   cluster_colors <- setNames(col_palette, unique_clusters)
 
   V(graph)$color <- ifelse(
-    is.na(V(graph)$cluster),
+    is.na(V(graph)$Cluster),
     "white",  # Default color for nodes without a cluster
-    cluster_colors[as.character(V(graph)$cluster)])
+    cluster_colors[as.character(V(graph)$Cluster)])
 
   # Step 5: Assign shapes to nodes ----
   if (verbose != "none") cat("Assign shapes to nodes ...\n")
-  nb_lists <- dplyr::case_when(
-    "List2" %in% unique(V(graph)$list) ~ "double",
-    TRUE ~ "single")
 
-  if (nb_lists == "single"){
-    V(graph)$shape <- ifelse(!is.na(V(graph)$list), shape1, "circle")
-  } else {
-    if (is.null(shape2)){
-      stop("You must chose the shape for the second GO terms list ('shape2' argument).")
-    } else {
-      V(graph)$shape <- dplyr::case_when(
-        nb_lists == "single" ~ ifelse(!is.na(V(graph)$list), shape1, "circle"),
-        nb_lists == "double" ~ ifelse(V(graph)$list == "List2", shape2,
-                                      !is.na(V(graph)$list), shape1, "circle"))  # Default shape for other nodes
-    }
-  }
+  V(graph)$shape <- case_when(
+    V(graph)$origin == "input" ~ shape1,
+    V(graph)$origin == "external" ~ "circle"
+  )
 
   if(verbose == "all"){
     cat("Vertex Names and Shapes:\n")
@@ -228,10 +216,10 @@ visualizeGO <- function(cluster,
   # Step 10: Add legend ----
   if(isTRUE(legend)){
     # Add a legend for clusters
-    if (!is.null(V(graph)$cluster)) {
-      cluster_labels <- paste("Cluster", unique(V(graph)$cluster))  # Create cluster labels
+    if (!is.null(V(graph)$Cluster)) {
+      cluster_labels <- paste("Cluster", unique(V(graph)$Cluster))  # Create cluster labels
       cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
-      cluster_legend_colors <- cluster_colors[unique(as.character(V(graph)$cluster))]  # Match colors
+      cluster_legend_colors <- cluster_colors[unique(as.character(V(graph)$Cluster))]  # Match colors
       legend("topleft",
              legend = cluster_labels,
              fill = cluster_legend_colors,
@@ -252,19 +240,11 @@ visualizeGO <- function(cluster,
     unique_shapes <- unique(V(graph)$shape)
     legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
 
-    if(nb_lists == "single"){
-      legend("topright",
-             legend = c(labs, "Other Terms"),
-             pch = legend_shapes, # Extract unique pch values for the legend
-             bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-    } else {
-      legend("topright",
-             legend = c(labs, "Other Terms"),
-             pch = legend_shapes, # Extract unique pch values for the legend
-             bty = "n", title.font = 2, cex = 0.8,
-             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-    }
+    legend("topright",
+           legend = c(labs, "Other Terms"),
+           pch = legend_shapes, # Extract unique pch values for the legend
+           bty = "n", title.font = 2, cex = 0.8,
+           title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
 
     # Add a legend for the node sizes (degree of connectivity)
     legend("topright", legend = c("Low Connectivity",

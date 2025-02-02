@@ -8,14 +8,12 @@
 
 -   📝 [Introduction](#introduction)
 -   🛠️ [Installation](#installation)
--   💻 [Basic Use](#basic-use)
+-   💻 [Pipeline](#pipeline)
     -   [Data Input](#data-input)
-    -   [Build the hierarchical graph](#build-the-hierarchical-graph)
     -   [Clustering the GO-terms](#clustering-the-go-terms)
-        -   [Clustering the GO-terms using Wang Similarity Method](#clustering-the-go-terms-using-wang-similarity-method)
-        -   [Clustering the GO-terms based on the network](#clustering-the-go-terms-based-on-the-network)
-    -   [Visualize GO-terms relationships](#visualize-go-terms-relationships)
     -   [Comparing lists of GO-terms](#comparing-lists-of-go-terms)
+    -   [Build the hierarchical graph](#build-the-hierarchical-graph)
+    -   [Visualize GO-terms relationships](#visualize-go-terms-relationships)
 -   📚 [References](#references)
 -   🤝 [Contribution](#contribution)
 -   📜 [Licence](#licence)
@@ -29,9 +27,22 @@ process improves the understanding of the intracluster relationships of the
 highlighted metabolic pathways.
 
 The package consists of several important parts:
-1. **Creation of a network of GO terms.** Here the list of GO terms of interest is analysed and, through the [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) R package, the hierarchically related terms - both "*parents*" and "*children*" - to the input terms are obtained.
-2. **Clustering.** In this part you can select the type of grouping you want to make of the terms. This grouping can be based on semantic similarity metrics *(Jaccard Index, Resnik, Lin or Wang methods)* or by how the term network itself is configured. You do you!
-3. **Final visualisation.** This final graph shows the input GO-terms and their relationships with other GO-terms, and the clusters that are formed, all in the form of a network.
+1. **Clustering.** This is the main part of the pipeline. First, it's mandatory
+to calculate the semantic similarity between the input GO terms. You can 
+select between several methods to calculate it. After this, it's possible to
+filter out those terms that could be considered outliers or less related among others.
+And finally, before clustering, you calculate the optimal number of clusters in which
+your input GO terms are clustered.
+2. **Creation of a network of GO terms.** Here the list of GO terms of interest
+is analysed and, through the [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) 
+R package, the hierarchically related terms - both "*parents*" and "*children*" - to the input terms are obtained.
+3. **Final visualization.** This final graph based on the previous steps shows the input GO-terms and 
+their relationships with other GO-terms, and the clusters that are formed, 
+all in the form of a network.
+4. **Comparisons.** Also, it is possible to compare lists of GO terms 
+or even clusters of GO terms, and obtain a matrix of the semantic similarity between them.
+
+![ ](inst/images/pipeline.png)
 
 ## Installation
 
@@ -42,7 +53,7 @@ You can install the development version of visualizeGO like so:
 devtools::install_github("maalg21/visualizeGO", force = TRUE)
 ```
 
-## Basic Use
+## Pipeline
 
 ### Data input
 
@@ -68,59 +79,7 @@ GO_BP <- data[data$Category == "BP",]
 For the time being, we will only use GO-terms from the Biological Process (BP) 
 category.
 
-### Build the hierarchical graph
-
-The first step in the use-flow of this package is to obtain the similarity and 
-hierarchy relationships between the selected GO-terms. For this, we need an 
-annotation file where all the semantic relations between terms are found by 
-relating the GO IDs to each other. In this package you will find a 
-file `go_term_database_all_ontologies` obtained from the R package 
-[GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) 
-where all these relations are. If you want to make this file yourself, we leave 
-you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R) 
-of how we have done it.
-
-``` r
-graph <- build_hierarchical_graph(go_list1 = GO_BP$ID,
-nb_lists = "single", go_sim_object = NULL)
-```
-
-The number of GO terms that require analysis is increased by obtaining all the parent 
-and child terms from the list of input GO terms. In order to focus only on the input 
-GO terms, the parental terms linked to more than one input GO term 
-and the child terms that link two (or more) input GO terms. However, it is important 
-to note that the filter does not remove those GO terms that are children of only one 
-term but are parents of another, and these are included in the graph.
-
-In this case, we will only use a single list of GO-terms. But the package allows 
-us to obtain the semantic relations between two lists of GO-terms. From this final 
-graph, we then grouped the GO-terms.
-
 ### Clustering the GO-terms
-
-The package allows you to make mainly two types of groupings: 1. According to the 
-degree of similarity that exists between the GO-terms. 2. According to the network 
-of GO-terms itself.
-
-The function `cluster_go_terms` assigns cluster memberships to the graph nodes 
-(GO terms) based on the chosen network clustering method. The function has two 
-main modes of operation: 
-
-1. Similarity-based clustering using a similarity matrix and perform hierarchical
-clustering, and assigns GO terms to clusters. To determine the optimal number of
-clusters (`nb_clusters`) you have to choose a range (`k_range`). Afterwards, 
-the number of clusters is determined using the
-[Elbow](https://www.atlantis-press.com/proceedings/isstec-19/125944915) 
-and/or [Silhouette](https://www.sciencedirect.com/science/article/pii/0377042787901257) methods.  
-
-2. Network-based clustering, this method requires a network object (e.g., an igraph
-object) representing GO terms and their relationships. It supports two network
-clustering methods: Walktrap and Edge Betweenness.
-
-To see how both clustering methods behave, we will perform both and check how 
-our GO-terms are grouped.
-
-#### Clustering the GO-terms using Wang Similarity Method
 
 To make the grouping based on the degree of similarity that exists, we must 
 calculate the similarity matrix between them. In this case, we choose 
@@ -154,7 +113,9 @@ terms, making the clustering incorrect.
 
 Following the filtration of the similarity matrix, the number of clusters into
 which the GO terms are grouped is calculated. To this end, two different methods
-are employed: the Elbow method and the Silhouette method, based on the
+are employed: the [Elbow](https://www.atlantis-press.com/proceedings/isstec-19/125944915) 
+method and the [Silhouette](https://www.sciencedirect.com/science/article/pii/0377042787901257) 
+method, based on the
 [`fviz_nbclust`](https://www.rdocumentation.org/packages/factoextra/versions/1.0.7/topics/fviz_nbclust)
 function of the 
 [`factoextra`](https://rdocumentation.org/packages/factoextra/versions/1.0.7) 
@@ -175,12 +136,10 @@ method calculates and graphs the sum of squares for each number of clusters and
 looks for a change in slope from steep to gentle (an elbow) to determine the optimal
 number of clusters. 
 
-
 For both methods, it's necessary to determine the `k_range`. This range includes
 the number of clusters in which both methods will test the groupings. In this case,
-we recommend to set this range from 1 
-(*all terms are included in the same cluster*) to the number of GO-terms
-(*i.e., each GO-term is in a cluster of its own*).
+we set this range from 1 (*all terms are included in the same cluster*) 
+to the number of GO-terms (*i.e., each GO-term is in a cluster of its own*).
 
 ```r
 set.seed(1234) # For reproducibility
@@ -206,13 +165,12 @@ Silhouette method, the groupings are made as follows:
 ![ ](inst/images/clustree.png)
 See the script [`crustree_script.R`](https://github.com/maalg21/visualizeGO/blob/master/test/clustree_script.R) for details.
 
-
 The value given to us by the Elbow method is very high, so we
 will obtain very small clusters and that is not what we are looking for. So for
 this tutorial, we chose `nb_cluster = 55` based on the Silhouette method.
 
 ``` r
-cluster <- cluster_go_terms(method_type = "similarity", method = "wang",
+cluster <- clusterGO(method_type = "similarity", method = "wang",
 similarity_matrix = similarity_matrix, graph = graph, nb_clusters = 55)
 ```
 As this is a grouping by similarity, each cluster has a more representative
@@ -263,96 +221,16 @@ scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 ![Scatter Plot](inst/images/scatter_plot.png)
 
+Similarly, another way of representing the grouping of GO terms is through
+a tree map, where each rectangle is a GO term. Each term is linked to other
+terms belonging to the same cluster, displayed in different colors, and with
+the most representative pathway encompassing the cluster it represents.
+The size of the rectangles depends on XXX.
 
-#### Clustering the GO-terms based on the network
-
-In this case, the grouping of GO-terms is based on how the terms relate to each 
-other and how the network behaves. Unlike the similarity-based method, in this 
-case we do not obtain a more representative metabolic pathway for each term.
-
-We choose for this the *Edge Betweenness* method. The Edge Betweenness method is 
-a network clustering algorithm used to identify communities or clusters of nodes 
-in a graph or network. This method is based on the idea of edge betweenness 
-centrality, which measures the number of shortest paths that pass through a given 
-edge. By focusing on edges that connect different clusters, the Edge Betweenness 
-method interactively removes edges that are critical for connecting different parts 
-of the network, revealing communities or clusters of nodes.
-
-``` r
-edge <- cluster_go_terms(method_type = "network", method = "EdgeBetweenness", 
-graph = final_graph, ontology = "BP", orgdb = "org.Hs.eg.db")
+```r
+treeMap(cluster, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID),
+title = "Distance Between GO-Terms", colors = colors)
 ```
-
-A look at the `network$clusters` object shows that we have obtained 35 clusters.
-
-Using other method - *Walktrap method* - we get 29 clusters. This method is a
-community detection algorithm used to cluster nodes in a network (graph) based on
-their structural properties. It is based on the idea that nodes in the same community
-are more likely to be reachable from each other by short random walks than nodes
-from different communities. This method was proposed by
-[Pons & Latapy (2005)](https://doi.org/10.1007/11569596_31) in the context of
-social networks and other complex systems.
-
-``` r
-walk <- cluster_go_terms(method_type = "network", method = "Walktrap", 
-graph = final_graph, ontology = "BP", orgdb = "org.Hs.eg.db")
-```
-
-Once we have the groupings based on the method we preferred, we can also obtain a table indicating which GO terms each cluster is composed of by using the same `generate_cluster_table` function.
-
-``` r
-# colors <- generate_pastel_colors(n = 35)
-generate_cluster_table(cluster_output = edge, method_type = "network", 
-col_palette = colors, text_color = "black")
-```
-
-![Clustering based on Edge Betweenness method.](inst/images/cluster_table2.png)
-
-As is evident, in this particular instance, the utilization of clustering techniques based on the semantic similarity of GO-terms is significantly more efficacious and substantially reduces the amount of information obtained. Consequently, the tutorial will persist in its utilization of this information in accordance with Wang's method.
-
-## Visualize GO-terms relationships
-
-The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualize_go_hierarchy` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
-
-1.  You have to enter the initial list of GO-terms of interest (`go_list1`). You could add a second list (`go_list2`) as at the beginning of this tutorial, to see how the terms in these two lists relate to each other. Consequently, the argument (`nb_lists = "double"`) would be used.
-2.  If you want to use another annotation, you will have to define it in `go_sim_object`. In this case, we will use the database that comes with the package.
-3.  If you use two lists of GO-terms, you have to set the second form of the nodes for this second list. In this case, we only define `shape1`.
-4.  The `simplification` parameter refers to whether we want to perform the same filtering as in the [Data Input](#data-input) step. It is important to note that if this simplification was performed before the clustering, we are forced to use it again.
-5.  We can determine the layout of the graph through several options. If we want a hierarchical view we have to define `layout = "tree"`.
-6.  If we want to add the clustering done in previous steps we must determine it with `clustering = T` and `clusters` as the output of the [Clustering the GO-terms](#clustering-the-go-terms) step.
-7.  The `verbose` parameter is a bit special. It could be either *"all"*, *"some"* or *"none"* if you want all the results displayed, some feedback or anything in your console, respectively.
-8.  We can save this plot directly from the function with `save_plot = T`.
-
-``` r
-visualizeGO(cluster = cluster,
-shape1 = "square", min_node_size = 1, max_node_size = 10, 
-layout = "tree", col_palette = colors, verbose = "some",
-legend = T, ID = F)
-```
-
-![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png) As
-can be seen in the image, there are many nodes and inter-nodal relationships,
-making the plot uninformative. Thus, we can focus on some of the clusters
-to see what these relationships look like. This list of GO-terms is the result
-of a functional enrichment analysis of differentially expressed genes obtained
-from transcriptome analysis of adipose tissue from suckling lambs
-[(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996).
-Thus, we are going to focus on **Clusters 1, 18, 19 & 20** which are related
-to lipid metabolism.
-
-``` r
-visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
-shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
-layout = "tree", col_palette = colors[c(1,18,19,20)], 
-title = "Fatty acid related clusters",
-verbose = "some", legend = T, ID = T,
-labs = "Alonso-García et al. (2023)")
-```
-
-![](inst/images/plot2.png) This function, in addition to filtering
-the above graph according to the clusters we want, also gives us a table
-with the GO IDs relationship and the term description that we can save as
-a PNG.
 
 ### Comparing lists of GO-terms
 
@@ -422,6 +300,78 @@ the most similar clusters are Cluster 18 ("*negative regulation of fatty acid me
 graph of both clusters we obtain:
 
 ![](inst/images/plot4.png)
+
+### Build the hierarchical graph
+
+Before plotting the clusters in a hierarchical way, the first step in the 
+use-flow of this package is to obtain the hierarchy relationships between 
+the selected GO-terms. For this, we need an annotation file where all the 
+semantic relations between terms are found by relating the GO IDs to each 
+other. In this package you will find a file `go_term_database_all_ontologies` 
+obtained from the R package 
+[GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) 
+where all these relations are. If you want to make this file yourself, we leave 
+you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R) 
+of how we have done it.
+
+``` r
+graph <- familyGO(cluster, go_sim_object = NULL)
+```
+
+The number of GO terms that require analysis is increased by obtaining all the parent 
+and child terms from the list of input GO terms. In order to focus only on the input 
+GO terms, the parental terms linked to more than one input GO term 
+and the child terms that link two (or more) input GO terms. However, it is important 
+to note that the filter does not remove those GO terms that are children of only one 
+term but are parents of another, and these are included in the graph.
+
+In this case, we will only use a single list of GO-terms. But the package allows 
+us to obtain the semantic relations between two lists of GO-terms. From this final 
+graph, we then grouped the GO-terms.
+
+## Visualize GO-terms relationships
+
+The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualize_go_hierarchy` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
+
+1.  You have to enter the initial list of GO-terms of interest (`go_list1`). You could add a second list (`go_list2`) as at the beginning of this tutorial, to see how the terms in these two lists relate to each other. Consequently, the argument (`nb_lists = "double"`) would be used.
+2.  If you want to use another annotation, you will have to define it in `go_sim_object`. In this case, we will use the database that comes with the package.
+3.  If you use two lists of GO-terms, you have to set the second form of the nodes for this second list. In this case, we only define `shape1`.
+4.  The `simplification` parameter refers to whether we want to perform the same filtering as in the [Data Input](#data-input) step. It is important to note that if this simplification was performed before the clustering, we are forced to use it again.
+5.  We can determine the layout of the graph through several options. If we want a hierarchical view we have to define `layout = "tree"`.
+6.  If we want to add the clustering done in previous steps we must determine it with `clustering = T` and `clusters` as the output of the [Clustering the GO-terms](#clustering-the-go-terms) step.
+7.  The `verbose` parameter is a bit special. It could be either *"all"*, *"some"* or *"none"* if you want all the results displayed, some feedback or anything in your console, respectively.
+8.  We can save this plot directly from the function with `save_plot = T`.
+
+``` r
+visualizeGO(cluster = cluster, graph = graph,
+shape1 = "square", min_node_size = 1, max_node_size = 10, 
+layout = "tree", col_palette = colors, verbose = "some",
+legend = T, ID = F)
+```
+
+![Hierarchical plot of the GO-terms relationships.](inst/images/plot1.png) As
+can be seen in the image, there are many nodes and inter-nodal relationships,
+making the plot uninformative. Thus, we can focus on some of the clusters
+to see what these relationships look like. This list of GO-terms is the result
+of a functional enrichment analysis of differentially expressed genes obtained
+from transcriptome analysis of adipose tissue from suckling lambs
+[(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996).
+Thus, we are going to focus on **Clusters 1, 18, 19 & 20** which are related
+to lipid metabolism.
+
+``` r
+visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
+shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
+layout = "tree", col_palette = colors[c(1,18,19,20)], 
+title = "Fatty acid related clusters",
+verbose = "some", legend = T, ID = T,
+labs = "Alonso-García et al. (2023)")
+```
+
+![](inst/images/plot2.png) This function, in addition to filtering
+the above graph according to the clusters we want, also gives us a table
+with the GO IDs relationship and the term description that we can save as
+a PNG.
 
 ## References
 

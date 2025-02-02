@@ -5,9 +5,9 @@
 \title{Visualize Hierarchy GO-terms Relationship}
 \usage{
 visualizeGO(
+  graph,
   cluster,
   selected_cluster = NULL,
-  ontology = c("BP", "CC", "MF"),
   shape1 = "circle",
   shape2 = NULL,
   min_node_size = NULL,
@@ -24,6 +24,10 @@ visualizeGO(
 )
 }
 \arguments{
+\item{graph}{An igraph object from familyGO.}
+
+\item{selected_cluster}{Clusters selected for plotting.}
+
 \item{shape1}{Shape of the nodes in the plot. By default is "circle".}
 
 \item{shape2}{If two lists are used, the shape of the nodes for the second list.}
@@ -54,18 +58,6 @@ in addition to the messages that indicate how the whole process is going, you al
 \item{save_plot}{Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.}
 
 \item{PNG}{If the "save_plot" option is set to "TRUE", name of the PNG file generated.}
-
-\item{go_list1}{List of GO-terms of interest.}
-
-\item{go_list2}{If enabled, second list of GO-terms to compare with the first one.}
-
-\item{nb_lists}{Allows to select whenever you are gonna use one ("single") or two ("double") lists.}
-
-\item{go_sim_object}{GO-terms similarity relationships saved as environment.}
-
-\item{simplification}{If you want to filter out the GO-terms that are going to be in the plot. Default is FALSE.}
-
-\item{clustering}{Argument indicating whether nodes are to be clustered. Default is TRUE.}
 
 \item{clusters}{If the above argument is set to ‘TRUE’, result of the \code{\link[visualizeGO]{cluster_go_terms}}
 function where the clustering information is stored.}

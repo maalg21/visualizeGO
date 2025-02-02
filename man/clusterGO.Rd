@@ -4,31 +4,17 @@
 \alias{clusterGO}
 \title{Cluster GO Terms}
 \usage{
-clusterGO(
-  method_type = c("similarity", "network"),
-  method = NULL,
-  similarity_matrix = NULL,
-  graph,
-  nb_clusters = NULL
-)
+clusterGO(similarity_matrix = NULL, nb_clusters = NULL)
 }
 \arguments{
-\item{method_type}{Choose between "similarity" or "network" to select the method to assign the clusters to each input GO term.}
-
-\item{method}{Once selected the type of assignment, it's the method within each type selected to obtain the clusters.}
-
-\item{similarity_matrix}{Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.}
-
-\item{graph}{igraph object linking the input GO-terms.}
+\item{similarity_matrix}{Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.}
 
 \item{nb_clusters}{Number of clusters previously calculated set to group the GO-terms.}
 }
 \value{
 A list containing:
 \describe{
-\item{graph}{An igraph object with cluster memberships assigned.}
 \item{clusters}{A data frame with cluster assignments for each GO term.}
-\item{nb_clusters}{The optimal number of clusters determined (if applicable).}
 }
 }
 \description{

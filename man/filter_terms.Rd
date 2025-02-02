@@ -4,23 +4,20 @@
 \alias{filter_terms}
 \title{Filter GO-terms}
 \usage{
-filter_terms(similarity_matrix, graph, threshold = 0.1, input_terms = NULL)
+filter_terms(similarity_matrix, threshold = 0.1)
 }
 \arguments{
 \item{similarity_matrix}{Squared matrix of the semantic similarity for each pair of terms calculated through any of the methods.}
 
-\item{threshold}{Similarity threshold (0-1). Default = 0.1}
-
-\item{input_terms}{Important GO-terms (tipically those that you analyzed) that you want to keep in the next steps. Normally, only those introduced at the start are kept.}
-
-\item{cluster}{Grouping of GO-terms in the different clusters.}
+\item{threshold}{Similarity threshold (0-1) that determines which input
+terms will be considered not similar. Those terms for which more than half
+do not reach the threshold will be considered not connected to the rest and
+will be eliminated from the similarity matrix. Default = 0.1}
 }
 \value{
 A list containing:
 \describe{
-\item{graph}{A filtered igraph object, where the least connected terms have been eliminated.}
-\item{similarity_matrix}{}
-\item{deleted}{List of GO-terms eliminated for not presenting a similarity greater than the threshold in at least half of the relationships.}
+\item{similarity_matrix}{A new similarity matrix without the outliers.}
 \item{connected}{List of GO-terms that are kept in the analysis.}
 \item{outliers}{List of GO-terms considered outliers.}
 }

@@ -9,15 +9,16 @@
 #' making it more accurate in capturing semantic similarity. However, requires accurate computation of
 #' information content, which may be difficult if there is sparse data or limited term annotations.
 #'
-#' @param graph A graph object that connects the input GO-terms with their parents and children terms
+#' @param input_terms A vector containing the input GO-terms IDs
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
 #' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. Default = "org.Hs.eg.db"
 #' @return A similarity matrix with all the relationships between the GO-terms presented in the input graph.
 #' @references Wang et al., (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23:10, 1274–1281, \href{https://doi.org/10.1093/bioinformatics/btm087}{10.1093/bioinformatics/btm087}
 #' @export
 
-calculate_wang <- function(graph, ontology = c("BP", "CC", "MF"),
-                                      OrgDb = "org.Hs.eg.db") {
+calculate_wang <- function(input_terms,
+                           ontology = c("BP", "CC", "MF"),
+                           OrgDb = "org.Hs.eg.db") {
   # Load required libraries
   if (!requireNamespace("GOSemSim", quietly = TRUE)) {
     stop("Please install the 'GOSemSim' package.")
@@ -31,34 +32,26 @@ calculate_wang <- function(graph, ontology = c("BP", "CC", "MF"),
     stop(paste("Please install the", OrgDb, "package to proceed."))
   }
 
-  # Validate graph input
-  if (is.null(graph) || !inherits(graph, "igraph")) {
-    stop("The input 'graph' must be a valid igraph object.")
-  }
-
-  # Combine all GO terms from all sets into a unique list
-  all_go_terms <- unique(V(graph)$name)
-
   # Validate input
-  if (length(all_go_terms) < 2) {
+  if (length(input_terms) < 2) {
     stop("Not enough unique GO terms to compute similarity.")
   }
 
-  sem_data <- godata(ont = ontology, OrgDb = OrgDb, computeIC = FALSE)
+  sem_data <- godata(ont = ontology, annoDb = OrgDb, computeIC = FALSE)
 
   # Initialize similarity matrix for all GO terms
   similarity_matrix <- matrix(0,
-                              nrow = length(all_go_terms),
-                              ncol = length(all_go_terms),
-                              dimnames = list(all_go_terms, all_go_terms))
+                              nrow = length(input_terms),
+                              ncol = length(input_terms),
+                              dimnames = list(input_terms, input_terms))
 
   # Calculate Wang Similarity for each pair of sets
-  for (i in seq_along(all_go_terms)) {
-    for (j in seq_along(all_go_terms)) {
+  for (i in seq_along(input_terms)) {
+    for (j in seq_along(input_terms)) {
       if (i <= j) {
         # Compute Wang Similarity between two GO-term sets
         sim <- mgoSim(
-          all_go_terms[i], all_go_terms[j],
+          input_terms[i], input_terms[j],
           semData = sem_data, measure = "Wang", combine = "avg")
 
         similarity_matrix[i, j] <- sim

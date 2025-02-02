@@ -6,38 +6,30 @@
 #' However, this method does not consider the hierarchical structure of the GO terms themselves,
 #' only the overlap of gene annotations.
 #'
-#' @param graph A graph object that connects the input GO-terms with their parents and children terms
-#' @return A similarity matrix with all the relationships between the GO-terms presented in the input graph.
+#' @param input_terms A vector containing the input GO-terms IDs
+#' @return A similarity matrix with all the relationships between the GO-terms calculated based on the Jaccard Index.
 #' @export
 
-calculate_jaccard <- function(graph) {
-
-  # Validate graph input
-  if (is.null(graph) || !inherits(graph, "igraph")) {
-    stop("The input 'graph' must be a valid igraph object.")
-  }
-
-  # Combine all GO terms from all sets into a unique list
-  all_go_terms <- unique(V(graph)$name)
+calculate_jaccard <- function(input_terms) {
 
   # Validate input
-  if (length(all_go_terms) < 2) {
+  if (length(input_terms) < 2) {
     stop("Not enough unique GO terms to compute similarity.")
   }
 
   # Initialize similarity matrix for individual GO terms
   similarity_matrix <- matrix(0,
-                              nrow = length(all_go_terms),
-                              ncol = length(all_go_terms),
-                              dimnames = list(all_go_terms, all_go_terms))
+                              nrow = length(input_terms),
+                              ncol = length(input_terms),
+                              dimnames = list(input_terms, input_terms))
 
   # Calculate Jaccard Index for each pair of GO terms
-  for (i in seq_along(all_go_terms)) {
-    for (j in seq_along(all_go_terms)) {
+  for (i in seq_along(input_terms)) {
+    for (j in seq_along(input_terms)) {
       if (i <= j) {
         # Calculate intersection and union
-        term1 <- all_go_terms[i]
-        term2 <- all_go_terms[j]
+        term1 <- input_terms[i]
+        term2 <- input_terms[j]
         intersection <- ifelse(term1 == term2, 1, 0)  # Direct match
         union <- 1  # Union of a single term is itself
 

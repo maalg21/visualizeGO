@@ -14,7 +14,7 @@
 #' @param labels Enable to write the Clusters number in the plot
 #' @param size Determine what the determination of the size of the dots is based on.
 #' It can be "genes" or "padj", if it depends on the number of genes annotated for that GO-term or on the significance value (calculated as -log10(padj)) of each GO-term respectively.
-#' @param scores If the size of the GO terms represented has been chosen according to their "padj", a named numerical vector of the values to be used. Normally, this value is reflected as -log10(padj).
+#' @param scores If the size of the GO terms represented has been chosen according to their "padj", a named numerical vector of the values to be used. Typically, this value is reflected as -log10(padj).
 #'
 #' @return Scatter plot of the distances of the GO-terms..
 #'

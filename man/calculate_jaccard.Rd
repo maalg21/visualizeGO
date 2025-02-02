@@ -4,13 +4,13 @@
 \alias{calculate_jaccard}
 \title{Calculate Jaccard Similarity Matrix}
 \usage{
-calculate_jaccard(graph)
+calculate_jaccard(input_terms)
 }
 \arguments{
-\item{graph}{A graph object that connects the input GO-terms with their parents and children terms}
+\item{input_terms}{A vector containing the input GO-terms IDs}
 }
 \value{
-A similarity matrix with all the relationships between the GO-terms presented in the input graph.
+A similarity matrix with all the relationships between the GO-terms calculated based on the Jaccard Index.
 }
 \description{
 This function calculates the similarity matrix using the Jaccard Index. In the context of Gene Ontology (GO),

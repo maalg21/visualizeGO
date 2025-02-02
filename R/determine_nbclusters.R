@@ -2,12 +2,12 @@
 #'
 #' This function determines the number of clusters into which the GO-terms in the graph are divided based on the Elbow and Silhouette methods.
 #'
-#' @param similarity_matrix Only if the method_type selected was "similarity". Similarity matrix previously calculated that relates the GO-terms depending on their semantic similarity.
-#' @param graph igraph object linking the input GO-terms.
+#' @param similarity_matrix Similarity matrix previously calculated that
+#' relates the GO-terms depending on their semantic similarity.
 #' @return A plot showing the optimal number of clusters based on the different methods.
 #' @export
 
-determine_nbclusters <- function(graph, similarity_matrix){
+determine_nbclusters <- function(similarity_matrix){
 
   if (!requireNamespace("factoextra", quietly = TRUE)) {
     stop("The factoextra package is required. Install it using install.packages('factoextra').")
@@ -16,7 +16,7 @@ determine_nbclusters <- function(graph, similarity_matrix){
   }
 
   distance_matrix <- 1 - similarity_matrix
-  nb_terms <- length(V(graph)$name)
+  nb_terms <- nrow(similarity_matrix)
 
   # Elbow's method ----
   elbow <- fviz_nbclust(similarity_matrix, kmeans,
@@ -70,6 +70,6 @@ determine_nbclusters <- function(graph, similarity_matrix){
   plot <- grid.arrange(p1, p2, ncol = 2)
 
   return(list(optimal_Silhouette = optimal_k_sil,
-              optimal_Elbow = optimal_k_elbow, plot))
+              optimal_Elbow = optimal_k_elbow))
   print(plot)
 }
