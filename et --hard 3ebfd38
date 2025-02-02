@@ -1,0 +1,121 @@
+[33mffc4136[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{0}: pull origin master --rebase (start): checkout ffc41363d76a9cc583cce5dd1c9b1d9845f02cc0
+[33m3ebfd38[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{1}: commit (initial): Update to the new Alpha-0.5.0 version
+[33mffc4136[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{2}: commit: Fixing bugs of determine_nbclusters function
+[33m83e8b3e[m HEAD@{3}: commit: Fixing bugs of determine_nbclusters function
+[33me7c51ba[m HEAD@{4}: commit: Fixing bugs og determine_nbclusters function
+[33me294dd4[m HEAD@{5}: commit: Fixing bugs of determine_nbclusters function
+[33mc1a8a39[m HEAD@{6}: commit: Upgrading to version 0.4.0
+[33m089c7cc[m HEAD@{7}: commit: Fixin bugs of filter_terms function
+[33m2ea6000[m HEAD@{8}: commit: Final touches
+[33mbc2c66c[m HEAD@{9}: commit: Updating the README.md file
+[33mc2dc22b[m HEAD@{10}: commit: Fixing bugs of visualizeGO function
+[33m0cce688[m HEAD@{11}: commit: Fixing bugs of visualizeGO function
+[33mbecaf6f[m HEAD@{12}: commit: Uploading documentation
+[33m596f1b6[m HEAD@{13}: commit: Modifiying README.md
+[33m42a0f1c[m HEAD@{14}: commit: Fixing bugs from visualizeGO function
+[33mb21fb4f[m HEAD@{15}: commit: Uploading new visualizeGO function
+[33m18382d8[m HEAD@{16}: commit: Fixing bugs in build_hierarchical_graph function
+[33m59b7d8a[m HEAD@{17}: commit: Uploading new images
+[33m3be0bc5[m HEAD@{18}: commit: Fixing bugs in build_hierarchical_graph function
+[33m317c1a7[m HEAD@{19}: commit: Uploading new images
+[33ma8d3f40[m HEAD@{20}: commit: Fixing bugs in compareGO function
+[33mfcde2e5[m HEAD@{21}: commit: Uploading new images
+[33mfa0477d[m HEAD@{22}: commit: Uploading example scripts
+[33mb3c896c[m HEAD@{23}: commit: Fixing bugs in cluster_go_terms function
+[33m6228138[m HEAD@{24}: commit: Fixing errors in filter_terms function
+[33ma69a4a2[m HEAD@{25}: commit: A new function ‘determine_nbclusters’ was added
+[33mf4036a2[m HEAD@{26}: commit: Fixing bugs from filter_terms function
+[33m7a1df7d[m HEAD@{27}: commit: New filter_terms function and modifications to other functions
+[33mf5be957[m HEAD@{28}: commit: Fixing bugs from scatterGO function
+[33m75547bf[m HEAD@{29}: commit: Redefining the scatterGO function
+[33mcaab77d[m HEAD@{30}: commit: Modifying function documentation
+[33m59425e8[m HEAD@{31}: commit: Updating semantic similarity methods
+[33m0a47407[m HEAD@{32}: commit: Changes to two of the most important functions of the package
+[33m43c8347[m HEAD@{33}: commit: Update compare_clusters function
+[33m7852ecd[m HEAD@{34}: commit: Update compare_clusters function
+[33mb20c55b[m HEAD@{35}: commit: Update compare_clusters function
+[33m6eea001[m HEAD@{36}: commit: Adding scatterGO function in the tutorial
+[33mc4240ea[m HEAD@{37}: commit: Adding scatterGO function in the tutorial
+[33m3384142[m HEAD@{38}: commit: Updating the ‘compare_clusters’ function to
+[33mac5361e[m HEAD@{39}: commit: Updating the ‘compare_clusters’ function to be able to use the result of the clustering of other packages and adding a new ‘scatterGO’ function
+[33m359c1dd[m HEAD@{40}: commit: Fixing bugs of visualize_go_hierarchy plot legend
+[33m4945d1b[m HEAD@{41}: commit: Update README.md
+[33m8674f23[m HEAD@{42}: commit: Update README.md
+[33mf543a36[m HEAD@{43}: commit: Upload README.md
+[33ma625960[m HEAD@{44}: commit (merge): Delete README.md
+[33m52c8384[m HEAD@{45}: commit: Delete README.md
+[33mbddbbbf[m HEAD@{46}: commit: Update README.md
+[33mc2dc09f[m HEAD@{47}: commit: Update README.md
+[33macfc4ce[m HEAD@{48}: commit (merge): Update README.md
+[33m8a63e8f[m HEAD@{49}: commit: Update README.md
+[33m020e759[m HEAD@{50}: commit: Uploading graphs
+[33mee909f7[m HEAD@{51}: commit: Fixing bugs of compare_clusters function
+[33m508615d[m HEAD@{52}: commit: Uploading compare_clusters function
+[33m4660086[m HEAD@{53}: commit: Uploading Plot 2
+[33m2c052a4[m HEAD@{54}: commit: Update filter_and_visualize_cluster function
+[33m5fe59fc[m HEAD@{55}: commit: Update filter_and_visualize_cluster saving options
+[33m5d0cd0e[m HEAD@{56}: commit: Update visualize_go_hierarchy saving options
+[33m3a1ce7b[m HEAD@{57}: commit: Update visualize_go_hierarchy function
+[33m988ca1f[m HEAD@{58}: commit: Updating plotting options
+[33m498664d[m HEAD@{59}: commit: Updating visualization functions
+[33m2ecd27b[m HEAD@{60}: commit: Fixing bugs of visualize_go_hierarchy function
+[33mb0424a0[m HEAD@{61}: commit: Fixing bugs of filter_and_visualize_cluster function
+[33mdc92bd0[m HEAD@{62}: commit: Adding legend to filter_and_visualize_cluster output plot
+[33m14decf5[m HEAD@{63}: commit: Updating Plot1
+[33m4d24ac5[m HEAD@{64}: commit: Update visualize_go_hierarchy function
+[33m2da85cb[m HEAD@{65}: commit: Update visualize_go_hierarchy function
+[33mcd0de1f[m HEAD@{66}: commit: Update visualize_go_hierarchy function
+[33m82d1335[m HEAD@{67}: commit: Update filter_and_visualize_cluster function
+[33m64cb089[m HEAD@{68}: commit: Update filter_and_visualize_cluster function
+[33m5600b90[m HEAD@{69}: commit: Fixed bugs in filter_and_visualize_cluster and visualize_go_hierarchy functions
+[33m6a4d143[m HEAD@{70}: commit: Update of visualize_go_hierarchy legend
+[33md74694d[m HEAD@{71}: commit: Fixed bugs in visualize_go_hierarchy function
+[33m7aed8d7[m HEAD@{72}: commit: Fixing bugs of visualize_go_hierarchy function
+[33m6c9908a[m HEAD@{73}: commit: Fixing bugs in generate_cluster_table function
+[33m683466b[m HEAD@{74}: commit: Fixing bugs in generate_cluster_table function
+[33mdb0bb61[m HEAD@{75}: commit: Add legend to visualize_go_hierarchy output plot
+[33m31c9c48[m HEAD@{76}: commit: Solving errors in filter_and_visualize_cluster function
+[33md9b906f[m HEAD@{77}: commit: Update go_similarity_heatmap function
+[33m5d84017[m HEAD@{78}: commit: Update go_similarity_heatmap function
+[33m41e09d2[m HEAD@{79}: commit: Final changes
+[33me398602[m HEAD@{80}: commit: Upload heatmap plot
+[33ma028b9a[m HEAD@{81}: commit: Final changes
+[33m1598bd1[m HEAD@{82}: commit: Update go_similarity_heatmap function
+[33m5f00e23[m HEAD@{83}: commit: Update go_similarity_heatmap function
+[33m2b0d3f1[m HEAD@{84}: commit: Update go_similarity_heatmap function
+[33m6fe2c8a[m HEAD@{85}: commit: Upload another example data
+[33m22c12fc[m HEAD@{86}: commit: Final changes
+[33m8715c44[m HEAD@{87}: commit: Final changes
+[33m5ebaf1e[m HEAD@{88}: commit: Update filter_and_visualize_cluster output
+[33meac02bd[m HEAD@{89}: commit: Update filter_and_visualize_cluster function and documentation
+[33m2568063[m HEAD@{90}: commit: Upload another image
+[33mfeaa2f5[m HEAD@{91}: commit: Upload test script
+[33m702ad38[m HEAD@{92}: commit: Update required packages and filter_and_visualize_cluster function
+[33m2c215f6[m HEAD@{93}: commit: Update filter_and_visualize_cluster function
+[33m807cce7[m HEAD@{94}: commit: Update filter_and_visualize_cluster function
+[33m71490c0[m HEAD@{95}: commit: Udate filter_and_visualize_cluster function
+[33mfe9a12f[m HEAD@{96}: commit: Update filter_and_visualize_cluster function
+[33m7e73fb4[m HEAD@{97}: commit: Update visualize_go_hierarchy and filter_and_visualize_cluster functions
+[33m60c0c29[m HEAD@{98}: commit: Updating to version 0.1.1
+[33m2c19716[m HEAD@{99}: commit: Updating the documentation
+[33ma26039d[m HEAD@{100}: commit: Update visualize_go_hierarchy function
+[33m094b277[m HEAD@{101}: commit: Update visualize_go_hierarchy function
+[33mdefdeec[m HEAD@{102}: commit: Updating and bug fixes
+[33m00e0162[m HEAD@{103}: commit: Update visualize_go_hierarchy function
+[33m8614cce[m HEAD@{104}: commit: Update generate_cluster_table function
+[33m5240f43[m HEAD@{105}: commit: Update cluster_go_terms function
+[33m92043b9[m HEAD@{106}: commit: Add my_function to the R directory
+[33me19aa52[m HEAD@{107}: commit: Update cluster_go_terms function
+[33md885f26[m HEAD@{108}: commit: Update generate_cluster_table.R function
+[33m1223f56[m HEAD@{109}: commit: Update generate_cluster_table.R function
+[33m36d2163[m HEAD@{110}: commit: Update save_cluster_table_as_png function
+[33m7ce1184[m HEAD@{111}: commit: Update save_cluster_table_as_png function
+[33mc508e61[m HEAD@{112}: commit: Update build_hierarchical_graph function to include the GO environment
+[33m089a774[m HEAD@{113}: commit: Update DESCRIPTION to mention data files in inst/extdata/
+[33m698e9f9[m HEAD@{114}: checkout: moving from main to master
+[33mf2db19f[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{115}: checkout: moving from main to main
+[33mf2db19f[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{116}: commit: Update DESCRIPTION to mention data files in inst/extdata/
+[33m698e9f9[m HEAD@{117}: Branch: renamed refs/heads/master to refs/heads/main
+[33m698e9f9[m HEAD@{119}: commit: Add files from inst/ directory
+[33me4ddb8d[m HEAD@{120}: commit: Add Code of Conduct file
+[33m881dae1[m HEAD@{121}: commit (initial): Initial commit
