@@ -1,0 +1,47 @@
+Package: visualizeGO
+Type: Package
+Title: Hierarchical clustered visualization of GO terms
+Version: 0.5.0
+Authors@R: c(
+    person(
+      "María", "Alonso-García",
+      email = "maalg@unileon.es",
+      role = c("aut", "cre")
+    )
+  )
+Description: This package creates hierarchical graphs of interesting GO terms. This R package has been developed for the purpose of creating hierarchical graphs of a list of interesting GO-terms. 
+  The package utilises a clustering method to group the GO-terms, thereby facilitating the observation of relationships between these terms. 
+  This process enhances the comprehension of the intra-cluster relationships of the metabolic pathways highlighted.
+  This package provides access to various data files, including Excel and RData files, that can be used for analysis. These files are stored in the inst/extdata/ directory and can be accessed using package functions.
+Imports: 
+    roxygen2 (>= 7.1.0),
+    readxl,
+    igraph,
+    dplyr,
+    ggplot2,
+    GOSemSim,
+    stringr,
+    cluster,
+    tibble,
+    gridExtra,
+    org.Hs.eg.db,
+    GO.db,
+    AnnotationDbi,
+    pheatmap,
+    webshot,
+    grid,
+    gridExtra,
+    scales,
+    factoextra,
+    treemapify,
+    treemap
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: R (>= 4.0.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
