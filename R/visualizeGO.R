@@ -6,8 +6,7 @@
 #' This function has a lot of arguments to make the plot highly customizable. I recommend ‘playing’ with the parameters to see which plot best suits what you are looking for 😊
 #'
 #' @param graph An igraph object from familyGO.
-#' @param shape1 Shape of the nodes in the plot. By default is "circle".
-#' @param shape2 If two lists are used, the shape of the nodes for the second list.
+#' @param shape Shape of the input nodes in the igraph object. By default is "circle".
 #' @param min_node_size Minimum size of the nodes less connected with others. If is NULL, the size is calculated.
 #' @param max_node_size Maximum size of the nodes more connected with the others. If is NULL, the size is calculated.
 #' @param layout Arrangement of the nodes in the network. Can be ‘tree’, ‘kk’ or ‘fr’
@@ -36,8 +35,7 @@
 
 visualizeGO <- function(graph, cluster,
                         selected_cluster = NULL,
-                        shape1 = "circle",
-                        shape2 = NULL,
+                        shape = "circle",
                         min_node_size = NULL,
                         max_node_size = NULL,
                         layout = c("tree", "kk", "fr"),
@@ -113,8 +111,8 @@ visualizeGO <- function(graph, cluster,
   if (verbose != "none") cat("Assign shapes to nodes ...\n")
 
   V(graph)$shape <- case_when(
-    V(graph)$origin == "input" ~ shape1,
-    V(graph)$origin == "external" ~ "circle"
+    V(graph)$origin == "input" ~ shape,
+    V(graph)$origin == "external" ~ "square"
   )
 
   if(verbose == "all"){

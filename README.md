@@ -361,8 +361,13 @@ The last step is to represent the relationships between the GO-terms of interest
 
 ``` r
 visualizeGO(cluster = cluster, graph = graph,
-shape1 = "square", min_node_size = 1, max_node_size = 10, 
-layout = "tree", col_palette = colors, verbose = "some",
+shape1 = "square",
+min_node_size = 1, max_node_size = 10, 
+layout = "tree", 
+title = "Alonso-García et al. (2023)",
+labs = "Input Terms",
+col_palette = generate_pastel_colors(54), 
+verbose = "some",
 legend = T, ID = F)
 ```
 
@@ -373,16 +378,17 @@ to see what these relationships look like. This list of GO-terms is the result
 of a functional enrichment analysis of differentially expressed genes obtained
 from transcriptome analysis of adipose tissue from suckling lambs
 [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996).
-Thus, we are going to focus on **Clusters 1, 18, 19 & 20** which are related
-to lipid metabolism.
+Thus, we are going to focus on **Clusters 13, 16, 18 & 19** which are related
+to adipose tissue development.
 
 ``` r
-visualizeGO(cluster = cluster, selected_cluster = c(1,18,19,20), 
-shape1 = "square", min_node_size = 2.5, max_node_size = 10, 
-layout = "tree", col_palette = colors[c(1,18,19,20)], 
-title = "Fatty acid related clusters",
+visualizeGO(cluster = cluster, graph = graph,
+selected_cluster = c(13,16,18,19), 
+shape1 = "circle", min_node_size = 2.5, max_node_size = 10, 
+layout = "tree", col_palette = colors[c(13,16,18,19)], 
+title = "Adipose Tissue Development related clusters",
 verbose = "some", legend = T, ID = T,
-labs = "Alonso-García et al. (2023)")
+labs = "Input Terms")
 ```
 
 ![](inst/images/plot2.png) This function, in addition to filtering
