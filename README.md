@@ -61,6 +61,8 @@ The first step is to import the list (or lists) of GO-terms of interest. To exem
 
 ``` r
 library(visualizeGO)
+library(dplyr)
+library(igraph)
 
 data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms.xlsx", package = "visualizeGO")))
 ```
@@ -248,6 +250,7 @@ scores = setNames(-log10(GO_BP$Padj), GO_BP$ID),
 title = "Distance Between GO-Terms",
 colors = generate_pastel_colors(n = 54))
 ```
+![TreeMap Plot](inst/images/treemap.png)
 
 ### Comparing lists of GO-terms
 
@@ -295,12 +298,13 @@ how to obtain the clusters for the second data table `data2`. Remember that
 **ONLY** clusters of GO-terms of the same ontology category
 *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make
 *biological* sense to compare clusters of GO-terms obtained through their
-conformation in the network ... But you do you! In this case we want to
-see how similar the terms used in the clustering are. 
+conformation in the network ... But you do you!
+In this case we are going to compare how similar the clusters detected 
+pre- and post-filtering are.
 
 ``` r
 compareGO(comparison = "cluster",
-list1 = cluster$clusters, list2 = cluster$clusters,
+list1 = cluster$clusters, list2 = cluster2$clusters,
 ontology = "BP", OrgDb = "org.Hs.eg.db",
 method = "Wang", combine = "BMA", plot = T,
 low = "white", high = "red3",
@@ -310,13 +314,9 @@ cex = 3, cex_axis = 10)
 
 ![](inst/images/heatmap2.png)
 
-The graph shows how groups 1 to 14 are very similar, which is biologically coherent
-as they are terms grouped in clusters closely related to lipid metabolism. Two of
-the most similar clusters are Cluster 18 ("*negative regulation of fatty acid metabolic process*") and Cluster
-24 ("*regulation of cellular ketone metabolic process*") (similarity score = ~70%). If we make the
-graph of both clusters we obtain:
-
-![](inst/images/plot4.png)
+As we can see in the heatmap, there are many clusters that are common to both
+analyses - *as expected*-. Although there are some unique clusters in the
+analysis of the 54 clusters, such as Clusters 15, 18, 19, etc.
 
 ### Build the hierarchical graph
 

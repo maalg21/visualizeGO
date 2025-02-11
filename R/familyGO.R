@@ -102,8 +102,6 @@ familyGO <- function(cluster, go_sim_object = NULL){
     dplyr::rename("Cluster" = `cluster$clusters`) %>%
     arrange(Cluster)
 
-  cluster_assignments[cluster_assignments$GO_ID == g,]$Cluster
-
   V(graph)$Cluster <- ifelse(
     V(graph)$origin == "input",
     cluster_assignments$Cluster[match(V(graph)$name,
