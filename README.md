@@ -189,7 +189,6 @@ As this is a grouping by similarity, each cluster has a more representative
 metabolic pathway associated with it, being the one that is more closely
 related to the rest of the GO-terms within the cluster.
 
-<<<<<<< HEAD
 To see which groups have been detected, we use the `generate_cluster_table` function, which 
 will give us a table (which we can be saved as a PNG) with the relationship of 
 the clusters, the color they will have later in the final graph, the most 
@@ -200,6 +199,16 @@ representative pathway and which GO IDs belong to each cluster.
 generate_cluster_table(cluster_output = cluster, col_palette = colors, 
 text_color = "black", file_name = NULL) # If you specify a name for the file, it will be saved as a PNG.
 ```
+![Cluster Table1](inst/images/cluster_table1.png) This is what the PNG output of 
+our grouping looks like.
+
+``` r
+# colors <- generate_pastel_colors(n = 34) # This function was only created to generate a list of pastel colours of the number we determine 😊
+generate_cluster_table(cluster_output = cluster2, col_palette = colors, 
+text_color = "black", file_name = NULL) # If you specify a name for the file, it will be saved as a PNG.
+```
+![Cluster Table2](inst/images/cluster_table2.png) As we can see, the main clusters are almost the same.
+
 Note that sometimes the GO IDs of the most representative path in the cluster 
 do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) 
 database, which is the one we use for the identification of term's names from 
@@ -207,9 +216,6 @@ their ID. Therefore, in the table, instead of the term name in
 the *Representative Pathway* column, the GO ID will appear. We promise that 
 we will try to improve this peculiarity by investigating more R annotation 
 packages for GO IDs.
-
-![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
-our grouping looks like.
 
 Furthermore, with the ```scatterGO``` function we can represent the GO terms as a
 scatter plot represented by the first two components of a Principal Component Analysis
@@ -221,10 +227,11 @@ latter option is chosen, it should be borne in mind that the padj values are ver
 low, so we must provide the function with transformed values (*usually ```-log10(padj)```*).
 
 ``` r
-scatterGO(similarity_matrix, cluster,
-OrgDb = "org.Hs.eg.db",
-title = "Distance Between GO-Terms",
-colors = colors, labels = T, size = "padj",
+scatterGO(similarity_matrix = similarity_matrix, 
+cluster = cluster, 
+colors = generate_pastel_colors(n = 54), 
+title = "Distance Between GO-Terms", 
+labels = T, size = "padj", 
 scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 ![Scatter Plot](inst/images/scatter_plot.png)

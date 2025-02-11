@@ -29,8 +29,11 @@ scatterGO <- function(similarity_matrix, cluster,
     stop("A GO semantic similarity matrix is required for performing the plot.")
   }
 
-  if (!"clusters" %in% names(cluster) || !"graph" %in% names(cluster)) {
-    stop("The 'clusters' input must contain both 'graph' and 'clusters' components.")
+  if (is.null(cluster_output) ||
+      !"clusters" %in% names(cluster_output) ||
+      !"descriptions" %in% names(cluster_output) ||
+      !"representative_pathways" %in% names(cluster_output)) {
+    stop("Invalid cluster result provided.")
   }
 
   # Only representing the distances between inputed GO-terms
