@@ -2,11 +2,11 @@ dist_matrix <- as.dist(1 - similarity_matrix)
 hc <- hclust(dist_matrix, method = "average")
 
 tmp <- list()
-for (k in 1:55){
+for (k in 1:54){
   tmp[[k]] <- cutree(hc, k = k)
 }
 df <- as.data.frame(do.call(cbind, tmp))
-colnames(df) <- paste("K", 1:55, sep = "")
+colnames(df) <- paste("K", 1:54, sep = "")
 
 pca <- prcomp(dist_matrix, center = TRUE, scale. = FALSE)
 ind.coord <- pca$x

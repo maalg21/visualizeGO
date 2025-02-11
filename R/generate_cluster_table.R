@@ -60,10 +60,20 @@ generate_cluster_table <- function(cluster_output,
                   full_width = FALSE) %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, color = text_color,
-                background = cluster_colors[1:nrow(cluster_df)]) %>%
-    save_kable(temp_html)  # Save the table to an HTML file
+                background = cluster_colors[1:nrow(cluster_df)])
 
   if(!is.null(file_name)){
+    temp_html <- paste(file_name, ".html")
+
+    cluster_df %>%
+      kbl(format = "html", escape = FALSE, row.names = FALSE) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                    full_width = FALSE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, color = text_color,
+                  background = cluster_colors[1:nrow(cluster_df)]) %>%
+      save_kable(temp_html)  # Save the table to an HTML file
+
     # Use webshot to convert HTML to PNG
     library(webshot)
     webshot(temp_html, file_name, vwidth = width, vheight = height, zoom = zoom)

@@ -86,7 +86,7 @@ calculate the similarity matrix between them. In this case, we choose
 [Wang's method](https://doi.org/10.1093/bioinformatics/btm087).
 
 ``` r
-similarity_matrix <- calculate_wang(graph = graph, # From the graph, we get the nodes.
+similarity_matrix <- calculate_wang(input_terms = GO_BP$ID, 
 ontology = "BP", # We select the category to which our GO-terms belong.
 OrgDb = "org.Hs.eg.db") # We use human annotation as a reference.
 ```
@@ -95,12 +95,22 @@ GO terms that demonstrate similarity above the designated ```threshold``` in a
 minimum of half of the comparisons will be designated as connected. Consequently,
 an elevated threshold will result in a reduced number of GO terms for clustering,
 and the threshold should be interpreted as the minimum level of similarity between
-GO terms. In the example, `threshold = 0.25` implies that a minimum similarity of
-25% is required.
+GO terms. In the example, `threshold = 0.1` implies that a minimum similarity of
+10% is required.
+
+**This is not mandatory.** This step will depend above all on how conservative
+you want to be in the analysis, using more or less similar terms for clustering.
+In our case, we start with a list of 137 terms, which if we use a threshold of
+10% is reduced to 89 terms. We will carry out the grouping with the two samples
+to see how the clustering process behaves.
+
 
 ``` r
-filtered_graph <- filter_terms(similarity_matrix, graph, threshold = 0.25)
+filtered_terms <- filter_terms(similarity_matrix = similarity_matrix,
+threshold = 0.1)
+similarity_matrix2 <- filtered_terms$similarity_matrix
 ```
+
 From this function we obtain the filtered graph and several vectors of GO-terms:
 (1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a
 similarity score above the threshold 
@@ -143,49 +153,53 @@ to the number of GO-terms (*i.e., each GO-term is in a cluster of its own*).
 
 ```r
 set.seed(1234) # For reproducibility
-similarity_matrix <- filtered_graph$similarity_matrix
-graph <- filtered_graph$graph
 
-determine_nbclusters(graph = graph, similarity_matrix = similarity_matrix)
-# Based on the Elbow method, the optimal number of clusters (k) is: 132 
-# Based on the Silhouette method, the optimal number of clusters (k) is: 55
+# For the similarity matrix NOT filtered:
+determine_nbclusters(similarity_matrix = similarity_matrix)
+# Based on the Elbow method, the optimal number of clusters (k) is: 20 
+# Based on the Silhouette method, the optimal number of clusters (k) is: 54
 ```
-![ ](inst/images/determine_nbcluster.png)
+![ ](inst/images/determine_nbcluster1.png)
+
+```r
+# For the filtered similarity matrix:
+determine_nbclusters(similarity_matrix = similarity_matrix2)
+# Based on the Elbow method, the optimal number of clusters (k) is: 2 
+# Based on the Silhouette method, the optimal number of clusters (k) is: 34
+```
+![ ](inst/images/determine_nbcluster2.png)
+
 
 This function tells you the number of clusters in which your list of GO-terms 
 input is grouped according to each method. In this case, after filtering out
 terms that do not have a high similarity with the input GO-terms, when testing
 the best number of clusters for our list of terms, each of the methods gives us
-a different value. 
-
-If we want to see how our GO-terms are grouped according to how the number of
-clusters changes, we can use the R package 
-[clustree](https://github.com/lazappi/clustree). In the case of selecting the
-Silhouette method, the groupings are made as follows:
-![ ](inst/images/clustree.png)
-See the script [`crustree_script.R`](https://github.com/maalg21/visualizeGO/blob/master/test/clustree_script.R) for details.
-
-The value given to us by the Elbow method is very high, so we
-will obtain very small clusters and that is not what we are looking for. So for
-this tutorial, we chose `nb_cluster = 55` based on the Silhouette method.
+a different value. For this tutorial, we chose `nb_cluster = 54` based on the
+Silhouette method.
 
 ``` r
-cluster <- clusterGO(method_type = "similarity", method = "wang",
-similarity_matrix = similarity_matrix, graph = graph, nb_clusters = 55)
+cluster <- clusterGO(similarity_matrix = similarity_matrix,
+nb_clusters = 54)
+```
+
+Also, let's see how the filtered terms cluster.
+``` r
+cluster2 <- clusterGO(similarity_matrix = similarity_matrix2,
+nb_clusters = 34)
 ```
 As this is a grouping by similarity, each cluster has a more representative
 metabolic pathway associated with it, being the one that is more closely
 related to the rest of the GO-terms within the cluster.
 
-To see what 55 clusters are, we use the `generate_cluster_table` function, which 
-will give us a table (which we can later save as a PNG) with the relationship of 
+To see which groups have been detected, we use the `generate_cluster_table` function, which 
+will give us a table (which we can be saved as a PNG) with the relationship of 
 the clusters, the color they will have later in the final graph, the most 
 representative pathway and which GO IDs belong to each cluster.
 
 ``` r
-# colors <- generate_pastel_colors(n = 55) # This function was only created to generate a list of pastel colours of the number we determine 😊
-Table <- generate_cluster_table(cluster_output = cluster, method_type = "similarity", 
-similarity_matrix = similarity_matrix, text_color = "black", col_palette = colors)
+# colors <- generate_pastel_colors(n = 54) # This function was only created to generate a list of pastel colours of the number we determine 😊
+generate_cluster_table(cluster_output = cluster, col_palette = colors, 
+text_color = "black", file_name = NULL) # If you specify a name for the file, it will be saved as a PNG.
 ```
 Note that sometimes the GO IDs of the most representative path in the cluster 
 do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) 
@@ -195,11 +209,6 @@ the *Representative Pathway* column, the GO ID will appear. We promise that
 we will try to improve this peculiarity by investigating more R annotation 
 packages for GO IDs.
 
-To save the table as PNG we will use the `save_cluster_table_as_png` function.
-``` r
-save_cluster_table_as_png(cluster_df = Table, file_name = "cluster_table.png", 
-width = 1600, height = 1600,zoom = 2)
-```
 ![Cluster Table](inst/images/cluster_table.png) This is what the PNG output of 
 our grouping looks like.
 
