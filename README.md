@@ -346,7 +346,7 @@ In this case, we will only use a single list of GO-terms. But the package allows
 us to obtain the semantic relations between two lists of GO-terms. From this final 
 graph, we then grouped the GO-terms.
 
-## Visualize GO-terms relationships
+### Visualize GO-terms relationships
 
 The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualize_go_hierarchy` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
 
