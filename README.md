@@ -361,7 +361,7 @@ The last step is to represent the relationships between the GO-terms of interest
 
 ``` r
 visualizeGO(cluster = cluster, graph = graph,
-shape1 = "square",
+shape = "circle",
 min_node_size = 1, max_node_size = 10, 
 layout = "tree", 
 title = "Alonso-García et al. (2023)",
@@ -384,7 +384,7 @@ to adipose tissue development.
 ``` r
 visualizeGO(cluster = cluster, graph = graph,
 selected_cluster = c(13,16,18,19), 
-shape1 = "circle", min_node_size = 2.5, max_node_size = 10, 
+shape = "circle", min_node_size = 2.5, max_node_size = 10, 
 layout = "tree", col_palette = colors[c(13,16,18,19)], 
 title = "Adipose Tissue Development related clusters",
 verbose = "some", legend = T, ID = T,
