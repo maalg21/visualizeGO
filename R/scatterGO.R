@@ -29,17 +29,12 @@ scatterGO <- function(similarity_matrix, cluster,
     stop("A GO semantic similarity matrix is required for performing the plot.")
   }
 
-  if (is.null(cluster_output) ||
-      !"clusters" %in% names(cluster_output) ||
-      !"descriptions" %in% names(cluster_output) ||
-      !"representative_pathways" %in% names(cluster_output)) {
+  if (is.null(cluster) ||
+      !"clusters" %in% names(cluster) ||
+      !"descriptions" %in% names(cluster) ||
+      !"representative_pathways" %in% names(cluster)) {
     stop("Invalid cluster result provided.")
   }
-
-  # Only representing the distances between inputed GO-terms
-  graph <- cluster$graph
-  similarity_matrix <- similarity_matrix[V(graph)$name[V(graph)$origin == "input"],
-                                         V(graph)$name[V(graph)$origin == "input"]]
 
   distance_matrix <- 1 - similarity_matrix
   mds_result <- cmdscale(as.dist(distance_matrix), k = 2)
@@ -56,7 +51,7 @@ scatterGO <- function(similarity_matrix, cluster,
     library(AnnotationDbi)
     library(OrgDb, character.only = T)
 
-    go_terms <- c(V(graph)$name[V(graph)$origin == "input"])
+    go_terms <- row.names(similarity_matrix)
 
     # Get genes annotated to the GO terms
     go_gene_mapping <- list()
@@ -77,7 +72,7 @@ scatterGO <- function(similarity_matrix, cluster,
 
   library(ggplot2)
   if(is.null(colors)){
-    colors <- generate_pastel_colors(n = cluster$nb_clusters)
+    colors <- generate_pastel_colors(n = length(unique(cluster$clusters)))
   }
 
   if(isTRUE(labels)){
