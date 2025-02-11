@@ -52,10 +52,10 @@ treeMap <- function(cluster, size, scores,
       go_gene_mapping[[g]] <- unique(genes)
     }
     names(go_gene_mapping) <- go_terms
-    score <- sapply(go_gene_mapping, length)/100
+    scores <- sapply(go_gene_mapping, length)/100
   }
 
-  go_data <- merge(go_data, as.data.frame(score) %>%
+  go_data <- merge(go_data, as.data.frame(scores) %>%
                        tibble::rownames_to_column(var = "GO_ID"),
                    by = "GO_ID") %>%
       dplyr::select(-GO.IDs)
@@ -64,7 +64,7 @@ treeMap <- function(cluster, size, scores,
     colors <- generate_pastel_colors(n = length(unique(cluster$clusters)))
   }
 
-  ggplot(go_data, aes(area = score,
+  ggplot(go_data, aes(area = scores,
                       fill = Cluster, label = Description,
                       subgroup = Representative.Pathway)) +
     geom_treemap(alpha = .5) +

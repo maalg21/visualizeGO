@@ -243,8 +243,10 @@ the most representative pathway encompassing the cluster it represents.
 The size of the rectangles depends on XXX.
 
 ```r
-treeMap(cluster, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID),
-title = "Distance Between GO-Terms", colors = colors)
+treeMap(cluster, size = "padj",
+scores = setNames(-log10(GO_BP$Padj), GO_BP$ID),
+title = "Distance Between GO-Terms",
+colors = generate_pastel_colors(n = 54))
 ```
 
 ### Comparing lists of GO-terms
