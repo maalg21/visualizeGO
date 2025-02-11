@@ -60,6 +60,7 @@ generate_cluster_table <- function(cluster_output,
                   full_width = FALSE) %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, color = text_color,
+<<<<<<< HEAD
                 background = cluster_colors[1:nrow(cluster_df)])
 
   if(!is.null(file_name)){
@@ -74,6 +75,12 @@ generate_cluster_table <- function(cluster_output,
                   background = cluster_colors[1:nrow(cluster_df)]) %>%
       save_kable(temp_html)  # Save the table to an HTML file
 
+=======
+                background = cluster_colors[1:nrow(cluster_df)]) %>%
+    save_kable(temp_html)  # Save the table to an HTML file
+
+  if(!is.null(file_name)){
+>>>>>>> f188240fd8e0cfa1bc0750db8fe657a069cdce56
     # Use webshot to convert HTML to PNG
     library(webshot)
     webshot(temp_html, file_name, vwidth = width, vheight = height, zoom = zoom)

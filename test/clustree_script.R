@@ -7,7 +7,6 @@ for (k in 1:54){
 }
 df <- as.data.frame(do.call(cbind, tmp))
 colnames(df) <- paste("K", 1:54, sep = "")
-
 pca <- prcomp(dist_matrix, center = TRUE, scale. = FALSE)
 ind.coord <- pca$x
 

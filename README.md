@@ -153,7 +153,6 @@ to the number of GO-terms (*i.e., each GO-term is in a cluster of its own*).
 
 ```r
 set.seed(1234) # For reproducibility
-
 # For the similarity matrix NOT filtered:
 determine_nbclusters(similarity_matrix = similarity_matrix)
 # Based on the Elbow method, the optimal number of clusters (k) is: 20 
@@ -168,7 +167,6 @@ determine_nbclusters(similarity_matrix = similarity_matrix2)
 # Based on the Silhouette method, the optimal number of clusters (k) is: 34
 ```
 ![ ](inst/images/determine_nbcluster2.png)
-
 
 This function tells you the number of clusters in which your list of GO-terms 
 input is grouped according to each method. In this case, after filtering out
@@ -191,6 +189,7 @@ As this is a grouping by similarity, each cluster has a more representative
 metabolic pathway associated with it, being the one that is more closely
 related to the rest of the GO-terms within the cluster.
 
+<<<<<<< HEAD
 To see which groups have been detected, we use the `generate_cluster_table` function, which 
 will give us a table (which we can be saved as a PNG) with the relationship of 
 the clusters, the color they will have later in the final graph, the most 
