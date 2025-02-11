@@ -29,11 +29,6 @@ calculate_resnik <- function(input_terms,
     stop(paste("Please install the", OrgDb, "package to proceed."))
   }
 
-  # Validate graph input
-  if (is.null(graph) || !inherits(graph, "igraph")) {
-    stop("The input 'graph' must be a valid igraph object.")
-  }
-
   # Validate input
   if (length(input_terms) < 2) {
     stop("Not enough unique GO terms to compute similarity.")
