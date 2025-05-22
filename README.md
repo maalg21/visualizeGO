@@ -1,7 +1,5 @@
 # visualizeGO
 
-# visualizeGO
-
 **visualizeGO** is an R package for visualising, analysing, and summarising gene ontology (GO) term enrichment results. It allows graphical representation of GO term clusters based on semantic similarity or co-occurrence networks, facilitating their interpretation.
 
 ---
