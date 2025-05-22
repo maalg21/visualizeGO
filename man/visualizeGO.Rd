@@ -8,8 +8,7 @@ visualizeGO(
   graph,
   cluster,
   selected_cluster = NULL,
-  shape1 = "circle",
-  shape2 = NULL,
+  shape = "circle",
   min_node_size = NULL,
   max_node_size = NULL,
   layout = c("tree", "kk", "fr"),
@@ -28,9 +27,7 @@ visualizeGO(
 
 \item{selected_cluster}{Clusters selected for plotting.}
 
-\item{shape1}{Shape of the nodes in the plot. By default is "circle".}
-
-\item{shape2}{If two lists are used, the shape of the nodes for the second list.}
+\item{shape}{Shape of the input nodes in the igraph object. By default is "circle".}
 
 \item{min_node_size}{Minimum size of the nodes less connected with others. If is NULL, the size is calculated.}
 

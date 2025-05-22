@@ -48,11 +48,12 @@ generate_cluster_table <- function(cluster_output,
   # Add colors to rows based on clusters
   # Visualize clusters (assign colors)
   if(is.null(col_palette)){
-    cluster_colors <- visualize_clusters(graph, col_palette)
-    names(cluster_colors) <- paste("Cluster ", names(cluster_colors), sep = "")
+    cluster_colors <- generate_pastel_colors(n = length(unique(cluster_output$clusters)))
   } else {
     cluster_colors <- col_palette
   }
+
+  names(cluster_colors) <- paste("Cluster ", unique(cluster_output$clusters), sep = "")
 
   cluster_df %>%
     kbl(format = "html", escape = FALSE, row.names = FALSE) %>%
