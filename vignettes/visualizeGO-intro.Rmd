@@ -59,7 +59,7 @@ library(visualizeGO)
 library(dplyr)
 library(igraph)
 
-data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms.xlsx", package = "visualizeGO")))
+data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "Alonso-García_2023.xlsx", package = "visualizeGO")))
 data <- data[,c("Category", "ID", "Padj")]
 GO_BP <- data[data$Category == "BP",]
 ```
