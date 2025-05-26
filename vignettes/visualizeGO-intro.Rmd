@@ -211,7 +211,7 @@ The last step is to represent the relationships between the GO-terms of interest
 7.  We can save this plot directly from the function with `save_plot = T`.
 
 ```{r visualizeGO_plot}
-visualizeGO(cluster = cluster, graph = graph, shape = "circle", min_node_size = 1, max_node_size = 10, layout = "tree", title = "Alonso-García et al. (2023)", labs = "Input Terms", col_palette = generate_pastel_colors(54), verbose = "some", legend = T, ID = F)
+visualizeGO(cluster = cluster, graph = graph, shape = "circle", min_node_size = 1, max_node_size = 10, layout = "tree", title = "Alonso-García et al. (2023)", labs = "Input Terms", col_palette = generate_pastel_colors(54), verbose = "none", legend = T, ID = F, representative_pathway = F)
 ```
 
 As can be seen in the image, there are many nodes and inter-nodal relationships, making the plot uninformative. Thus, we can focus on some of the clusters to see what these relationships look like. This list of GO-terms is the result of a functional enrichment analysis of differentially expressed genes obtained from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). Thus, we are going to focus on **Clusters 13, 16, 18 & 19** which are related to adipose tissue development.

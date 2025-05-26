@@ -266,11 +266,19 @@ visualizeGO <- function(graph, cluster,
     unique_shapes <- unique(V(graph)$shape)
     legend_shapes <- unique(shape_to_pch[!is.na(shape_to_pch)])
 
-    legend("topright",
-           legend = c(labs, "Other Terms"),
-           pch = legend_shapes, # Extract unique pch values for the legend
-           bty = "n", title.font = 2, cex = 0.8,
-           title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
+    if(is.null(selected_cluster)){
+      legend("topright",
+             legend = c(labs, "Other Terms"),
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
+    } else {
+      legend("topright",
+             legend = labs,
+             pch = legend_shapes, # Extract unique pch values for the legend
+             bty = "n", title.font = 2, cex = 0.8,
+             title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
+    }
 
     # Add a legend for the node sizes (degree of connectivity)
     legend("topright", legend = c("Low Connectivity",
@@ -319,7 +327,6 @@ visualizeGO <- function(graph, cluster,
     # LEGEND ----
     if(isTRUE(legend)){
       # Add a legend for clusters
-
       if(isTRUE(representative_pathway)){
         get_cluster_labels <- function(cluster, clusters_in_graph, use_pathways = FALSE) {
           if (use_pathways) {
