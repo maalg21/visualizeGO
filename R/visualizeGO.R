@@ -24,6 +24,7 @@
 #' @param ID If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.
 #' @param labs Origin of each of the lists of GO-terms displayed in the plot.
 #' @param legend Whether you want to display the legend. Default = TRUE
+#' @param representative_pathway If the user wishes to include the name of the most representative pathway in the legend. Default = TRUE.
 #' @param labs Name of each of the GO-terms lists
 #' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
 #' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
@@ -42,8 +43,8 @@ visualizeGO <- function(graph, cluster,
                         col_palette = NULL,
                         verbose = c("all", "none", "some"),
                         title = NULL, ID = T, labs = NULL,
-                        legend = T, save_plot = F,
-                        PNG = NULL){
+                        legend = T, representative_pathway = T,
+                        save_plot = F, PNG = NULL){
 
   # Step 0: Manage the verbose ----
   if (!verbose %in% c("all", "none", "some")) {
@@ -215,8 +216,35 @@ visualizeGO <- function(graph, cluster,
   if(isTRUE(legend)){
     # Add a legend for clusters
     if (!is.null(V(graph)$Cluster)) {
-      cluster_labels <- paste("Cluster", unique(V(graph)$Cluster))  # Create cluster labels
-      cluster_labels <- ifelse(cluster_labels == "Cluster NA", "No Cluster", cluster_labels)
+
+      # Extraer IDs únicos de los clusters en el grafo (excluyendo NA)
+      unique_clusters_in_graph <- unique(na.omit(V(graph)$Cluster))
+
+      # Obtener pathways representativos si se indica
+      if (representative_pathway) {
+        if (!is.null(cluster$representative_pathways)) {
+          cluster_pathways_df <- cluster$representative_pathways
+
+          # Asegurarse de que las columnas existen
+          if (!all(c("Cluster", "Representative.Pathway") %in% colnames(cluster_pathways_df))) {
+            stop("La tabla de representative_pathways debe tener columnas 'Cluster' y 'Description'.")
+          }
+
+          # Filtrar solo los clusters presentes en el grafo
+          tmp <- paste("Cluster ", unique_clusters_in_graph, sep = "")
+          cluster_pathways_df <- cluster_pathways_df[cluster_pathways_df$Cluster %in% tmp, ]
+          rm(tmp)
+
+          # Extraer descripciones ordenadas por cluster
+          cluster_labels <- cluster_pathways_df$Representative.Pathway
+          cluster_labels <- ifelse(is.na(cluster_labels), "No Cluster", cluster_labels)
+        } else {
+          stop("No “representative_pathways” was found in the cluster object.")
+        }
+      } else {
+        cluster_labels <- paste("Cluster", unique_clusters_in_graph)
+      }
+
       cluster_legend_colors <- cluster_colors[unique(as.character(V(graph)$Cluster))]  # Match colors
       legend("topleft",
              legend = cluster_labels,
@@ -261,10 +289,12 @@ visualizeGO <- function(graph, cluster,
     # Ensure the file extension is included in the filename (if not already)
     if (!grepl("\\.png$", PNG)) {
       file_name <- paste0(PNG, ".png")  # Default to .png if no extension is provided
+    } else {
+      file_name <- PNG
     }
 
     # Open a PNG device to save the plot with high resolution
-    png(PNG, width = 1427, height = 674, res = 100)
+    png(file_name, width = 1427, height = 674, res = 100)
 
     # PLOT ----
     par(mar = c(1.5, 1.5, 1.5, 1.5))
@@ -289,6 +319,23 @@ visualizeGO <- function(graph, cluster,
     # LEGEND ----
     if(isTRUE(legend)){
       # Add a legend for clusters
+
+      if(isTRUE(representative_pathway)){
+        get_cluster_labels <- function(cluster, clusters_in_graph, use_pathways = FALSE) {
+          if (use_pathways) {
+            df <- cluster$representative_pathways
+            clusters_in_graph <- paste("Cluster ", clusters_in_graph, sep = "")
+            df <- df[df$Cluster %in% clusters_in_graph, ]
+            labels <- df$Representative.Pathway
+            labels[is.na(labels)] <- "No Cluster"
+            return(labels)
+          } else {
+            return(paste("Cluster", clusters_in_graph))
+          }
+        }
+        cluster_labels <- get_cluster_labels(cluster, unique_clusters_in_graph, representative_pathway)
+      }
+
       legend("topleft",
              legend = cluster_labels,
              fill = cluster_legend_colors,
@@ -297,7 +344,7 @@ visualizeGO <- function(graph, cluster,
              inset = c(0.02, 0.001))
 
       # Add legend for node origin (shapes)
-      if(nb_lists == "single"){
+      if(is.null(selected_cluster)){
         legend("topleft",
                legend = c(labs, "Other Terms"),
                pch = legend_shapes, # Extract unique pch values for the legend
@@ -305,7 +352,7 @@ visualizeGO <- function(graph, cluster,
                title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
       } else {
         legend("topleft",
-               legend = c(labs, "Other Terms"),
+               legend = labs,
                pch = legend_shapes, # Extract unique pch values for the legend
                bty = "n", title.font = 2, cex = 0.8,
                title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))

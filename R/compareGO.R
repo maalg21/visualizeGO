@@ -3,8 +3,7 @@
 #' @description This function aims to compare clusters of GO-terms that have been previously detected by semantic similarity. The comparison is performed by one of the similarity methods such as Resnik, Lin and Wang.
 #'
 #' @param comparison What kind of comparison is going to be made, whether "GO" or "cluster".
-#' @param list1 A named vector that indicates the cluster to which each GO-term belongs,
-#' i.e.: Variable clusters from the output of the cluster_go_terms function.
+#' @param list1 Depending on the type of comparison, this can be a list of GO IDs or a named vector indicating the cluster to which each GO term belongs, i.e. variable clusters from the output of the cluster_go_terms function.
 #' @param list2 Another set of GO-terms to compare with.
 #' @param ontology Gene Ontology category to use (could be "BP" for Biological Process, "CC" for Cellular Component or "MF" for "Molecular Function").
 #' @param OrgDb Organism to use as reference to obtain the GO-terms similarities. GOSemSimDATA object. Default = "org.Hs.eg.db" (human)

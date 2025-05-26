@@ -148,7 +148,7 @@ scatterGO(similarity_matrix = similarity_matrix, cluster = cluster, colors = gen
 Similarly, another way of representing the grouping of GO terms is through a tree map, where each rectangle is a GO term. Each term is linked to other terms belonging to the same cluster, displayed in different colors, and with the most representative pathway encompassing the cluster it represents. The size of the rectangles depends on XXX.
 
 ```{r treemap_plot}
-treeMap(cluster, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "Distance Between GO-Terms", colors = generate_pastel_colors(n = 54))
+treeMap(cluster, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 54))
 ```
 
 ### Comparing lists of GO-terms
@@ -188,29 +188,27 @@ Before plotting the clusters in a hierarchical way, the first step in the  use-f
 graph <- familyGO(cluster, go_sim_object = NULL)
 ```
 
-The number of GO terms that require analysis is increased by obtaining all the parent  and child terms from the list of input GO terms. In order to focus only on the input  GO terms, the parental terms linked to more than one input GO term  and the child terms that link two (or more) input GO terms. However, it is important  to note that the filter does not remove those GO terms that are children of only one  term but are parents of another, and these are included in the graph.
+The number of GO terms requiring analysis increases in this step, as all parent and child terms are obtained from the list of GO terms entered. To focus solely on the GO terms entered, parent terms linked to more than one entered GO term and child terms linking two (or more) entered GO terms are retained. However, it is important to note that the filter does not remove GO terms that are children of only one term but parents of another, and these are included in the graph.
 
 In this case, we will only use a single list of GO-terms. But the package allows  us to obtain the semantic relations between two lists of GO-terms. From this final  graph, we then grouped the GO-terms.
 
 ### Visualize GO-terms relationships
 
-The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualize_go_hierarchy` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
+The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualizeGO` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
 
-1.  You have to enter the initial list of GO-terms of interest (`go_list1`). You could add a second list (`go_list2`) as at the beginning of this tutorial, to see how the terms in these two lists relate to each other. Consequently, the argument (`nb_lists = "double"`) would be used.
+1. The files that will be used as inputs (`cluster` and `graph`) are those obtained previously with `clusterGO` and `familyGO`.
 
-2.  If you want to use another annotation, you will have to define it in `go_sim_object`. In this case, we will use the database that comes with the package.
+2. The options for the `shape` parameter are those supported by the `igraph` package.
 
-3.  If you use two lists of GO-terms, you have to set the second form of the nodes for this second list. In this case, we only define `shape1`.
+3. In the legend, we can determine whether we want the most representative metabolic pathways to appear (`representative_pathway = T`) or the generic names (`representative_pathway = F`).
 
-4.  The `simplification` parameter refers to whether we want to perform the same filtering as in the [Data Input](#data-input) step. It is important to note that if this simplification was performed before the clustering, we are forced to use it again.
+4. If we do not select the clusters we want to represent (`selected_cluster = NULL`), all of them will be represented, including those obtained after enrichment with `familyGO`.
 
 5.  We can determine the layout of the graph through several options. If we want a hierarchical view we have to define `layout = "tree"`.
 
-6.  If we want to add the clustering done in previous steps we must determine it with `clustering = T` and `clusters` as the output of the [Clustering the GO-terms](#clustering-the-go-terms) step.
+6.  The `verbose` parameter is a bit special. It could be either *"all"*, *"some"* or *"none"* if you want all the results displayed, some feedback or anything in your console, respectively.
 
-7.  The `verbose` parameter is a bit special. It could be either *"all"*, *"some"* or *"none"* if you want all the results displayed, some feedback or anything in your console, respectively.
-
-8.  We can save this plot directly from the function with `save_plot = T`.
+7.  We can save this plot directly from the function with `save_plot = T`.
 
 ```{r visualizeGO_plot}
 visualizeGO(cluster = cluster, graph = graph, shape = "circle", min_node_size = 1, max_node_size = 10, layout = "tree", title = "Alonso-García et al. (2023)", labs = "Input Terms", col_palette = generate_pastel_colors(54), verbose = "some", legend = T, ID = F)

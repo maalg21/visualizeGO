@@ -55,13 +55,15 @@ generate_cluster_table <- function(cluster_output,
 
   names(cluster_colors) <- paste("Cluster ", unique(cluster_output$clusters), sep = "")
 
-  cluster_df %>%
+  final_table <- cluster_df %>%
     kbl(format = "html", escape = FALSE, row.names = FALSE) %>%
     kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                   full_width = FALSE) %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, color = text_color,
                 background = cluster_colors[1:nrow(cluster_df)])
+
+  print(final_table)
 
   if(!is.null(file_name)){
     temp_html <- paste(file_name, ".html")
@@ -78,4 +80,7 @@ generate_cluster_table <- function(cluster_output,
     library(webshot)
     webshot(temp_html, file_name, vwidth = width, vheight = height, zoom = zoom)
   }
+
+  invisible(final_table)
+
 }
