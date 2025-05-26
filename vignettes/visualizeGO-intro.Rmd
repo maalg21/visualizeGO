@@ -44,7 +44,7 @@ The package consists of several important parts:
 ## Installation
 
 You can install the development version of visualizeGO like so:
-```{r install, eval=FALSE}
+```{r install, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 # install.packages("devtools")
 devtools::install_github("maalg21/visualizeGO", force = TRUE)
 ```
@@ -59,7 +59,7 @@ library(visualizeGO)
 library(dplyr)
 library(igraph)
 
-data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "Alonso-García_2023.xlsx", package = "visualizeGO")))
+data <- as.data.frame(readxl::read_xlsx(system.file("extdata", "Alonso-Garcia_2023.xlsx", package = "visualizeGO")))
 data <- data[,c("Category", "ID", "Padj")]
 GO_BP <- data[data$Category == "BP",]
 ```
@@ -135,20 +135,24 @@ colors <- generate_pastel_colors(n = 34)
 generate_cluster_table(cluster_output = cluster2, col_palette = colors, 
 text_color = "black", file_name = NULL) # If you specify a name for the file, it will be saved as a PNG.
 ```
-As we can see, the main clusters are almost the same.
+As we can see, the main clusters are almost the same. The following steps will be carried out with this reduced input.
 
 Note that sometimes the GO IDs of the most representative path in the cluster do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)  database, which is the one we use for the identification of term's names from  their ID. Therefore, in the table, instead of the term name in  the *Representative Pathway* column, the GO ID will appear. We promise that  we will try to improve this peculiarity by investigating more R annotation  packages for GO IDs.
 
 Furthermore, with the ```scatterGO``` function we can represent the GO terms as a scatter plot represented by the first two components of a Principal Component Analysis (PCA) of the similarity matrix. For this function, we can choose whether the size of the dots that will represent the GO-terms is based on the size of the term based on the number of genes related to it ("```gene```"), or based on the adjusted p-value ("```padj```") that characterises it in the previous analysis for its detection. If the latter option is chosen, it should be borne in mind that the padj values are very low, so we must provide the function with transformed values (*usually ```-log10(padj)```*).
 
+```{r transform_data, include=FALSE}
+GO_BP <- GO_BP[GO_BP$ID %in% row.names(similarity_matrix2),]
+```
+
 ```{r scater_plot}
-scatterGO(similarity_matrix = similarity_matrix, cluster = cluster, colors = generate_pastel_colors(n = 54), title = "Distance Between GO-Terms", labels = T, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
+scatterGO(similarity_matrix = similarity_matrix2, cluster = cluster2, colors = generate_pastel_colors(n = 54), title = "Distance Between GO-Terms", labels = T, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 
 Similarly, another way of representing the grouping of GO terms is through a tree map, where each rectangle is a GO term. Each term is linked to other terms belonging to the same cluster, displayed in different colors, and with the most representative pathway encompassing the cluster it represents. The size of the rectangles depends on XXX.
 
 ```{r treemap_plot}
-treeMap(cluster, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 54))
+treeMap(cluster2, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 54))
 ```
 
 ### Comparing lists of GO-terms
@@ -158,17 +162,19 @@ Finally, in order to be able to compare two lists of GO-terms or two lists of Cl
 In this case it is **MANDATORY** that the input is two lists of GO-terms or two lists of clusters of GO-terms. Using the same study as a basis, we will compare the two lists of GO-terms that were detected for each of the groups of animals.
 
 ```{r compare_GOlists}
-# This is the second list of GO-terms
-data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "GOTerms2.xlsx", package = "visualizeGO")))
+# This is the second list of GO-terms from Suárez-Vega et al. (2018)
+data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "Suarez-Vega_2018.xlsx", package = "visualizeGO")))
 
 # We filter 10 GO-terms for each list, to make it more easy to understand
-GO_BP1 <- data[data$Category == "BP", c("Category", "ID")] %>% top_n(n = 10)
-GO_BP2 <- data2[data2$Category == "BP",] %>% top_n(n = 10)
+GO_BP1 <- data[data$Category == "BP",] %>%
+  top_n(n = -10, wt = Padj)
 
-compareGO(comparison = "GO", list1 = GO_BP1$ID, list2 = GO_BP2$ID, ontology = "BP", OrgDb = "org.Hs.eg.db", method = "Wang", plot = T, low = "white", high = "red3", labs = c("GO List 1", "GO List 2"), cex = 3, cex_axis = 10)
+GO_BP2 <- data2[data2$Breed == "Assaf" & data2$Ontology == "BP",]
+
+compareGO(comparison = "GO", list1 = GO_BP1$ID, list2 = GO_BP2$ID, ontology = "BP", OrgDb = "org.Hs.eg.db", method = "Wang", plot = T, low = "white", high = "red3", labs = c("Alonso-García et al. (2023)", "Suárez-Vega et al. (2018)"), cex = 3, cex_axis = 10)
 ```
 
-Here is a comparison of 10 GO-terms from each of the lists, with the highest similarity shown in red and the lowest in white.
+Here is a comparison between the 10 most enriched GO terms of Alonso-García et al. (2023) and the enriched terms for the Assaf breed obtained in the study of [Suárez-Vega et al. (2018)]( https://doi.org/10.1111/age.12725). In the latter study, the perirenal fat transcriptomic profile was compared between Churra and Assaf lambs, and it was observed that the latter had a very similar transcriptomic profile to that detected in one of the groups of Alonso-García et al. (2023). Thus, in this comparison, the highest similarity is shown in red and the lowest in white. As can be seen, there are terms in common between the two lists (*GO:0006631*) and terms far apart in the ontology.
 
 Or, on the other hand, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity (**or by other packages that make the clustering of GO-terms such as [rrvgo](https://www.bioconductor.org/packages/release/bioc/html/rrvgo.html)**). In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin or Wang.
 
@@ -185,7 +191,7 @@ As we can see in the heatmap, there are many clusters that are common to both an
 Before plotting the clusters in a hierarchical way, the first step in the  use-flow of this package is to obtain the hierarchy relationships between  the selected GO-terms. For this, we need an annotation file where all the  semantic relations between terms are found by relating the GO IDs to each  other. In this package you will find a file `go_term_database_all_ontologies` obtained from the R package  [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) where all these relations are. If you want to make this file yourself, we leave  you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R)  of how we have done it.
 
 ```{r hierarchical_graph}
-graph <- familyGO(cluster, go_sim_object = NULL)
+graph <- familyGO(cluster2, go_sim_object = NULL)
 ```
 
 The number of GO terms requiring analysis increases in this step, as all parent and child terms are obtained from the list of GO terms entered. To focus solely on the GO terms entered, parent terms linked to more than one entered GO term and child terms linking two (or more) entered GO terms are retained. However, it is important to note that the filter does not remove GO terms that are children of only one term but parents of another, and these are included in the graph.
@@ -211,17 +217,17 @@ The last step is to represent the relationships between the GO-terms of interest
 7.  We can save this plot directly from the function with `save_plot = T`.
 
 ```{r visualizeGO_plot}
-visualizeGO(cluster = cluster, graph = graph, shape = "circle", min_node_size = 1, max_node_size = 10, layout = "tree", title = "Alonso-García et al. (2023)", labs = "Input Terms", col_palette = generate_pastel_colors(54), verbose = "none", legend = T, ID = F, representative_pathway = F)
+visualizeGO(graph = graph, cluster = cluster2, selected_cluster = NULL, shape = "circle", layout = "tree", col_palette = colors, min_node_size = 1, max_node_size = 10, title = "Relaciones Jerárquicas", ID = F, legend = T, labs = "Términos", representative_pathway = F, verbose = "none")
 ```
 
 As can be seen in the image, there are many nodes and inter-nodal relationships, making the plot uninformative. Thus, we can focus on some of the clusters to see what these relationships look like. This list of GO-terms is the result of a functional enrichment analysis of differentially expressed genes obtained from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). Thus, we are going to focus on **Clusters 13, 16, 18 & 19** which are related to adipose tissue development.
 
 ```{r visualizeGO_plot_filtered}
-visualizeGO(cluster = cluster, graph = graph,
-selected_cluster = c(13,16,18,19), 
+visualizeGO(cluster = cluster2, graph = graph,
+selected_cluster = c(1, 8, 10, 12, 13), 
 shape = "circle", min_node_size = 2.5, max_node_size = 10, 
-layout = "tree", col_palette = colors[c(13,16,18,19)], 
-title = "Adipose Tissue Development related clusters",
+layout = "tree", col_palette = colors[c(1, 8, 10, 12, 13)], 
+title = "Cholesterol Metabolism",
 verbose = "some", legend = T, ID = T,
 labs = "Input Terms")
 ```
@@ -239,6 +245,8 @@ This function, in addition to filtering the above graph according to the cluster
 4.  Wang et al. (2007) A new method to measure the semantic similarity of GO terms. *Bioinformatics*, 23(10): 1274-1281 [10.1093/bioinformatics/btm087](https://doi.org/10.1093/bioinformatics/btm087)
 
 5.  Pons & Latapy (2005) Computing Communities in Large Networks Using Random Walks. In: *Computer and Information Sciences*, 3733 [10.1007/11569596_31](https://doi.org/10.1007/11569596_31)
+
+6.  Suárez-Vega et al. (2018) Early adipose deposits in sheep: comparative analysis of the perirenal fat transcriptome of Assaf and Churra suckling lambs. In: *Animal Genetics*, 49(6): 607-617 [10.1111/age.12725]( https://doi.org/10.1111/age.12725)
 
 ## Contribution
 

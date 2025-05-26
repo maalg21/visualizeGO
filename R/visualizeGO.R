@@ -26,8 +26,6 @@
 #' @param legend Whether you want to display the legend. Default = TRUE
 #' @param representative_pathway If the user wishes to include the name of the most representative pathway in the legend. Default = TRUE.
 #' @param labs Name of each of the GO-terms lists
-#' @param save_plot Set this option to "TRUE" if you want to save the plot as a PNG file. Default is FALSE.
-#' @param PNG If the "save_plot" option is set to "TRUE", name of the PNG file generated.
 #'
 #' @return This function returns the final graph, with the colours of the nodes depending
 #' on the clustering and the labels as numbers corresponding to the GO IDs in the data frame;
@@ -191,7 +189,7 @@ visualizeGO <- function(graph, cluster,
     stop("Error: The graph is empty. No nodes or edges to plot.")
   }
 
-  par(mar = c(1.5, 1.5, 1.5, 1.5))
+  par(mar = c(1, 1, 1, 1))
 
   plot(
     graph,
@@ -290,95 +288,7 @@ visualizeGO <- function(graph, cluster,
            xjust = 1, inset = c(-0.035, 0.85))
   }
 
-  # Step 11: Save plot (if enabled) ----
-  if(isTRUE(save_plot)) {
-    if (verbose != "none") cat("Saving plot as", PNG, "...\n")
-
-    # Ensure the file extension is included in the filename (if not already)
-    if (!grepl("\\.png$", PNG)) {
-      file_name <- paste0(PNG, ".png")  # Default to .png if no extension is provided
-    } else {
-      file_name <- PNG
-    }
-
-    # Open a PNG device to save the plot with high resolution
-    png(file_name, width = 1427, height = 674, res = 100)
-
-    # PLOT ----
-    par(mar = c(1.5, 1.5, 1.5, 1.5))
-    plot(
-      graph,
-      layout = layout,
-      vertex.frame.color = "black",
-      vertex.label = V(graph)$name,
-      vertex.size = V(graph)$size,
-      vertex.label.color = "black",
-      vertex.color = V(graph)$color,
-      vertex.frame.color = "black",
-      vertex.label.cex = 0.7,
-      vertex.label.family = "sans",  # Set the font family to "sans"
-      vertex.shape = V(graph)$shape,
-      edge.arrow.size = 0.5,
-      edge.color = "darkgray",
-      main = title,
-      rescale = TRUE, # Allow the graph to scale to fit the available space
-      margin = 0          # Remove additional margins from the plot
-    )
-    # LEGEND ----
-    if(isTRUE(legend)){
-      # Add a legend for clusters
-      if(isTRUE(representative_pathway)){
-        get_cluster_labels <- function(cluster, clusters_in_graph, use_pathways = FALSE) {
-          if (use_pathways) {
-            df <- cluster$representative_pathways
-            clusters_in_graph <- paste("Cluster ", clusters_in_graph, sep = "")
-            df <- df[df$Cluster %in% clusters_in_graph, ]
-            labels <- df$Representative.Pathway
-            labels[is.na(labels)] <- "No Cluster"
-            return(labels)
-          } else {
-            return(paste("Cluster", clusters_in_graph))
-          }
-        }
-        cluster_labels <- get_cluster_labels(cluster, unique_clusters_in_graph, representative_pathway)
-      }
-
-      legend("topleft",
-             legend = cluster_labels,
-             fill = cluster_legend_colors,
-             bty = "n", title.font = 2,
-             cex = 0.8, title = "Clusters",
-             inset = c(0.02, 0.001))
-
-      # Add legend for node origin (shapes)
-      if(is.null(selected_cluster)){
-        legend("topleft",
-               legend = c(labs, "Other Terms"),
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      } else {
-        legend("topleft",
-               legend = labs,
-               pch = legend_shapes, # Extract unique pch values for the legend
-               bty = "n", title.font = 2, cex = 0.8,
-               title = "Node Origin", xjust = 1, inset = c(0.02, 0.7))
-      }
-
-      # Add a legend for the node sizes (degree of connectivity)
-      legend("topleft", legend = c("Low Connectivity",
-                                   "High Connectivity"),
-             pch = 21, pt.bg = "lightgray", title = "Degree of connectivity",
-             pt.cex = c(min(scaled_node_sizes),
-                        max(scaled_node_sizes)/3),
-             bty = "n", cex = 0.8, title.font = 2,
-             xjust = 1, inset = c(0.022, 0.8))
-    }
-
-    dev.off()
-    if (verbose != "none") cat("Plot saved successfully as", PNG, "\n")
-  }
-  # Step 12: Return the GODescriptions ----
+  # Step 11: Return the GODescriptions ----
   if(verbose == "all"){
     return(GODescriptions)
   }
