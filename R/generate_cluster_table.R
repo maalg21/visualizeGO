@@ -32,11 +32,11 @@ generate_cluster_table <- function(cluster_output,
   if (is.null(cluster_output) ||
       !"clusters" %in% names(cluster_output) ||
       !"descriptions" %in% names(cluster_output) ||
-      !"representative_term" %in% names(cluster_output)) {
+      !"representative_term_name" %in% names(cluster_output)) {
     stop("Invalid cluster result provided.")
   }
 
-  cluster_df <- cluster_output$representative_term
+  cluster_df <- cluster_output$representative_term_name
 
   # Generate a table image
   # Use kableExtra for better table formatting
