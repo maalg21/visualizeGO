@@ -47,6 +47,9 @@ clusterGO <- function(similarity_matrix = NULL,
   # Obtain the term name
   for(g in input_terms){
     tmp <- get_go_term_name(g)
+    if(is.na(tmp)){
+      names(tmp) <- g
+    }
     go_descriptions <- c(go_descriptions, tmp)
   }
 
