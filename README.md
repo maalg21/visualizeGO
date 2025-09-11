@@ -13,7 +13,7 @@ You can install the development version from GitHub with:
 install.packages("devtools")
 
 # Instala visualizeGO desde GitHub
-devtools::install_github("tu_usuario/visualizeGO")
+devtools::install_github("maalg21/visualizeGO")
 ```
 
 ## 📘 Complete tutorial
