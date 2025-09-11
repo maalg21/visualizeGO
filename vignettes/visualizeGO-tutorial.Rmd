@@ -141,13 +141,13 @@ GO_BP <- GO_BP[GO_BP$ID %in% row.names(similarity_matrix2),]
 ```
 
 ```{r scater_plot}
-scatterGO(similarity_matrix = similarity_matrix2, cluster = cluster2, colors = generate_pastel_colors(n = 54), title = "Distance Between GO-Terms", labels = T, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
+scatterGO(similarity_matrix = similarity_matrix2, cluster = cluster2, colors = generate_pastel_colors(n = 34), title = "Distance Between GO-Terms", labels = T, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 
 Similarly, another way of representing the grouping of GO terms is through a tree map, where each rectangle is a GO term. Each term is linked to other terms belonging to the same cluster, displayed in different colors, and with the most representative term encompassing the cluster it represents. The size of the rectangles depends on how enriched is the term too, so in this case we also used the logaritmic transformation of the adjusted p-value.
 
 ```{r treemap_plot}
-treeMap(cluster2, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 54))
+treeMap(cluster2, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 34))
 ```
 
 ### Comparing lists of GO-terms

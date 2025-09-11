@@ -58,7 +58,7 @@ visualizeGO <- function(graph, cluster,
   if (is.null(cluster) ||
       !"clusters" %in% names(cluster) ||
       !"descriptions" %in% names(cluster) ||
-      !"representative_term" %in% names(cluster)) {
+      !"representative_term_name" %in% names(cluster)) {
     stop("Invalid cluster result provided.")
   }
 
@@ -219,13 +219,13 @@ visualizeGO <- function(graph, cluster,
       unique_clusters_in_graph <- unique(na.omit(V(graph)$Cluster))
 
       # Obtener términos representativos si se indica
-      if (representative_term) {
-        if (!is.null(cluster$representative_term)) {
-          cluster_pathways_df <- cluster$representative_term
+      if (isTRUE(representative_term)) {
+        if (!is.null(cluster$representative_term_name)) {
+          cluster_pathways_df <- cluster$representative_term_name
 
           # Asegurarse de que las columnas existen
           if (!all(c("Cluster", "Representative.Term") %in% colnames(cluster_pathways_df))) {
-            stop("The data frame of representative_term should have columns 'Cluster' y 'Description'.")
+            stop("The data frame of representative_term_name should have columns 'Cluster' y 'Description'.")
           }
 
           # Filtrar solo los clusters presentes en el grafo
@@ -237,7 +237,7 @@ visualizeGO <- function(graph, cluster,
           cluster_labels <- cluster_pathways_df$Representative.Term
           cluster_labels <- ifelse(is.na(cluster_labels), "No Cluster", cluster_labels)
         } else {
-          stop("No “representative_term” was found in the cluster object.")
+          stop("No “representative_term_name” was found in the cluster object.")
         }
       } else {
         cluster_labels <- paste("Cluster", unique_clusters_in_graph)
