@@ -15,22 +15,12 @@ install.packages("devtools")
 # Instala visualizeGO desde GitHub
 devtools::install_github("tu_usuario/visualizeGO")
 ```
-## ⚡ Quick use
-
-``` r
-library(visualizeGO)
-
-# Assuming you have an object ‘go_results’ (from enrichGO, gProfiler, etc.)
-clustered <- clusterGO(go_results)
-visualize_clusters(clustered)
-
-```
 
 ## 📘 Complete tutorial
 
 See the vignette for a complete example of the workflow, including preprocessing, clustering, visualisation, and exporting results:
 ``` r
-vignette("visualizeGO-intro")
+vignette("visualizeGO-tutorial")
 ```
 
 ## 📬 Contact
@@ -39,6 +29,6 @@ If you have any questions, suggestions, or would like to contribute to the devel
 
 - 📧 Email: [maalg@unileon.es](mailto:maalg@unileon.es)
 - 🐙 GitHub Issues: [Open an issue](https://github.com/usuario/visualizeGO/issues)
-- 🧪 Report bugs or request improvements: use the "Issues"" tab in the repository.
+- 🧪 Report bugs or request improvements: use the "Issues" tab in the repository.
 
 Thanks for using `visualizeGO`!
