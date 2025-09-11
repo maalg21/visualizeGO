@@ -47,6 +47,7 @@ The package consists of several important parts:
 
 The first step is to import the list (or lists) of GO-terms of interest. To exemplify the use of the package's functions, we will use one of the lists of enriched GO-terms obtained from [Alonso-García et al. (2023)](https://doi.org/10.3389/fvets.2023.1150996).
 ```{r load_data}
+#devtools::install_github("maalg21/visualizeGO", force = T)
 library(visualizeGO)
 library(dplyr)
 library(igraph)

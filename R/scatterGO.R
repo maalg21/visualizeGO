@@ -32,7 +32,7 @@ scatterGO <- function(similarity_matrix, cluster,
   if (is.null(cluster) ||
       !"clusters" %in% names(cluster) ||
       !"descriptions" %in% names(cluster) ||
-      !"representative_pathways" %in% names(cluster)) {
+      !"representative_term_name" %in% names(cluster)) {
     stop("Invalid cluster result provided.")
   }
 

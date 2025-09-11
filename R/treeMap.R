@@ -29,7 +29,7 @@ treeMap <- function(cluster, size, scores,
 
   library(ggplot2)
 
-  go_data <- merge(cluster$representative_pathways,
+  go_data <- merge(cluster$representative_term_name,
                    cluster$descriptions %>%
                      mutate("Cluster" = paste("Cluster ", Cluster, sep = "")),
                    by = "Cluster")
@@ -66,7 +66,7 @@ treeMap <- function(cluster, size, scores,
 
   ggplot(go_data, aes(area = scores,
                       fill = Cluster, label = Description,
-                      subgroup = Representative.Pathway)) +
+                      subgroup = Representative.Term)) +
     geom_treemap(alpha = .5) +
     geom_treemap_text(colour = "white",
                       size = 8, alpha = 0.7,
