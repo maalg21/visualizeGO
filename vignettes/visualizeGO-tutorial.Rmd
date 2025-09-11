@@ -41,14 +41,6 @@ The package consists of several important parts:
 
 4. **Comparisons.** Also, it is possible to compare lists of GO terms  or even clusters of GO terms, and obtain a matrix of the semantic similarity between them.
 
-## Installation
-
-You can install the development version of visualizeGO like so:
-```{r install, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-# install.packages("devtools")
-devtools::install_github("maalg21/visualizeGO", force = TRUE)
-```
-
 ## Pipeline
 
 ### Data input
@@ -83,7 +75,7 @@ filtered_terms <- filter_terms(similarity_matrix = similarity_matrix, threshold 
 similarity_matrix2 <- filtered_terms$similarity_matrix
 ```
 
-From this function we obtain the filtered graph and several vectors of GO-terms: (1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a similarity score above the threshold  (*you will never find the input terms here even if they are not connected*), and  (3) outliers (*those that are not similar to any other term*).
+From this function we obtain the filtered graph and several vectors of GO-terms: (1) The connected GO-terms, (2) GO-Terms eliminated because they do not have a similarity score above the threshold, and  (3) outliers (*those that are not similar to any other term*).
 
 This filtering is important, especially when it comes to detecting outliers which,  when we carry out the clustering, have a great influence on the distances between  terms, making the clustering incorrect.
 
@@ -91,7 +83,7 @@ Following the filtration of the similarity matrix, the number of clusters into w
 
 K-means clustering is probably one of the best known partitioning methods. The idea behind k-means clustering is to define groups in such a way that the total variation within a group, which measures the compactness of the groups, is minimized. The k-means algorithm is not deterministic, which means that the clustering results can be different each time the algorithm is run, even on the same data set.
 
-The silhouette score interpretation measures the quality of the Silhouette score of k-means by evaluating the quality of grouping of data points within their assigned clusters compared to data points in other clusters. On the other hand, the Elbow method calculates and graphs the sum of squares for each number of clusters and looks for a change in slope from steep to gentle (an elbow) to determine the optimal number of clusters. 
+The Silhouette score interpretation measures the quality of the Silhouette score of k-means by evaluating the quality of grouping of data points within their assigned clusters compared to data points in other clusters. On the other hand, the Elbow method calculates and graphs the sum of squares for each number of clusters and looks for a change in slope from steep to gentle (an elbow) to determine the optimal number of clusters. 
 
 For both methods, it's necessary to determine the `k_range`. This range includes the number of clusters in which both methods will test the groupings. In this case, we set this range from 1 (*all terms are included in the same cluster*)  to the number of GO-terms (*i.e., each GO-term is in a cluster of its own*).
 
@@ -116,13 +108,13 @@ This function tells you the number of clusters in which your list of GO-terms in
 cluster <- clusterGO(similarity_matrix = similarity_matrix, nb_clusters = 54)
 ```
 
-Also, let's see how the filtered terms cluster.
+Also, let's see how the filtered terms cluster in 34 different clusters.
 ```{r cluster2}
 cluster2 <- clusterGO(similarity_matrix = similarity_matrix2, nb_clusters = 34)
 ```
-As this is a grouping by similarity, each cluster has a more representative metabolic pathway associated with it, being the one that is more closely related to the rest of the GO-terms within the cluster.
+As this is a clustering by similarity, each cluster has a more representative term associated with it, being the one that is more closely related to the rest of the GO-terms within the cluster.
 
-To see which groups have been detected, we use the `generate_cluster_table` function, which  will give us a table (which we can be saved as a PNG) with the relationship of  the clusters, the color they will have later in the final graph, the most  representative pathway and which GO IDs belong to each cluster.
+To see which groups have been detected, we use the `generate_cluster_table` function, which  will give us a table (which we can be saved as a PNG) with the relationship of  the clusters, the color they will have later in the final graph, the most representative pathway and which GO IDs belong to each cluster.
 
 ```{r table}
 colors <- generate_pastel_colors(n = 54) # This function was only created to generate a list of pastel colours of the number we determine 😊
@@ -137,9 +129,11 @@ text_color = "black", file_name = NULL) # If you specify a name for the file, it
 ```
 As we can see, the main clusters are almost the same. The following steps will be carried out with this reduced input.
 
-Note that sometimes the GO IDs of the most representative path in the cluster do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)  database, which is the one we use for the identification of term's names from  their ID. Therefore, in the table, instead of the term name in  the *Representative Pathway* column, the GO ID will appear. We promise that  we will try to improve this peculiarity by investigating more R annotation  packages for GO IDs.
+Note that sometimes the GO IDs of the most representative term in the cluster do not exist in the [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html)  database, which is the one we use for the identification of term's names from  their ID. Therefore, in the table, instead of the term name in  the *Representative Term* column, the GO ID will appear. We promise that  we will try to improve this peculiarity by investigating more R annotation  packages for GO IDs.
 
-Furthermore, with the ```scatterGO``` function we can represent the GO terms as a scatter plot represented by the first two components of a Principal Component Analysis (PCA) of the similarity matrix. For this function, we can choose whether the size of the dots that will represent the GO-terms is based on the size of the term based on the number of genes related to it ("```gene```"), or based on the adjusted p-value ("```padj```") that characterises it in the previous analysis for its detection. If the latter option is chosen, it should be borne in mind that the padj values are very low, so we must provide the function with transformed values (*usually ```-log10(padj)```*).
+#### Plotting the semantic similarity between GO-terms
+
+Furthermore, with the ```scatterGO``` function we can represent the GO terms as a scatter plot represented by the first two components of a Principal Component Analysis (PCA) of the similarity matrix. For this function, we can choose whether the size of the dots that will represent the GO-terms is based on the size of the term based on the number of genes related to it ("```gene```"), or based on the adjusted p-value ("```padj```") that characterises it in the previous analysis (like enrichment analysis) for its detection. If the latter option is chosen, it should be borne in mind that the padj values are very low, so we must provide the function with transformed values (*usually ```-log10(padj)```*).
 
 ```{r transform_data, include=FALSE}
 GO_BP <- GO_BP[GO_BP$ID %in% row.names(similarity_matrix2),]
@@ -149,7 +143,7 @@ GO_BP <- GO_BP[GO_BP$ID %in% row.names(similarity_matrix2),]
 scatterGO(similarity_matrix = similarity_matrix2, cluster = cluster2, colors = generate_pastel_colors(n = 54), title = "Distance Between GO-Terms", labels = T, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID))
 ```
 
-Similarly, another way of representing the grouping of GO terms is through a tree map, where each rectangle is a GO term. Each term is linked to other terms belonging to the same cluster, displayed in different colors, and with the most representative pathway encompassing the cluster it represents. The size of the rectangles depends on XXX.
+Similarly, another way of representing the grouping of GO terms is through a tree map, where each rectangle is a GO term. Each term is linked to other terms belonging to the same cluster, displayed in different colors, and with the most representative term encompassing the cluster it represents. The size of the rectangles depends on how enriched is the term too, so in this case we also used the logaritmic transformation of the adjusted p-value.
 
 ```{r treemap_plot}
 treeMap(cluster2, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID), title = "GO-term Clustering", colors = generate_pastel_colors(n = 54))
@@ -157,56 +151,57 @@ treeMap(cluster2, size = "padj", scores = setNames(-log10(GO_BP$Padj), GO_BP$ID)
 
 ### Comparing lists of GO-terms
 
-Finally, in order to be able to compare two lists of GO-terms or two lists of Clusters we can also use this same package with the `compareGO` function. Thanks to this function we obtain a heat map where it will be observed between which GO-terms there is a greater similarity within the two lists. Of course, the measurement of distances between GO-terms does not depend on a network of terms; therefore, we can only choose between semantic similarity methods, such as Resnik, Lin, etc. to perform the analysis.
+In order to be able to compare two lists of GO-terms or two lists of Clusters, we can use this same package with the `compareGO` function. Thanks to this function we obtain a heat map where it will be observed between which GO-terms within the two lists there is a greater similarity. Of course, the measurement of distances between GO-terms does not depend on a network of terms; therefore, we can only choose between semantic similarity methods, such as Resnik, Lin, etc. to perform the analysis.
 
-In this case it is **MANDATORY** that the input is two lists of GO-terms or two lists of clusters of GO-terms. Using the same study as a basis, we will compare the two lists of GO-terms that were detected for each of the groups of animals.
+In this case it is **MANDATORY** that the input is two lists of GO-terms or two lists of clusters of GO-terms. Using the same study as a basis, we will compare the list of top 10 most enriched GO-terms and another list of enriched GO-terms from [Suárez-Vega et al. (2018)](https://doi.org/10.1111/age.12725) that performed a similar analysis.
 
 ```{r compare_GOlists}
 # This is the second list of GO-terms from Suárez-Vega et al. (2018)
 data2 <- as.data.frame(readxl::read_xlsx(system.file("extdata", "Suarez-Vega_2018.xlsx", package = "visualizeGO")))
 
-# We filter 10 GO-terms for each list, to make it more easy to understand
+GO_BP2 <- data2[data2$Breed == "Assaf" & data2$Ontology == "BP",]
+
+# We filter 10 GO-terms for the first list, to make it more easy to understand
 GO_BP1 <- data[data$Category == "BP",] %>%
   top_n(n = -10, wt = Padj)
-
-GO_BP2 <- data2[data2$Breed == "Assaf" & data2$Ontology == "BP",]
 
 compareGO(comparison = "GO", list1 = GO_BP1$ID, list2 = GO_BP2$ID, ontology = "BP", OrgDb = "org.Hs.eg.db", method = "Wang", plot = T, low = "white", high = "red3", labs = c("Alonso-García et al. (2023)", "Suárez-Vega et al. (2018)"), cex = 3, cex_axis = 10)
 ```
 
-Here is a comparison between the 10 most enriched GO terms of Alonso-García et al. (2023) and the enriched terms for the Assaf breed obtained in the study of [Suárez-Vega et al. (2018)]( https://doi.org/10.1111/age.12725). In the latter study, the perirenal fat transcriptomic profile was compared between Churra and Assaf lambs, and it was observed that the latter had a very similar transcriptomic profile to that detected in one of the groups of Alonso-García et al. (2023). Thus, in this comparison, the highest similarity is shown in red and the lowest in white. As can be seen, there are terms in common between the two lists (*GO:0006631*) and terms far apart in the ontology.
+Here is a comparison between the 10 most enriched GO terms of Alonso-García et al. (2023) and the enriched terms for the Assaf breed obtained in the study of Suárez-Vega et al. (2018). In the latter study, the perirenal fat transcriptomic profile was compared between Churra and Assaf lambs, and it was observed that the latter had a very similar transcriptomic profile to that detected in one of the groups of Alonso-García et al. (2023). Thus, in this comparison, the highest similarity is shown in red and the lowest in white. As can be seen, there are terms in common between the two lists (*GO:0006631*) and terms far apart in the ontology.
 
-Or, on the other hand, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity (**or by other packages that make the clustering of GO-terms such as [rrvgo](https://www.bioconductor.org/packages/release/bioc/html/rrvgo.html)**). In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin or Wang.
+Or, on the other hand, it is also possible to compare clusters of GO-terms that have been previously detected by semantic similarity (**or by other packages that perform clustering of GO-terms such as [rrvgo](https://www.bioconductor.org/packages/release/bioc/html/rrvgo.html)**). In this case, the comparison can only be done with one of the similarity methods such as Resnik, Lin or Wang.
 
-In order to understand how this step would be done, the code below shows step by step how to obtain the clusters for the second data table `data2`. Remember that **ONLY** clusters of GO-terms of the same ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make *biological* sense to compare clusters of GO-terms obtained through their conformation in the network ... But you do you! In this case we are going to compare how similar the clusters detected  pre- and post-filtering are.
+Remember that **ONLY** clusters of GO-terms of the same ontology category *(BP vs BP, CC vs CC & MF vs MF)* can be compared. Also, it would not make *biological* sense to compare clusters of GO-terms obtained through their conformation in the network ... But you do you! In this case we are going to compare how similar the clusters detected  pre- and post-filtering are.
 
 ```{r compare_clusters}
 compareGO(comparison = "cluster", list1 = cluster$clusters, list2 = cluster2$clusters, ontology = "BP", OrgDb = "org.Hs.eg.db", method = "Wang", combine = "BMA", plot = T, low = "white", high = "red3", labs = NULL, cex = 3, cex_axis = 10)
 ```
 
-As we can see in the heatmap, there are many clusters that are common to both analyses - *as expected*-. Although there are some unique clusters in the analysis of the 54 clusters, such as Clusters 15, 18, 19, etc.
+As we can see in the heatmap, there are many clusters that are common to both analyses - *as expected*-. Although there are some unique clusters in the analysis of the 54 clusters, such as Clusters 15, 18, 19, etc. that they were eliminated during filtering because they did not have a high semantic similarity with the rest of the GO terms.
 
 ### Build the hierarchical graph
 
-Before plotting the clusters in a hierarchical way, the first step in the  use-flow of this package is to obtain the hierarchy relationships between  the selected GO-terms. For this, we need an annotation file where all the  semantic relations between terms are found by relating the GO IDs to each  other. In this package you will find a file `go_term_database_all_ontologies` obtained from the R package  [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) where all these relations are. If you want to make this file yourself, we leave  you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R)  of how we have done it.
+Before plotting the clusters in a hierarchical way, the first step in the  use-flow of this package is to obtain the hierarchy relationships between the GO-terms of interest. For this, we need an annotation file where all the  semantic relations between terms are found by relating the GO IDs to each  other. In this package you will find a file `go_term_database_all_ontologies` obtained from the R package  [GOSemSim](https://bioconductor.org/packages/release/bioc/html/GOSemSim.html) where all these relations are. If you want to make this file yourself, we leave  you a [script](https://github.com/maalg21/visualizeGO/blob/master/test/GOSimEnvironment.R)  of how we have done it.
 
+In the example, we will use the grouping of filtered GO-terms.
 ```{r hierarchical_graph}
 graph <- familyGO(cluster2, go_sim_object = NULL)
 ```
 
-The number of GO terms requiring analysis increases in this step, as all parent and child terms are obtained from the list of GO terms entered. To focus solely on the GO terms entered, parent terms linked to more than one entered GO term and child terms linking two (or more) entered GO terms are retained. However, it is important to note that the filter does not remove GO terms that are children of only one term but parents of another, and these are included in the graph.
+The number of GO-terms requiring analysis increases in this step, as all parent and child terms are obtained from the list of GO-terms entered. To focus solely on the GO-terms entered by the user, parent terms linked to more than one input GO-term and child terms linking two (or more) input GO-terms are retained. However, it is important to note that the filter does not remove GO-terms that are children of only one term but parents of another, and these are included in the graph.
 
-In this case, we will only use a single list of GO-terms. But the package allows  us to obtain the semantic relations between two lists of GO-terms. From this final  graph, we then grouped the GO-terms.
+In this case, we will only use a single list of GO-terms. But the package allows  us to obtain the semantic relations between two lists of GO-terms. From this final  graph, we then perform the visualization of the hierarchical graph.
 
 ### Visualize GO-terms relationships
 
 The last step is to represent the relationships between the GO-terms of interest in a hierarchical graph by differentiating the clusters. To do this, we will use the latest function of the `visualizeGO` package. This function has many parameters to be able to characterize the graph as we like. In order to use it, you will have to take into account several aspects:
 
-1. The files that will be used as inputs (`cluster` and `graph`) are those obtained previously with `clusterGO` and `familyGO`.
+1. The files that will be used as inputs (`cluster` and `graph`) are those obtained previously with `clusterGO` and `familyGO` respectively.
 
 2. The options for the `shape` parameter are those supported by the `igraph` package.
 
-3. In the legend, we can determine whether we want the most representative metabolic pathways to appear (`representative_pathway = T`) or the generic names (`representative_pathway = F`).
+3. In the legend, we can determine whether we want the most representative term to appear (`representative_term = T`) or the generic names (`representative_term = F`).
 
 4. If we do not select the clusters we want to represent (`selected_cluster = NULL`), all of them will be represented, including those obtained after enrichment with `familyGO`.
 
@@ -217,17 +212,17 @@ The last step is to represent the relationships between the GO-terms of interest
 7.  We can save this plot directly from the function with `save_plot = T`.
 
 ```{r visualizeGO_plot}
-visualizeGO(graph = graph, cluster = cluster2, selected_cluster = NULL, shape = "circle", layout = "tree", col_palette = colors, min_node_size = 1, max_node_size = 10, title = "Relaciones Jerárquicas", ID = F, legend = T, labs = "Términos", representative_pathway = F, verbose = "none")
+visualizeGO(graph = graph, cluster = cluster2, selected_cluster = NULL, shape = "circle", layout = "tree", col_palette = colors, min_node_size = 1, max_node_size = 10, title = "Hierarchical Relationships", ID = F, legend = T, labs = "Terms", representative_term = F, verbose = "none")
 ```
 
-As can be seen in the image, there are many nodes and inter-nodal relationships, making the plot uninformative. Thus, we can focus on some of the clusters to see what these relationships look like. This list of GO-terms is the result of a functional enrichment analysis of differentially expressed genes obtained from transcriptome analysis of adipose tissue from suckling lambs [(Alonso-García et al., 2023)](https://doi.org/10.3389/fvets.2023.1150996). Thus, we are going to focus on **Clusters 13, 16, 18 & 19** which are related to adipose tissue development.
+As can be seen in the image, there are many nodes and inter-nodal relationships, making the plot uninformative. Thus, we can focus on some of the clusters to see what these relationships look like. This list of GO-terms is the result of a functional enrichment analysis of differentially expressed genes obtained from transcriptome analysis of adipose tissue from suckling lambs (Alonso-García et al., 2023). Thus, we are going to focus on **Clusters 13, 16, 18 & 19** which are related to cholesterol metabolism.
 
 ```{r visualizeGO_plot_filtered}
 visualizeGO(cluster = cluster2, graph = graph,
 selected_cluster = c(1, 8, 10, 12, 13), 
 shape = "circle", min_node_size = 2.5, max_node_size = 10, 
 layout = "tree", col_palette = colors[c(1, 8, 10, 12, 13)], 
-title = "Cholesterol Metabolism",
+title = "Cholesterol Metabolism", representative_term = T,
 verbose = "some", legend = T, ID = T,
 labs = "Input Terms")
 ```

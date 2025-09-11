@@ -64,7 +64,7 @@ clusterGO <- function(similarity_matrix = NULL,
     arrange(Cluster)
   # This stores the GO Descriptions data frame
 
-  # For each cluster, determine the most representative pathway and list GO IDs
+  # For each cluster, determine the most representative term and list GO IDs
   clusters <- unique(GODescriptions$Cluster)
 
   # Initialize a data frame for the table
@@ -73,25 +73,25 @@ clusterGO <- function(similarity_matrix = NULL,
   for (cluster_id in unique(clusters)) {
     go_ids <- names(which(cluster_assignments == cluster_id))
 
-    # Calculate the most representative pathway
-    # Representative pathway: the term with the highest average similarity to other terms in the cluster
+    # Calculate the most representative term
+    # Representative term: the term with the highest average similarity to other terms in the cluster
     sub_matrix <- similarity_matrix[go_ids, go_ids, drop = FALSE] # Subset similarity matrix
     avg_similarity <- rowMeans(sub_matrix)
-    representative_pathway_id <- names(which.max(avg_similarity))
+    representative_term_id <- names(which.max(avg_similarity))
 
-    # Get the full name of the representative pathway
-    representative_pathway_name <- get_go_term_name(representative_pathway_id)
+    # Get the full name of the representative term
+    representative_term_name <- get_go_term_name(representative_term_id)
 
     # Check for NA values before proceeding
-    if (is.na(representative_pathway_name) || length(go_ids) == 0) {
+    if (is.na(representative_term_name) || length(go_ids) == 0) {
       cat("In Cluster", cluster_id, ", no representative patwhay was found.")
-      representative_pathway_name <- representative_pathway_id
+      representative_term_name <- representative_term_id
     }
 
     # Store information in the list
     cluster_info[[paste("Cluster", cluster_id)]] <- data.frame(
       Cluster = paste("Cluster", cluster_id),
-      "Representative Pathway" = representative_pathway_name,
+      "Representative Term" = representative_term_name,
       "GO IDs" = paste(go_ids, collapse = ", "),
       stringsAsFactors = FALSE
     )
@@ -102,5 +102,5 @@ clusterGO <- function(similarity_matrix = NULL,
 
   return(list(clusters = cluster_assignments,
               descriptions = GODescriptions,
-              representative_pathways = cluster_df))
+              representative_term_name = cluster_df))
 }

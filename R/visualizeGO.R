@@ -24,7 +24,7 @@
 #' @param ID If you want to include GO IDs (TRUE) in the plot or numbers (FALSE). Default = TRUE.
 #' @param labs Origin of each of the lists of GO-terms displayed in the plot.
 #' @param legend Whether you want to display the legend. Default = TRUE
-#' @param representative_pathway If the user wishes to include the name of the most representative pathway in the legend. Default = TRUE.
+#' @param representative_term If the user wishes to include the name of the most representative term in the legend. Default = TRUE.
 #' @param labs Name of each of the GO-terms lists
 #'
 #' @return This function returns the final graph, with the colours of the nodes depending
@@ -41,7 +41,7 @@ visualizeGO <- function(graph, cluster,
                         col_palette = NULL,
                         verbose = c("all", "none", "some"),
                         title = NULL, ID = T, labs = NULL,
-                        legend = T, representative_pathway = T,
+                        legend = T, representative_term = T,
                         save_plot = F, PNG = NULL){
 
   # Step 0: Manage the verbose ----
@@ -58,7 +58,7 @@ visualizeGO <- function(graph, cluster,
   if (is.null(cluster) ||
       !"clusters" %in% names(cluster) ||
       !"descriptions" %in% names(cluster) ||
-      !"representative_pathways" %in% names(cluster)) {
+      !"representative_term" %in% names(cluster)) {
     stop("Invalid cluster result provided.")
   }
 
@@ -218,14 +218,14 @@ visualizeGO <- function(graph, cluster,
       # Extraer IDs únicos de los clusters en el grafo (excluyendo NA)
       unique_clusters_in_graph <- unique(na.omit(V(graph)$Cluster))
 
-      # Obtener pathways representativos si se indica
-      if (representative_pathway) {
-        if (!is.null(cluster$representative_pathways)) {
-          cluster_pathways_df <- cluster$representative_pathways
+      # Obtener términos representativos si se indica
+      if (representative_term) {
+        if (!is.null(cluster$representative_term)) {
+          cluster_pathways_df <- cluster$representative_term
 
           # Asegurarse de que las columnas existen
-          if (!all(c("Cluster", "Representative.Pathway") %in% colnames(cluster_pathways_df))) {
-            stop("La tabla de representative_pathways debe tener columnas 'Cluster' y 'Description'.")
+          if (!all(c("Cluster", "Representative.Term") %in% colnames(cluster_pathways_df))) {
+            stop("The data frame of representative_term should have columns 'Cluster' y 'Description'.")
           }
 
           # Filtrar solo los clusters presentes en el grafo
@@ -234,10 +234,10 @@ visualizeGO <- function(graph, cluster,
           rm(tmp)
 
           # Extraer descripciones ordenadas por cluster
-          cluster_labels <- cluster_pathways_df$Representative.Pathway
+          cluster_labels <- cluster_pathways_df$Representative.Term
           cluster_labels <- ifelse(is.na(cluster_labels), "No Cluster", cluster_labels)
         } else {
-          stop("No “representative_pathways” was found in the cluster object.")
+          stop("No “representative_term” was found in the cluster object.")
         }
       } else {
         cluster_labels <- paste("Cluster", unique_clusters_in_graph)

@@ -8,7 +8,7 @@
 #' and visually appealing format, ideal for presentations or publications.
 #'
 #' @description
-#' A formatted HTML table summarizing: (1) Cluster ID, (2) Representative Pathway
+#' A formatted HTML table summarizing: (1) Cluster ID, (2) Representative Term
 #' (for similarity-based clustering) and (3) GO IDs within each cluster.
 #' Adds row-specific colors to highlight clusters visually.
 #'
@@ -32,11 +32,11 @@ generate_cluster_table <- function(cluster_output,
   if (is.null(cluster_output) ||
       !"clusters" %in% names(cluster_output) ||
       !"descriptions" %in% names(cluster_output) ||
-      !"representative_pathways" %in% names(cluster_output)) {
+      !"representative_term" %in% names(cluster_output)) {
     stop("Invalid cluster result provided.")
   }
 
-  cluster_df <- cluster_output$representative_pathways
+  cluster_df <- cluster_output$representative_term
 
   # Generate a table image
   # Use kableExtra for better table formatting
