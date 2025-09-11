@@ -191,6 +191,8 @@ visualizeGO <- function(graph, cluster,
 
   par(mar = c(1, 1, 1, 1))
 
+  plot.new()
+
   plot(
     graph,
     layout = layout,
