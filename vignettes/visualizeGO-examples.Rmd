@@ -1,0 +1,38 @@
+---
+title: "visualizeGO - Tutorial"
+author: "Alonso-García, M."
+date: "2025-06-23"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introducción a visualizeGO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Introduction
+The ```visualizeGO``` package provides enhanced visualizations for Gene Ontology (GO) enrichment analysis results. This vignette shows how to use ```visualizeGO``` with ```clusterProfiler``` to run a GO enrichment analysis and visualize the results.
+
+# Load packages
+```{r libraries}
+library(visualizeGO)
+library(clusterProfiler)
+```
+# Examples
+## Case 1: Role of alveolar luminal cells in the mouse mammary gland during pregnancy
+
+## Case 2: Functional genomics of the digestive tract in broilers.
+
+## Case 3: Hypomethylation in bull sperm targets specific genomic functions
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
